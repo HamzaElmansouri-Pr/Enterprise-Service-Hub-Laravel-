@@ -29,18 +29,33 @@
 </div>
 
 <!-- Blog Section Start -->
-<section class="gt-blog-section fix section-padding">
+<section class="news-standard-section section-padding">
     <div class="container">
-        @if($page)
-        <div class="gt-section-title style-3 text-center mb-5">
-            <h6 class="wow fadeInUp tt-capitalize">{{ $page->subtitle ?? 'Latest News' }}</h6>
-            <h2 class="char-animation">{{ $page->title ?? 'Our Blog' }}</h2>
-            @if($page->description)
-            <p class="mt-3 wow fadeInUp" data-wow-delay=".3s">{{ $page->description }}</p>
-            @endif
-        </div>
-        @endif
+        <div class="row g-4">
+            <div class="col-12 col-lg-8">
+                <div class="news-standard-wrapper">
+                    @if($blogs)
+                    @foreach ($blogs as $blog)
+                    <div class="news-standard-items">
+                        <div class="thumb">
+                            <img src="{{ $blog->featured_image ?? asset('assets/img/blog/blog-header.jpg') }}" alt="Blog Header" class="w-100">
+                        </div>
+                        <div class="content">
+                            <ul class="post-cat">
+                                <li>
+                                    <i class="fa-regular fa-user"></i>
+                                     {{ $blog->author }}
 
+                                </li>
+                            </ul>
+                            <h3><a href="{{ route('blog.detail', $blog) }}">{{ $blog->title }}</a></h3>
+                            <p> {{ $blog->excerpt }}</p>
+                            <a href="{{ route('blog.detail', $blog) }}" class="theme-btn">Read More</a>
+                        </div>
+                    </div>
+                    @endforeach
+                    
+                    @endif
         <div class="row g-5">
             <div class="col-lg-8">
                 <!-- Featured Blog Posts -->

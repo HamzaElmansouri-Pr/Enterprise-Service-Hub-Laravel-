@@ -109,13 +109,9 @@ class PageController extends Controller
      */
     public function service(Service $service)
     {
-        $relatedServices = Service::active()
-            ->where('id', '!=', $service->id)
-            ->where('category', $service->category)
-            ->take(3)
-            ->get();
+       
             
-        return view('service-detail', compact('service', 'relatedServices'));
+        return view('service-detail', compact('service',));
     }
 
     /**

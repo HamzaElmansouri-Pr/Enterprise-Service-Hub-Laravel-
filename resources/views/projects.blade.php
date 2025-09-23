@@ -184,7 +184,7 @@
                     <div class="content">
                         <div class="title">
                             <h3><a href="{{ route('project.detail', $project) }}">{{ $project->title }}</a></h3>
-                            <p> $projec->category
+                            <p>{{ $project->category }} </p>
 
                         </div>
                         <a href="{{ route('project.detail',$project)}}" class="icon"><i class="fa-regular fa-arrow-up-right"></i></a>

@@ -109,7 +109,7 @@ class BlogController extends Controller
             'slug' => 'nullable|string|max:255|unique:blogs,slug,' . $blog->id,
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'author' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:100',
             'tags' => 'nullable|array',
