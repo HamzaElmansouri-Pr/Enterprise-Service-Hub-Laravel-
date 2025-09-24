@@ -60,48 +60,48 @@
             </div>
         </div> --}}
         <style>
-        /* Style for the main slider container */
-.slider-container {
-    position: relative;
-    width: 100%;
-    height: 591px;
-    overflow: hidden; /* This hides images that are outside the view */
-}
+            /* Style for the main slider container */
+            .slider-container {
+                position: relative;
+                width: 100%;
+                height: 591px;
+                overflow: hidden; /* This hides images that are outside the view */
+            }
 
-/* Style for each individual slider item */
-.slider-item {
-    display: none; /* Hide all slides by default */
-    width: 100%;
-    height:100%
-    /* Add a transition for a smooth fade effect */
-    transition: opacity 0.5s ease-in-out;
-}
+            /* Style for each individual slider item */
+            .slider-item {
+                display: none; /* Hide all slides by default */
+                width: 100%;
+                height:100%
+                /* Add a transition for a smooth fade effect */
+                transition: opacity 0.5s ease-in-out;
+            }
 
-/* Show only the active slide */
-.slider-item.active {
-    display: block;
-}
+            /* Show only the active slide */
+            .slider-item.active {
+                display: block;
+            }
 
-/* Basic button styling */
-.prev-btn, .next-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 18px;
-}
+            /* Basic button styling */
+            .prev-btn, .next-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                font-size: 18px;
+            }
 
-.prev-btn {
-    left: 10px;
-}
+            .prev-btn {
+                left: 10px;
+            }
 
-.next-btn {
-    right: 10px;
-}
+            .next-btn {
+                right: 10px;
+            }
         </style>
         <div class="gt-hero-image">
     <div class="slider-container">
@@ -121,8 +121,8 @@
         </div> --}}
     </div>
 
-    <button class="prev-btn">Previous</button>
-    <button class="next-btn">Next</button>
+    <button class="prev-btn" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="next-btn" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
 </div>
     </div>
 </section>

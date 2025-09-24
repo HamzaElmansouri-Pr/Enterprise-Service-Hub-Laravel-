@@ -38,7 +38,7 @@
                 <div class="gt-project-detail-content">
                     @if($project->image)
                     <div class="gt-project-image mb-4">
-                        <img src="{{ $project->image }}" alt="{{ $project->title }}" class="w-100 rounded">
+                        <img src="{{ asset($project->image) }}" alt="{{ $project->title }}" class="w-100 rounded">
                     </div>
                     @endif
 
@@ -117,7 +117,7 @@
                         <div class="row g-3">
                             @foreach($project->gallery as $image)
                             <div class="col-md-4">
-                                <img src="{{ $image }}" alt="Project Image" class="w-100 rounded gallery-img" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                                <img src="{{ asset($image) }}" alt="Project Image" class="w-100 rounded gallery-img" data-bs-toggle="modal" data-bs-target="#galleryModal">
                             </div>
                             @endforeach
                         </div>

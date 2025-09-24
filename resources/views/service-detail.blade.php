@@ -4,12 +4,12 @@
 @section('page-title', $service->title)
 
 @section('content')
-<!-- Gt Breadcrumb Section Start -->
+<!-- Gt Breadcrumb Section Start (matching classes/tags) -->
 <div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ asset('assets/img/breadcrumb-bg.jpg') }}');">
     <div class="container">
         <div class="gt-page-heading">
             <div class="gt-breadcrumb-sub-title">
-                <h1 class="wow fadeInUp" data-wow-delay=".3s">{{ $service->title }}</h1>
+                <h1 class="wow fadeInUp" data-wow-delay=".3s">Services <span>Details</span> </h1>
             </div>
             <ul class="gt-breadcrumb-items wow fadeInUp" data-wow-delay=".5s">
                 <li>
@@ -19,153 +19,181 @@
                     <i class="fa-solid fa-chevron-right"></i>
                 </li>
                 <li>
-                    <a href="{{ route('services') }}">Services</a>
+                 Services Details 
                 </li>
-                <li>
-                    <i class="fa-solid fa-chevron-right"></i>
-                </li>
-                <li>{{ $service->title }}</li>
             </ul>
         </div>
     </div>
 </div>
 
-<!-- Service Detail Section Start -->
-
-
-<!-- FAQ Section -->
+<section class="service-details-section section-padding">
+    <div class="container">
+        <div class="service-details-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="details-image">
+                        <img src="{{ $service->image ? asset($service->image) : asset('assets/img/inner/service/service-details-1.jpg') }}" alt="{{ $service->title }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row g-5">
+                <div class="col-12 col-lg-4">
+                    <div class="main-sidebar sticky-style">
+                        <div class="single-sidebar-widget">
+                            <div class="wid-title">
+                                <h4>All Services</h4>
+                            </div>
+                            <div class="service-widget-categories">
+                                <ul>
+                                    <li class="active"><a href="{{ route('services') }}">{{ $service->title }}</a><span><i class="fa-regular fa-arrow-right-long"></i></span></li>
+                                    <li><a href="{{ route('services') }}">All Services</a> <span><i class="fa-regular fa-arrow-right-long"></i></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                    <div class="service-details-content">
+                        <h3>
+                            {{ $service->title }}
+                        </h3>
+                        @if(!empty($service->subtitle))
+                        <p class="mb-4">
+                            {{ $service->subtitle }}
+                        </p>
+                        @endif
+                        @if(!empty($service->description))
+                        <p class="mb-4">
+                            {!! nl2br(e($service->description)) !!}
+                        </p>
+                        @endif
+                        <h3>
+                            What We Provide
+                        </h3>
+                        <p class="mb-5">
+                            We provide tailored solutions for your business needs.
+                        </p>
+                        <div class="thumb">
+                            <img src="{{ $service->image ? asset($service->image) : asset('assets/img/inner/service/service-details-2.jpg') }}" alt="{{ $service->title }}">
+                        </div>
+                        <h3>
+                            The Challange
+                        </h3>
+                        <p>
+                            @if(!empty($service->description))
+                                {!! nl2br(e($service->description)) !!}
+                            @else
+                                We tailor our solution to your goals and constraints to deliver impact.
+                            @endif
+                        </p>
+                        <div class="details-list-items">
+                            @php $features = is_array($service->features) ? $service->features : []; @endphp
+                            @if(count($features))
+                            <ul class="details-list">
+                                @foreach($features as $index => $feature)
+                                    @if($index % 2 === 0)
+                                    <li><i class="fa-solid fa-circle-check"></i>{{ $feature }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                            <ul class="details-list">
+                                @foreach($features as $index => $feature)
+                                    @if($index % 2 === 1)
+                                    <li><i class="fa-solid fa-circle-check"></i>{{ $feature }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                            @else
+                            <ul class="details-list">
+                                <li><i class="fa-solid fa-circle-check"></i>Quality delivery</li>
+                                <li><i class="fa-solid fa-circle-check"></i>Clear communication</li>
+                            </ul>
+                            <ul class="details-list">
+                                <li><i class="fa-solid fa-circle-check"></i>On-time milestones</li>
+                                <li><i class="fa-solid fa-circle-check"></i>Post-launch support</li>
+                            </ul>
+                            @endif
+                        </div>
+                    </div>
+                    {{-- <div class="gt-faq-wrapper mt-5">
+                        <div class="accordion style-inner" id="accordionExample2">
+                            <div class="accordion-item wow fadeInUp" data-wow-delay=".3s">
+                                <h2 class="accordion-header" id="headingOne1">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="false" aria-controls="collapseOne1">
+                                        What is {{ config('app.name') }}?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample2">
+                                    <div class="accordion-body">
+                                        <p>
+                                            We provide {{ strtolower($service->title) }} services tailored to your needs.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- <div class="accordion-item wow fadeInUp" data-wow-delay=".5s">
+                                <h2 class="accordion-header" id="headingfour2">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsefour2" aria-expanded="true" aria-controls="collapsefour2">
+                                        Do you offer a free consultation?
+                                    </button>
+                                </h2>
+                                <div id="collapsefour2" class="accordion-collapse collapse show" aria-labelledby="headingfour2" data-bs-parent="#accordionExample2">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Yes, contact us to schedule a discovery call.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item wow fadeInUp" data-wow-delay=".7s">
+                                <h2 class="accordion-header" id="headingTwo3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo3" aria-expanded="false" aria-controls="collapseTwo3">
+                                        How quickly can we start?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo3" class="accordion-collapse collapse" aria-labelledby="headingTwo3" data-bs-parent="#accordionExample2">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Typically within one week after scoping your requirements.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item wow fadeInUp" data-wow-delay=".3s">
+                                <h2 class="accordion-header" id="headingthree4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsethree4" aria-expanded="false" aria-controls="collapsethree4">
+                                        What deliverables will I receive?
+                                    </button>
+                                </h2>
+                                <div id="collapsethree4" class="accordion-collapse collapse" aria-labelledby="headingthree4" data-bs-parent="#accordionExample2">
+                                    <div class="accordion-body">
+                                        <p>
+                                            A complete implementation plan, assets, and documentation.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item wow fadeInUp" data-wow-delay=".5s">
+                                <h2 class="accordion-header" id="headingthree1">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsethree1" aria-expanded="false" aria-controls="collapsethree1">
+                                        What does pricing look like?
+                                    </button>
+                                </h2>
+                                <div id="collapsethree1" class="accordion-collapse collapse" aria-labelledby="headingthree1" data-bs-parent="#accordionExample2">
+                                    <div class="accordion-body">
+                                        <p>
+                                            {{ $service->price ? 'Starting at $'.number_format($service->price, 2).($service->price_unit ? ' / '.$service->price_unit : '') : 'Contact us for a custom quote.' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @endsection
 
-@push('styles')
-<style>
-.gt-service-detail-content {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
-.gt-service-image img {
-    border-radius: 10px;
-}
-
-.gt-service-price .price {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #667eea;
-}
-
-.gt-service-price .unit {
-    color: #666;
-    font-size: 1rem;
-}
-
-.gt-feature-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-}
-
-.gt-service-cta {
-    background: #f8f9fa;
-    padding: 30px;
-    border-radius: 10px;
-    margin-top: 30px;
-}
-
-.gt-sidebar-card {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-}
-
-.gt-sidebar-card h5 {
-    margin-bottom: 20px;
-    color: #333;
-    border-bottom: 2px solid #667eea;
-    padding-bottom: 10px;
-}
-
-.gt-service-info .info-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.gt-service-info .info-item:last-child {
-    border-bottom: none;
-}
-
-.gt-related-item {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.gt-related-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-.gt-related-item a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.3s;
-}
-
-.gt-related-item a:hover {
-    color: #667eea;
-}
-
-.related-thumb {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 15px;
-}
-
-.related-thumb-placeholder {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    margin-right: 15px;
-}
-
-.related-content h6 {
-    margin: 0 0 5px 0;
-    font-size: 0.9rem;
-}
-
-.related-content .price {
-    color: #667eea;
-    font-weight: 500;
-    font-size: 0.8rem;
-}
-
-.accordion-button {
-    background: white;
-    border: none;
-    font-weight: 500;
-}
-
-.accordion-button:not(.collapsed) {
-    background: #667eea;
-    color: white;
-}
-
-.accordion-button:focus {
-    box-shadow: none;
-    border: none;
-}
-</style>
-@endpush

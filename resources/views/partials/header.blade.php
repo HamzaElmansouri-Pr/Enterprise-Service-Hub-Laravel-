@@ -209,25 +209,25 @@
         <!-- ======== Page title ============ -->
         <title>Shared on THEMELOCK.COM - Boostly - SaaS & Tech Startup HTML Template</title>
         <!--<< Favcion >>-->
-        <link rel="shortcut icon" href="assets/img/favicon.svg">
+        <link rel="shortcut icon" href="{{ asset('assets/img/favicon.svg') }}">
         <!--<< Bootstrap min.css >>-->
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
         <!--<< All Min Css >>-->
-        <link rel="stylesheet" href="assets/css/all.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}">
         <!--<< Animate.css >>-->
-        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
         <!--<< Magnific Popup.css >>-->
-        <link rel="stylesheet" href="assets/css/magnific-popup.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
         <!--<< MeanMenu.css >>-->
-        <link rel="stylesheet" href="assets/css/meanmenu.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/meanmenu.css') }}">
         <!--<< Swiper Bundle.css >>-->
-        <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
         <!--<< Nice Select.css >>-->
-        <link rel="stylesheet" href="assets/css/nice-select.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/nice-select.css') }}">
         <!--<< Main.css >>-->
-        <link rel="stylesheet" href="assets/css/flaticon.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
          <!--<< Main.css >>-->
-        <link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
     </head>
     <body class="body-bg-2">
 
@@ -251,7 +251,7 @@
                         <div class="offcanvas__top mb-5 d-flex justify-content-between align-items-center">
                             <div class="offcanvas__logo">
                                 <a href="index.html">
-                                    <img src="assets/img/logo/theme-logo-2.svg" alt="logo-img">
+                                    <img src="{{ asset('assets/img/logo/theme-logo-2.svg') }}" alt="logo-img">
                                 </a>
                             </div>
                             <div class="offcanvas__close">
@@ -289,7 +289,7 @@
                     <div class="header-main">
                         <div class="logo">
                                 <a href="index.html" class="header-logo">
-                                    <img src="assets/img/logo/theme-logo-2.svg" alt="logo-img">
+                        <img src="{{ asset('assets/img/logo/theme-logo-2.svg') }}" alt="logo-img">
                                 </a>
                             </div>
                             <div class="mean__menu-wrapper">
@@ -598,8 +598,8 @@
                                     </ul>
                                 </li>
                                 <li class="has-dropdown">
-                                    <a href="#">
-                                        Pages
+                                    <a href="{{ route('projects') }}">
+                                        Projects
                                     </a>
                                     <ul class="submenu">
                                         <li class="has-dropdown">

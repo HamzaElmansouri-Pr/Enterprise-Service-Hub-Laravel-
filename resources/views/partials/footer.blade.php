@@ -1,11 +1,11 @@
      <!-- Gt Footer Section Start -->
         <section class="gt-footer-section-3 footer-3">
             <div class="footer-dot">
-                <img src="assets/img/new-add/footer-dot.png" alt="img">
+                <img src="{{ asset('assets/img/new-add/footer-dot.png') }}" alt="img">
             </div>
             <div class="gt-cta-section-3">
                 <div class="container">
-                    <div class="gt-cta-wrapper-3 bg-cover" style="background-image: url('assets/img/home-3/cta-bg.jpg');">
+                    <div class="gt-cta-wrapper-3 bg-cover" style="background-image: url('{{ asset('assets/img/home-3/cta-bg.jpg') }}');">
                         <div class="gt-section-title style-3 mb-0">
                             <h6 class="wow fadeInUp tt-capitalize">connect with us</h6>
                             <h2 class="char-animation">
@@ -14,8 +14,8 @@
                         </div>
                         <p class="wow fadeInUp" data-wow-delay=".3s">Start your 30-day free trial. Cancel anytime.</p>
                         <div class="gt-cta-btn wow fadeInUp" data-wow-delay=".5s">
-                            <a href="contact.html" class="gt-theme-btn style-3 bg-header">view our demo</a>
-                            <a href="contact.html" class="gt-theme-btn style-3">start free trial now</a>
+                            <a href="{{ route('contact') }}" class="gt-theme-btn style-3 bg-header">view our demo</a>
+                            <a href="{{ route('contact') }}" class="gt-theme-btn style-3">start free trial now</a>
                         </div>
                         <ul class="wow fadeInUp" data-wow-delay=".7s">
                             <li>
@@ -158,8 +158,8 @@
                     </div>
                 </div>
                 <div class="gt-footer-bottom-3">
-                    <a href="index.html" class="footer-logo">
-                        <img src="assets/img/logo/black-logo-3.svg" alt="img">
+                    <a href="{{ route('home') }}" class="footer-logo">
+                        <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="img">
                     </a>
                     <p>Copyright Boostly. Design By <b>GramenTheme</b></p>
                     <div class="gt-social-icon d-flex align-items-center style-home-3">
@@ -177,26 +177,26 @@
        
 
        <!--<< All JS Plugins >>-->
-        <script src="assets/js/jquery-3.7.1.min.js"></script>
+        <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
         <!--<< Viewport Js >>-->
-        <script src="assets/js/viewport.jquery.js"></script>
+        <script src="{{ asset('assets/js/viewport.jquery.js') }}"></script>
         <!--<< Bootstrap Js >>-->
-        <script src="assets/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
         <!--<< nice-selec Js >>-->
-        <script src="assets/js/jquery.nice-select.min.js"></script>
+        <script src="{{ asset('assets/js/jquery.nice-select.min.js') }}"></script>
         <!--<< Waypoints Js >>-->
-        <script src="assets/js/jquery.waypoints.js"></script>
+        <script src="{{ asset('assets/js/jquery.waypoints.js') }}"></script>
         <!--<< Counterup Js >>-->
-        <script src="assets/js/jquery.counterup.min.js"></script>
+        <script src="{{ asset('assets/js/jquery.counterup.min.js') }}"></script>
         <!--<< Swiper Slider Js >>-->
-        <script src="assets/js/swiper-bundle.min.js"></script>
+        <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
         <!--<< MeanMenu Js >>-->
-        <script src="assets/js/jquery.meanmenu.min.js"></script>
+        <script src="{{ asset('assets/js/jquery.meanmenu.min.js') }}"></script>
         <!--<< Parallaxie Js >>-->
-        <script src="assets/js/parallaxie.js"></script>
+        <script src="{{ asset('assets/js/parallaxie.js') }}"></script>
         <!--<< Magnific Popup Js >>-->
-        <script src="assets/js/jquery.magnific-popup.min.js"></script>
+        <script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
         <!--<< Wow Animation Js >>-->
-        <script src="assets/js/wow.min.js"></script>
+        <script src="{{ asset('assets/js/wow.min.js') }}"></script>
         <!--<< Main.js >>-->
-        <script src="assets/js/main.js"></script>
+        <script src="{{ asset('assets/js/main.js') }}"></script>
