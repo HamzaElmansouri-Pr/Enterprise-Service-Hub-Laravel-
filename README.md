@@ -59,3 +59,88 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+## Local Development Setup
+
+Prerequisites
+- PHP 8.2+ and Composer
+- Node.js 18+ and npm
+- MySQL/PostgreSQL (or SQLite)
+
+Steps
+1. Install PHP dependencies
+```
+composer install
+```
+
+2. Environment and app key
+```
+copy .env.example .env
+php artisan key:generate
+```
+
+3. Configure database in `.env`
+```
+DB_DATABASE=your_db
+DB_USERNAME=your_user
+DB_PASSWORD=your_pass
+```
+
+4. Migrate and seed (creates admin/demo data)
+```
+php artisan migrate --seed
+```
+
+5. Storage symlink for uploads
+```
+php artisan storage:link
+```
+
+6. Frontend dependencies
+```
+npm install
+```
+
+7a. Run in development (hot reload)
+```
+php artisan serve
+npm run dev
+```
+Open http://127.0.0.1:8000
+
+7b. Production-like (no dev server)
+```
+npm run build
+php artisan serve
+```
+Open http://127.0.0.1:8000
+
+Notes
+- Update `APP_URL` in `.env` to `http://127.0.0.1:8000` for local.
+- If `.env` changes, clear caches:
+```
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+Ngrok sharing
+1) Build assets and stop Vite dev server
+```
+npm run build
+```
+2) Set in `.env`:
+```
+APP_URL=https://YOUR-SUBDOMAIN.ngrok-free.app
+ASSET_URL=
+SESSION_SECURE_COOKIE=true
+```
+3) Serve and tunnel
+```
+php artisan serve --host=0.0.0.0 --port=8000
+ngrok http 8000
+```
+4) Clear caches (as above)
