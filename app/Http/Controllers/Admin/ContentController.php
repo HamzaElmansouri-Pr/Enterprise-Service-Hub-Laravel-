@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Page;
 
 class ContentController extends Controller
 {
@@ -35,6 +36,13 @@ class ContentController extends Controller
         $validated = $request->validate($this->getValidationRules($contentType));
         
         // Save content to storage or database
+        // Handle file uploads where applicable
+        if (in_array($contentType, ['about-main', 'home-about']) && $request->hasFile('about_image_file')) {
+            $path = $request->file('about_image_file')->store('uploads/pages', 'public');
+            // Prefer stored path over URL
+            $validated['about_image'] = 'storage/' . $path;
+        }
+
         $this->saveContent($contentType, $validated);
         
         return redirect()->route('admin.content.index')
@@ -46,8 +54,22 @@ class ContentController extends Controller
      */
     private function getContent($contentType)
     {
-        // This would typically load from database or config
-        // For now, return default content
+        // Try to load from Page model where applicable
+        if (in_array($contentType, ['about-main', 'home-about'])) {
+            $page = Page::getByName('about');
+            if ($page) {
+                $meta = $page->meta_data ?? [];
+                return [
+                    'about_title' => $page->title,
+                    'about_subtitle' => $page->subtitle,
+                    'about_description' => $page->description,
+                    'about_image' => $page->image ? (str_starts_with($page->image, 'http') ? $page->image : asset($page->image)) : null,
+                    'about_content' => $page->content,
+                    'features' => $meta['features'] ?? [],
+                ];
+            }
+        }
+        // Otherwise, fall back to defaults
         $defaultContent = [
             'home-hero' => [
                 'hero_title' => 'The complete CRM solution built for your success',
@@ -76,8 +98,26 @@ class ContentController extends Controller
             'about-main' => [
                 'about_title' => 'Deliver unforgettable customer experiences',
                 'about_subtitle' => 'Why SupremeIT crm',
-                'about_description' => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.',
+                'about_description' => 'There are many variations of passages of Lorem Ipsum available...',
                 'about_image' => asset('assets/img/new-add/crm-img.png'),
+                'about_content' => null,
+                'features' => [
+                    ['title' => 'All-in-One CRM', 'description' => 'Automate your sales, marketing, and service in one platform.'],
+                    ['title' => 'Affordable', 'description' => 'Make the most of SupremeIT\'s modern features & integrations.'],
+                    ['title' => 'Next-Generation', 'description' => 'Avoid data leaks and enable consistent messaging.'],
+                ],
+            ],
+            'home-about' => [
+                'about_title' => 'Deliver unforgettable customer experiences',
+                'about_subtitle' => 'Why SupremeIT crm',
+                'about_description' => 'There are many variations of passages of Lorem Ipsum available...',
+                'about_image' => asset('assets/img/new-add/crm-img.png'),
+                'about_content' => null,
+                'features' => [
+                    ['title' => 'All-in-One CRM', 'description' => 'Automate your sales, marketing, and service in one platform.'],
+                    ['title' => 'Affordable', 'description' => 'Make the most of SupremeIT\'s modern features & integrations.'],
+                    ['title' => 'Next-Generation', 'description' => 'Avoid data leaks and enable consistent messaging.'],
+                ],
             ],
             'contact-info' => [
                 'contact_title' => 'Ready to get started?',
@@ -120,8 +160,22 @@ class ContentController extends Controller
             'about-main' => [
                 'about_title' => 'required|string|max:255',
                 'about_subtitle' => 'required|string|max:255',
-                'about_description' => 'required|string|max:1000',
-                'about_image' => 'nullable|url',
+                'about_description' => 'required|string|max:2000',
+                'about_image' => 'nullable|string',
+                'about_content' => 'nullable|string',
+                'features' => 'nullable|array',
+                'features.*.title' => 'nullable|string|max:255',
+                'features.*.description' => 'nullable|string|max:500',
+            ],
+            'home-about' => [
+                'about_title' => 'required|string|max:255',
+                'about_subtitle' => 'required|string|max:255',
+                'about_description' => 'required|string|max:2000',
+                'about_image' => 'nullable|string',
+                'about_content' => 'nullable|string',
+                'features' => 'nullable|array',
+                'features.*.title' => 'nullable|string|max:255',
+                'features.*.description' => 'nullable|string|max:500',
             ],
             'contact-info' => [
                 'contact_title' => 'required|string|max:255',
@@ -147,11 +201,20 @@ class ContentController extends Controller
      */
     private function saveContent($contentType, $data)
     {
-        // In a real application, you would save this to a database
-        // For now, we'll just store it in the session or cache
+        if (in_array($contentType, ['about-main', 'home-about'])) {
+            $page = Page::firstOrCreate(['name' => 'about'], ['is_active' => true]);
+            if (isset($data['about_title'])) $page->title = $data['about_title'];
+            if (isset($data['about_subtitle'])) $page->subtitle = $data['about_subtitle'];
+            if (isset($data['about_description'])) $page->description = $data['about_description'];
+            if (!empty($data['about_image'])) $page->image = $data['about_image'];
+            if (isset($data['about_content'])) $page->content = $data['about_content'];
+            $meta = $page->meta_data ?? [];
+            if (isset($data['features'])) $meta['features'] = $data['features'];
+            $page->meta_data = $meta;
+            $page->save();
+            return;
+        }
+        // Fallback demo behavior
         session(['content_' . $contentType => $data]);
-        
-        // You could also save to a JSON file or database
-        // Storage::put('content/' . $contentType . '.json', json_encode($data));
     }
 }

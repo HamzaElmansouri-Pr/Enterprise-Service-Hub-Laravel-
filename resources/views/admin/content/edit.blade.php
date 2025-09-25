@@ -22,7 +22,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.content.update', $contentType) }}" method="POST">
+                <form action="{{ route('admin.content.update', $contentType) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -99,7 +99,7 @@
                             </button>
                         </div>
                         
-                    @elseif($contentType === 'about-main')
+                    @elseif($contentType === 'about-main' || $contentType === 'home-about')
                         <div class="mb-4">
                             <label for="about_title" class="form-label">About Title</label>
                             <input type="text" class="form-control" id="about_title" name="about_title" 
@@ -118,9 +118,49 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="about_image" class="form-label">About Image URL</label>
-                            <input type="url" class="form-control" id="about_image" name="about_image" 
-                                   value="{{ $content['about_image'] ?? '' }}">
+                            <label class="form-label">About Image</label>
+                            <input type="file" class="form-control" name="about_image_file" accept="image/*">
+                            @if(!empty($content['about_image']))
+                            <div class="mt-2">
+                                <img src="{{ $content['about_image'] }}" alt="About image" style="max-height:100px;">
+                            </div>
+                            @endif
+                        </div>
+                        <div class="mb-4">
+                            <label for="about_content" class="form-label">About HTML Content (optional)</label>
+                            <textarea class="form-control" id="about_content" name="about_content" rows="6">{{ $content['about_content'] ?? '' }}</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Feature Highlights</label>
+                            <div id="features-list">
+                                @foreach(($content['features'] ?? []) as $index => $feature)
+                                <div class="feature-item border p-3 mb-3 rounded">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Feature Title</label>
+                                            <input type="text" class="form-control" name="features[{{ $index }}][title]" value="{{ $feature['title'] ?? '' }}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Actions</label>
+                                            <div>
+                                                <button type="button" class="btn btn-sm btn-danger remove-feature">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label class="form-label">Feature Description</label>
+                                        <textarea class="form-control" name="features[{{ $index }}][description]" rows="2">{{ $feature['description'] ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            <button type="button" class="btn btn-outline-primary" id="add-feature">
+                                <i class="fas fa-plus me-2"></i>
+                                Add Feature
+                            </button>
                         </div>
                         
                     @elseif($contentType === 'contact-info')
@@ -222,9 +262,16 @@
                     @elseif($contentType === 'home-features')
                         <h5>{{ $content['features_title'] ?? 'SupremeIT key benefits' }}</h5>
                         <p class="text-muted">{{ $content['features_subtitle'] ?? 'Flexible experiences that scale with your growth' }}</p>
-                    @elseif($contentType === 'about-main')
+                    @elseif($contentType === 'about-main' || $contentType === 'home-about')
                         <h5>{{ $content['about_title'] ?? 'Deliver unforgettable customer experiences' }}</h5>
                         <p class="text-muted">{{ $content['about_description'] ?? 'About description...' }}</p>
+                        @if(!empty($content['features']))
+                        <ul>
+                            @foreach($content['features'] as $feat)
+                            <li><strong>{{ $feat['title'] ?? '' }}</strong> - {{ $feat['description'] ?? '' }}</li>
+                            @endforeach
+                        </ul>
+                        @endif
                     @elseif($contentType === 'contact-info')
                         <h5>{{ $content['contact_title'] ?? 'Ready to get started?' }}</h5>
                         <p class="text-muted">{{ $content['contact_description'] ?? 'Contact description...' }}</p>

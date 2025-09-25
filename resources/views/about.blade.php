@@ -82,53 +82,51 @@
                 <div class="col-xl-6">
                     <div class="gt-about-content">
                         <div class="gt-section-title style-3 mb-0">
-                            <h6 class="tt-capitalize wow fadeInUp">Why SupremeIT crm</h6>
+                            <h6 class="tt-capitalize wow fadeInUp">{{ optional($page)->subtitle ?? 'Why SupremeIT crm' }}</h6>
                             <h2 class="char-animation">
-                                Deliver unforgettable
-                                customer experiences
+                                {{ optional($page)->title ?? 'Deliver unforgettable customer experiences' }}
                             </h2>
                         </div>
-                        <p class="gt-text wow fadeInUp" data-wow-delay=".3s">
-                            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage
-                        </p>
+                        @if(optional($page)->description)
+                        <p class="gt-text wow fadeInUp" data-wow-delay=".3s">{{ $page->description }}</p>
+                        @endif
+                        @if(optional($page)->content)
+                        <div class="wow fadeInUp" data-wow-delay=".5s">{!! $page->content !!}</div>
+                        @endif
+                        @php($features = optional($page)->meta_data['features'] ?? [])
+                        @if(!empty($features))
                         <ul class="gt-list-items wow fadeInUp" data-wow-delay=".5s">
+                            @foreach($features as $feat)
                             <li>
                                 <span class="gt-circle-box"></span>
                                 <div class="gt-content">
-                                    <h4>All-in-One CRM</h4>
-                                    <span>
-                                        Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.
-                                    </span>
+                                    <h4>{{ $feat['title'] ?? '' }}</h4>
+                                    <span>{{ $feat['description'] ?? '' }}</span>
                                 </div>
                             </li>
-                            <li>
-                                <span class="gt-circle-box"></span>
-                                <div class="gt-content">
-                                    <h4>Affordable</h4>
-                                    <span>
-                                       Make the most of SupremeIT's modern features & integrations, easy implementation and great support at an affordable price.
-                                    </span>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="gt-circle-box"></span>
-                                <div class="gt-content">
-                                    <h4>Next-Generation</h4>
-                                    <span>
-                                       Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.
-                                    </span>
-                                </div>
-                            </li>
+                            @endforeach
                         </ul>
+                        @endif
                     </div>
                 </div>
                 <div class="col-xl-6">
                     <div class="gt-about-image agn-choose-5-img">
-                       
+                        <style>
+                            .agn-choose-5-img { position: relative; }
+                            .about-aspect-circle { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; }
+                            .about-aspect-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+                        </style>
                         <div class="crm-imagewow wow fadeInRight" data-wow-delay=".3s">
-                            <img src="{{ asset('assets/img/new-add/crm-img.png') }}" alt="">
+                            <div class="about-aspect-circle">
+                                @if($page->image)
+                                    <img src="{{ asset($page->image) }}" alt="">
+                                @else
+                                    <img src="{{ asset('assets/img/new-add/crm-img.png') }}" alt="">
+                                @endif
+                            </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>

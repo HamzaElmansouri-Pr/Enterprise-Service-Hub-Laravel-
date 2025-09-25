@@ -20,10 +20,12 @@ class PageController extends Controller
     public function home()
     {
         $sliders = Slider::active()->ordered()->get();
-        $services = Service::active()->featured()->ordered()->take(3)->get();
-        $projects = Project::active()->featured()->ordered()->take(3)->get();
+        // Recent services (3) and recent projects (2)
+        $services = Service::active()->orderBy('created_at', 'desc')->take(3)->get();
+        $projects = Project::active()->orderBy('created_at', 'desc')->take(2)->get();
         $reviews = Review::approved()->featured()->ordered()->take(6)->get();
         $blogs = Blog::published()->featured()->orderBy('published_at', 'desc')->take(3)->get();
+        $about = Page::getByName('about');
         
         $data = [
             'siteDescription' => 'SupremeIT provides cutting-edge technology solutions to help businesses grow and succeed in the digital world.',
@@ -50,7 +52,7 @@ class PageController extends Controller
             ]
         ];
 
-        return view('index', compact('data', 'sliders', 'services', 'projects', 'reviews', 'blogs'));
+        return view('index', compact('data', 'sliders', 'services', 'projects', 'reviews', 'blogs', 'about'));
     }
 
     /**
