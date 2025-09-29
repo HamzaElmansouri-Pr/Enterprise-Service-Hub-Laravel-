@@ -127,20 +127,4 @@ php artisan route:clear
 php artisan view:clear
 ```
 
-Ngrok sharing
-1) Build assets and stop Vite dev server
-```
-npm run build
-```
-2) Set in `.env`:
-```
-APP_URL=https://YOUR-SUBDOMAIN.ngrok-free.app
-ASSET_URL=
-SESSION_SECURE_COOKIE=true
-```
-3) Serve and tunnel
-```
-php artisan serve --host=0.0.0.0 --port=8000
-ngrok http 8000
-```
-4) Clear caches (as above)
+
