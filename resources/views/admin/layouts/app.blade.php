@@ -252,11 +252,16 @@
                     <span class="text-muted me-3">Welcome, {{ Auth::user()->name }}</span>
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i>
+                            @if(Auth::user()->image)
+                                <img src="{{ asset('storage/' . Auth::user()->image) }}" alt="Profile" 
+                                     class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                            @else
+                                <i class="fas fa-user-circle"></i>
+                            @endif
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin.settings.edit-profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin.settings.index') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

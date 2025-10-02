@@ -35,18 +35,56 @@ class ContentController extends Controller
     {
         $validated = $request->validate($this->getValidationRules($contentType));
         
-        // Save content to storage or database
-        // Handle file uploads where applicable
-        if (in_array($contentType, ['about-main', 'home-about']) && $request->hasFile('about_image_file')) {
-            $path = $request->file('about_image_file')->store('uploads/pages', 'public');
-            // Prefer stored path over URL
-            $validated['about_image'] = 'storage/' . $path;
-        }
+        // Handle file uploads for all image fields
+        $this->handleImageUploads($request, $validated, $contentType);
 
         $this->saveContent($contentType, $validated);
         
         return redirect()->route('admin.content.index')
             ->with('success', 'Content updated successfully!');
+    }
+    
+    /**
+     * Handle image uploads for different content types
+     */
+    private function handleImageUploads(Request $request, &$validated, $contentType)
+    {
+        $imageFields = $this->getImageFields($contentType);
+        
+        foreach ($imageFields as $fieldName => $fileInputName) {
+            if ($request->hasFile($fileInputName)) {
+                $file = $request->file($fileInputName);
+                $path = $file->store('uploads/content', 'public');
+                $validated[$fieldName] = 'storage/' . $path;
+            }
+        }
+    }
+    
+    /**
+     * Get image field mappings for content type
+     */
+    private function getImageFields($contentType)
+    {
+        $mappings = [
+            'home-hero' => [
+                'hero_image' => 'hero_image_file'
+            ],
+            'about-main' => [
+                'about_image' => 'about_image_file'
+            ],
+            'home-about' => [
+                'about_image' => 'about_image_file'
+            ],
+            'contact-info' => [
+                'contact_logo' => 'contact_logo_file'
+            ],
+            'site-info' => [
+                'site_logo' => 'site_logo_file',
+                'site_favicon' => 'site_favicon_file'
+            ]
+        ];
+        
+        return $mappings[$contentType] ?? [];
     }
     
     /**
@@ -66,6 +104,19 @@ class ContentController extends Controller
                     'about_image' => $page->image ? (str_starts_with($page->image, 'http') ? $page->image : asset($page->image)) : null,
                     'about_content' => $page->content,
                     'features' => $meta['features'] ?? [],
+                ];
+            }
+        }
+        if ($contentType === 'contact-info') {
+            $page = Page::getByName('contact');
+            if ($page) {
+                return [
+                    'contact_title' => $page->title ?? 'Ready to get started?',
+                    'contact_description' => $page->description ?? 'Contact us today to learn more about how SupremeIT can help your business grow.',
+                    'contact_phone' => $page->contact_phone ?? '+1 (555) 123-4567',
+                    'contact_email' => $page->contact_email ?? 'info@supremeit.com',
+                    'contact_address' => $page->contact_address ?? "123 Business Street\nCity, State 12345",
+                    'contact_logo' => $page->contact_logo ? (str_starts_with($page->contact_logo, 'http') ? $page->contact_logo : asset($page->contact_logo)) : null,
                 ];
             }
         }
@@ -125,6 +176,7 @@ class ContentController extends Controller
                 'contact_phone' => '+1 (555) 123-4567',
                 'contact_email' => 'info@supremeit.com',
                 'contact_address' => "123 Business Street\nCity, State 12345",
+                'contact_logo' => asset('assets/img/logo/black-logo-3.svg'),
             ],
             'site-info' => [
                 'site_name' => 'SupremeIT',
@@ -148,7 +200,8 @@ class ContentController extends Controller
                 'hero_title' => 'required|string|max:255',
                 'hero_subtitle' => 'required|string|max:500',
                 'hero_button_text' => 'required|string|max:50',
-                'hero_image' => 'nullable|url',
+                'hero_image' => 'nullable|string',
+                'hero_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ],
             'home-features' => [
                 'features_title' => 'required|string|max:255',
@@ -162,6 +215,7 @@ class ContentController extends Controller
                 'about_subtitle' => 'required|string|max:255',
                 'about_description' => 'required|string|max:2000',
                 'about_image' => 'nullable|string',
+                'about_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'about_content' => 'nullable|string',
                 'features' => 'nullable|array',
                 'features.*.title' => 'nullable|string|max:255',
@@ -172,6 +226,7 @@ class ContentController extends Controller
                 'about_subtitle' => 'required|string|max:255',
                 'about_description' => 'required|string|max:2000',
                 'about_image' => 'nullable|string',
+                'about_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'about_content' => 'nullable|string',
                 'features' => 'nullable|array',
                 'features.*.title' => 'nullable|string|max:255',
@@ -183,13 +238,17 @@ class ContentController extends Controller
                 'contact_phone' => 'required|string|max:50',
                 'contact_email' => 'required|email|max:255',
                 'contact_address' => 'required|string|max:500',
+                'contact_logo' => 'nullable|string|max:255',
+                'contact_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ],
             'site-info' => [
                 'site_name' => 'required|string|max:255',
                 'site_description' => 'required|string|max:500',
                 'site_keywords' => 'required|string|max:255',
-                'site_logo' => 'nullable|url',
-                'site_favicon' => 'nullable|url',
+                'site_logo' => 'nullable|string',
+                'site_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'site_favicon' => 'nullable|string',
+                'site_favicon_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,ico|max:1024',
             ]
         ];
         
@@ -211,6 +270,17 @@ class ContentController extends Controller
             $meta = $page->meta_data ?? [];
             if (isset($data['features'])) $meta['features'] = $data['features'];
             $page->meta_data = $meta;
+            $page->save();
+            return;
+        }
+        if ($contentType === 'contact-info') {
+            $page = Page::firstOrCreate(['name' => 'contact'], ['is_active' => true]);
+            if (isset($data['contact_title'])) $page->title = $data['contact_title'];
+            if (isset($data['contact_description'])) $page->description = $data['contact_description'];
+            if (isset($data['contact_phone'])) $page->contact_phone = $data['contact_phone'];
+            if (isset($data['contact_email'])) $page->contact_email = $data['contact_email'];
+            if (isset($data['contact_address'])) $page->contact_address = $data['contact_address'];
+            if (isset($data['contact_logo'])) $page->contact_logo = $data['contact_logo'];
             $page->save();
             return;
         }

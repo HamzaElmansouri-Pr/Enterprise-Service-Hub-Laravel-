@@ -111,9 +111,10 @@ class PageController extends Controller
      */
     public function service(Service $service)
     {
-       
+        // Get all services for the sidebar
+        $allServices = Service::active()->ordered()->get();
             
-        return view('service-detail', compact('service',));
+        return view('service-detail', compact('service', 'allServices'));
     }
 
     /**
@@ -139,7 +140,18 @@ class PageController extends Controller
             ->take(3)
             ->get();
             
-        return view('project-detail', compact('project', 'relatedProjects'));
+        // Get previous and next projects for navigation
+        $previousProject = Project::active()
+            ->where('id', '<', $project->id)
+            ->orderBy('id', 'desc')
+            ->first();
+            
+        $nextProject = Project::active()
+            ->where('id', '>', $project->id)
+            ->orderBy('id', 'asc')
+            ->first();
+            
+        return view('project-detail', compact('project', 'relatedProjects', 'previousProject', 'nextProject'));
     }
 
     /**
@@ -169,7 +181,30 @@ class PageController extends Controller
             ->take(3)
             ->get();
             
-        return view('blog-detail', compact('blog', 'relatedBlogs'));
+        // Get blog categories with count
+        $blogCategories = Blog::published()
+            ->selectRaw('category, COUNT(*) as count')
+            ->groupBy('category')
+            ->whereNotNull('category')
+            ->get();
+            
+        // Get recent blogs for sidebar
+        $recentBlogs = Blog::published()
+            ->where('id', '!=', $blog->id)
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+            
+        // Get popular tags
+        $popularTags = Blog::published()
+            ->whereNotNull('tags')
+            ->get()
+            ->pluck('tags')
+            ->flatten()
+            ->unique()
+            ->take(9);
+            
+        return view('blog-detail', compact('blog', 'relatedBlogs', 'blogCategories', 'recentBlogs', 'popularTags'));
     }
 
     /**
@@ -216,7 +251,14 @@ class PageController extends Controller
         ]);
 
         if ($request->hasFile('attached_file')) {
-            $validated['attached_file'] = $request->file('attached_file')->store('tc-requests');
+            $file = $request->file('attached_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // Move file to public/tc directory
+            $file->move(public_path('tc'), $fileName);
+            
+            // Store relative path in database
+            $validated['attached_file'] = 'tc/' . $fileName;
         }
 
         TcRequest::create($validated);

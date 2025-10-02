@@ -28,8 +28,8 @@ class TcRequestController extends Controller
     public function destroy(TcRequest $tcRequest)
     {
         // Delete attached file if exists
-        if ($tcRequest->attached_file && file_exists(storage_path('app/public/' . $tcRequest->attached_file))) {
-            unlink(storage_path('app/public/' . $tcRequest->attached_file));
+        if ($tcRequest->attached_file && file_exists(public_path($tcRequest->attached_file))) {
+            unlink(public_path($tcRequest->attached_file));
         }
 
         $tcRequest->delete();
@@ -71,8 +71,8 @@ class TcRequestController extends Controller
         
         // Delete attached files
         foreach ($tcRequests as $tcRequest) {
-            if ($tcRequest->attached_file && file_exists(storage_path('app/public/' . $tcRequest->attached_file))) {
-                unlink(storage_path('app/public/' . $tcRequest->attached_file));
+            if ($tcRequest->attached_file && file_exists(public_path($tcRequest->attached_file))) {
+                unlink(public_path($tcRequest->attached_file));
             }
         }
 
@@ -83,10 +83,22 @@ class TcRequestController extends Controller
 
     public function downloadFile(TcRequest $tcRequest)
     {
-        if (!$tcRequest->attached_file || !file_exists(storage_path('app/public/' . $tcRequest->attached_file))) {
-            return redirect()->back()->with('error', 'File not found.');
+        if (!$tcRequest->attached_file) {
+            return redirect()->back()->with('error', 'No file attached to this request.');
+        }
+        
+        $filePath = public_path($tcRequest->attached_file);
+        
+        if (!file_exists($filePath)) {
+            // File doesn't exist - clear the file reference from database
+            $tcRequest->update(['attached_file' => null]);
+            
+            return redirect()->back()->with('error', 'File not found on server. The file may have been deleted or moved. The file reference has been cleared from this request.');
         }
 
-        return response()->download(storage_path('app/public/' . $tcRequest->attached_file));
+        // Get the original filename for download
+        $originalName = basename($tcRequest->attached_file);
+        
+        return response()->download($filePath, $originalName);
     }
 }

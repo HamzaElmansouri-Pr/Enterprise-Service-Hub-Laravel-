@@ -1,0 +1,6 @@
+client_name,client_position,client_company,review_text,rating,project_type,is_featured,is_approved,sort_order
+John Smith,CEO,Tech Corp,"Great work on our website. Very professional team.",5,Web Development,true,true,1
+Sarah Wilson,Manager,Digital Inc,"Excellent service and support throughout the project.",4,Digital Marketing,false,true,2
+Mike Johnson,Director,StartupXYZ,"Outstanding results. Highly recommended for any business.",5,Mobile App,true,true,3
+Lisa Brown,Owner,Small Biz,"Professional and delivered exactly what we needed.",4,E-commerce,false,true,4
+David Lee,CTO,Innovation Co,"Top quality work with great attention to detail.",5,Software Development,true,true,5

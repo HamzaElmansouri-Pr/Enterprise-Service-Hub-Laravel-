@@ -14,10 +14,10 @@ use App\Http\Controllers\Admin\UserController;
 
 // Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    // Login routes (accessible without authentication)
-    Route::get('/login', [AdminController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AdminController::class, 'login']);
-    Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+    // Redirect admin login to main auth login
+    Route::get('/login', function () {
+        return redirect()->route('login');
+    })->name('login');
     
     // Protected admin routes
     Route::middleware(['auth', 'admin'])->group(function () {
@@ -29,6 +29,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [ContentController::class, 'index'])->name('index');
             Route::get('/{contentType}/edit', [ContentController::class, 'edit'])->name('edit');
             Route::put('/{contentType}', [ContentController::class, 'update'])->name('update');
+        });
+        
+        // Settings Management
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('index');
+            Route::get('/profile/edit', [\App\Http\Controllers\Admin\SettingsController::class, 'editProfile'])->name('edit-profile');
+            Route::put('/profile', [\App\Http\Controllers\Admin\SettingsController::class, 'updateProfile'])->name('update-profile');
+            Route::get('/password/edit', [\App\Http\Controllers\Admin\SettingsController::class, 'editPassword'])->name('edit-password');
+            Route::put('/password', [\App\Http\Controllers\Admin\SettingsController::class, 'updatePassword'])->name('update-password');
+            Route::delete('/image', [\App\Http\Controllers\Admin\SettingsController::class, 'deleteImage'])->name('delete-image');
         });
         
         // Services Management
@@ -47,6 +57,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('blogs/{blog}/toggle-featured', [BlogController::class, 'toggleFeatured'])->name('blogs.toggle-featured');
         
         // Reviews Management
+        // Define specific routes before resource routes to avoid conflicts
+        Route::get('reviews/export', [ReviewController::class, 'export'])->name('reviews.export');
+        Route::get('reviews/import', [ReviewController::class, 'showImport'])->name('reviews.show-import');
+        Route::post('reviews/import', [ReviewController::class, 'import'])->name('reviews.import');
+        Route::get('reviews/template', [ReviewController::class, 'downloadTemplate'])->name('reviews.template');
+        Route::delete('reviews/bulk-delete', [ReviewController::class, 'bulkDelete'])->name('reviews.bulk-delete');
+        Route::patch('reviews/bulk-approve', [ReviewController::class, 'bulkApprove'])->name('reviews.bulk-approve');
+        
         Route::resource('reviews', ReviewController::class);
         Route::patch('reviews/{review}/toggle-approved', [ReviewController::class, 'toggleApproved'])->name('reviews.toggle-approved');
         Route::patch('reviews/{review}/toggle-featured', [ReviewController::class, 'toggleFeatured'])->name('reviews.toggle-featured');

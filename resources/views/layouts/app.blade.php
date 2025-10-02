@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @stack('styles')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -35,5 +36,6 @@
             </main>
         </div>
         @include('partials.footer')
+        @stack('scripts')
     </body>
 </html>

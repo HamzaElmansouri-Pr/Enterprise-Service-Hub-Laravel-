@@ -75,14 +75,14 @@
         </div>
         <div class="offcanvas__overlay"></div>
 
-        <!-- Header Section Start -->
+        {{-- <!-- Header Section Start -->
           <div class="header-top-3">
             <div class="container">
                 <p>
                     All with One CRM Platform <a href="contact.html">download app</a>
                 </p>
             </div>
-         </div>
+         </div> --}}
 
 <header id="header-sticky" class="header-3">
     <div class="container">

@@ -121,6 +121,10 @@ class WebsiteDataSeeder extends Seeder
                 'subtitle' => 'Ready to get started?',
                 'description' => 'Contact us today to learn more about how SupremeIT can help your business grow.',
                 'image' => asset('assets/img/contact/contact-bg.jpg'),
+                'contact_phone' => '+1 (555) 123-4567',
+                'contact_email' => 'info@supremeit.com',
+                'contact_address' => '123 Business Street, City, State 12345',
+                'contact_logo' => asset('assets/img/logo/black-logo-3.svg'),
                 'content' => 'Get in touch with our team to discuss your project requirements and discover how we can help your business succeed.',
                 'meta_data' => [
                     'keywords' => 'contact, get in touch, consultation, support',

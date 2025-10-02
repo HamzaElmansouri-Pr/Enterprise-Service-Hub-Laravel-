@@ -45,9 +45,14 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="hero_image" class="form-label">Hero Image URL</label>
-                            <input type="url" class="form-control" id="hero_image" name="hero_image" 
-                                   value="{{ $content['hero_image'] ?? '' }}">
+                            <label for="hero_image_file" class="form-label">Hero Image</label>
+                            <input type="file" class="form-control" id="hero_image_file" name="hero_image_file" accept="image/*">
+                            @if(!empty($content['hero_image']))
+                            <div class="mt-2">
+                                <img src="{{ $content['hero_image'] }}" alt="Hero image" style="max-height:100px;" class="img-thumbnail">
+                                <small class="text-muted d-block mt-1">Current image</small>
+                            </div>
+                            @endif
                         </div>
                         
                     @elseif($contentType === 'home-features')
@@ -122,7 +127,8 @@
                             <input type="file" class="form-control" name="about_image_file" accept="image/*">
                             @if(!empty($content['about_image']))
                             <div class="mt-2">
-                                <img src="{{ $content['about_image'] }}" alt="About image" style="max-height:100px;">
+                                <img src="{{ $content['about_image'] }}" alt="About image" style="max-height:100px;" class="img-thumbnail">
+                                <small class="text-muted d-block mt-1">Current image</small>
                             </div>
                             @endif
                         </div>
@@ -197,6 +203,17 @@
                             <textarea class="form-control" id="contact_address" name="contact_address" rows="2">{{ $content['contact_address'] ?? '123 Business Street\nCity, State 12345' }}</textarea>
                         </div>
                         
+                        <div class="mb-4">
+                            <label for="contact_logo_file" class="form-label">Contact Logo</label>
+                            <input type="file" class="form-control" id="contact_logo_file" name="contact_logo_file" accept="image/*">
+                            @if(!empty($content['contact_logo']))
+                            <div class="mt-2">
+                                <img src="{{ $content['contact_logo'] }}" alt="Contact logo" style="max-height:100px;" class="img-thumbnail">
+                                <small class="text-muted d-block mt-1">Current logo</small>
+                            </div>
+                            @endif
+                        </div>
+                        
                     @elseif($contentType === 'site-info')
                         <div class="mb-4">
                             <label for="site_name" class="form-label">Site Name</label>
@@ -218,16 +235,26 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-4">
-                                    <label for="site_logo" class="form-label">Logo URL</label>
-                                    <input type="url" class="form-control" id="site_logo" name="site_logo" 
-                                           value="{{ $content['site_logo'] ?? '' }}">
+                                    <label for="site_logo_file" class="form-label">Site Logo</label>
+                                    <input type="file" class="form-control" id="site_logo_file" name="site_logo_file" accept="image/*">
+                                    @if(!empty($content['site_logo']))
+                                    <div class="mt-2">
+                                        <img src="{{ $content['site_logo'] }}" alt="Site logo" style="max-height:100px;" class="img-thumbnail">
+                                        <small class="text-muted d-block mt-1">Current logo</small>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-4">
-                                    <label for="site_favicon" class="form-label">Favicon URL</label>
-                                    <input type="url" class="form-control" id="site_favicon" name="site_favicon" 
-                                           value="{{ $content['site_favicon'] ?? '' }}">
+                                    <label for="site_favicon_file" class="form-label">Site Favicon</label>
+                                    <input type="file" class="form-control" id="site_favicon_file" name="site_favicon_file" accept="image/*,.ico">
+                                    @if(!empty($content['site_favicon']))
+                                    <div class="mt-2">
+                                        <img src="{{ $content['site_favicon'] }}" alt="Site favicon" style="max-height:32px;" class="img-thumbnail">
+                                        <small class="text-muted d-block mt-1">Current favicon</small>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -322,39 +349,78 @@ document.addEventListener('DOMContentLoaded', function() {
     const featuresList = document.getElementById('features-list');
     let featureIndex = {{ count($content['features'] ?? []) }};
     
-    addFeatureBtn.addEventListener('click', function() {
-        const featureHtml = `
-            <div class="feature-item border p-3 mb-3 rounded">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="form-label">Feature Title</label>
-                        <input type="text" class="form-control" name="features[${featureIndex}][title]" value="">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Actions</label>
-                        <div>
-                            <button type="button" class="btn btn-sm btn-danger remove-feature">
-                                <i class="fas fa-trash"></i>
-                            </button>
+    if (addFeatureBtn && featuresList) {
+        addFeatureBtn.addEventListener('click', function() {
+            const featureHtml = `
+                <div class="feature-item border p-3 mb-3 rounded">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Feature Title</label>
+                            <input type="text" class="form-control" name="features[${featureIndex}][title]" value="">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Actions</label>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-danger remove-feature">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <label class="form-label">Feature Description</label>
+                        <textarea class="form-control" name="features[${featureIndex}][description]" rows="2"></textarea>
+                    </div>
                 </div>
-                <div class="mt-2">
-                    <label class="form-label">Feature Description</label>
-                    <textarea class="form-control" name="features[${featureIndex}][description]" rows="2"></textarea>
-                </div>
-            </div>
-        `;
+            `;
+            
+            featuresList.insertAdjacentHTML('beforeend', featureHtml);
+            featureIndex++;
+        });
         
-        featuresList.insertAdjacentHTML('beforeend', featureHtml);
-        featureIndex++;
-    });
+        // Remove feature functionality
+        featuresList.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-feature')) {
+                e.target.closest('.feature-item').remove();
+            }
+        });
+    }
     
-    // Remove feature functionality
-    featuresList.addEventListener('click', function(e) {
-        if (e.target.closest('.remove-feature')) {
-            e.target.closest('.feature-item').remove();
-        }
+    // Image preview functionality
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Find or create preview container
+                    let previewContainer = input.parentNode.querySelector('.image-preview');
+                    if (!previewContainer) {
+                        previewContainer = document.createElement('div');
+                        previewContainer.className = 'image-preview mt-2';
+                        input.parentNode.appendChild(previewContainer);
+                    }
+                    
+                    // Clear existing preview
+                    previewContainer.innerHTML = '';
+                    
+                    // Create new preview
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxHeight = '100px';
+                    img.className = 'img-thumbnail';
+                    
+                    const label = document.createElement('small');
+                    label.className = 'text-muted d-block mt-1';
+                    label.textContent = 'New image preview';
+                    
+                    previewContainer.appendChild(img);
+                    previewContainer.appendChild(label);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     });
     
     // Live preview updates
