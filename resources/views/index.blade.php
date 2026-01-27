@@ -1,7 +1,7 @@
 @extends('layouts.frontend')
 
-@section('title', 'SupremeIT - Innovative IT Solutions')
-@section('meta_description', 'SupremeIT provides cutting-edge IT services including cloud solutions, web development, and cybersecurity.')
+@section('title', 'Nova Agency - Innovative IT Solutions')
+@section('meta_description', 'Nova Agency provides cutting-edge IT services including cloud solutions, web development, and cybersecurity.')
 
 @section('content')
 
@@ -34,7 +34,7 @@
                          x-transition:enter-start="opacity-0 translate-y-4"
                          x-transition:enter-end="opacity-100 translate-y-0">
                         <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
-                        <span class="text-brand-300 text-sm font-medium tracking-wide">SupremeIT Solutions</span>
+                        <span class="text-brand-300 text-sm font-medium tracking-wide">Nova Agency Solutions</span>
                     </div>
 
                     <!-- Title -->
@@ -109,7 +109,7 @@
         <!-- Fallback static content -->
         <div class="absolute inset-0 bg-dark-900">
             <div class="container mx-auto px-4 h-full flex items-center justify-center">
-                <h1 class="text-white text-4xl">Welcome to SupremeIT</h1>
+                <h1 class="text-white text-4xl">Welcome to Nova Agency</h1>
             </div>
         </div>
     @endif
@@ -148,7 +148,7 @@
 
             <!-- Content Side -->
             <div class="order-1 lg:order-2">
-                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">About SupremeIT</span>
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">About Nova Agency</span>
                 <h2 class="text-3xl md:text-5xl font-bold font-heading text-slate-900 mb-6 leading-tight">
                     {{ optional($about)->title ?? 'Deliver unforgettable customer experiences' }}
                 </h2>
@@ -260,7 +260,7 @@
     <div class="container mx-auto px-4 md:px-6 relative z-10 text-center">
         <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Ready to Transform Your Business?</h2>
         <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-            Let's discuss how SupremeIT can help you achieve your technology goals with our expert solutions.
+            Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions.
         </p>
         <div class="flex flex-col md:flex-row gap-4 justify-center">
             <a href="{{ route('contact') }}" class="bg-white text-brand-600 px-8 py-4 rounded-lg font-bold hover:bg-brand-50 transition-colors shadow-lg">

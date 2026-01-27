@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $blog->title . ' - SupremeIT Blog')
+@section('title', $blog->title . ' - Nova Agency Blog')
 @section('page-title', 'Blog Details')
 
 @section('content')

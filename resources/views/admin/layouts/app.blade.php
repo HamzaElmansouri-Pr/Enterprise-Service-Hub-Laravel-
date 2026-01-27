@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', 'Admin Dashboard') - SupremeIT</title>
+    <title>@yield('title', 'Admin Dashboard') - Nova Agency</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -167,7 +167,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <h4>SupremeIT Admin</h4>
+            <h4>Nova Agency Admin</h4>
         </div>
         
         <nav class="nav flex-column">

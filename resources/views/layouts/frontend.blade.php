@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="@yield('meta_description', 'SupremeIT - Professional IT Solutions & Consulting')">
+    <meta name="description" content="@yield('meta_description', 'Nova Agency - Professional IT Solutions & Consulting')">
 
-    <title>@yield('title', 'SupremeIT') | IT Solutions</title>
+    <title>@yield('title', 'Nova Agency') | IT Solutions</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,11 +38,11 @@
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                     <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-brand-500 transition-colors">
-                        S
+                        N
                     </div>
                     <span class="text-2xl font-heading font-bold" 
                           :class="scanned ? 'text-slate-900' : 'text-white'">
-                        Supreme<span class="text-brand-500">IT</span>
+                        Nova<span class="text-brand-500">Agency</span>
                     </span>
                 </a>
 
@@ -116,8 +116,8 @@
                 <!-- Brand -->
                 <div>
                     <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-brand-500 rounded flex items-center justify-center text-white font-bold">S</div>
-                        <span class="text-xl font-heading font-bold">SupremeIT</span>
+                        <div class="w-8 h-8 bg-brand-500 rounded flex items-center justify-center text-white font-bold">N</div>
+                        <span class="text-xl font-heading font-bold">Nova Agency</span>
                     </div>
                     <p class="text-slate-400 mb-6 leading-relaxed">
                         Transforming businesses through innovative technology solutions. We build the future of digital infrastructure.
@@ -165,7 +165,7 @@
             </div>
 
             <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-slate-500 text-sm">© {{ date('Y') }} SupremeIT. All rights reserved.</p>
+                <p class="text-slate-500 text-sm">© {{ date('Y') }} Nova Agency. All rights reserved.</p>
                 <div class="flex space-x-6 text-sm text-slate-500">
                     <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
                     <a href="#" class="hover:text-white transition-colors">Terms of Service</a>

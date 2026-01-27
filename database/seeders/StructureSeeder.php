@@ -16,7 +16,7 @@ class StructureSeeder extends Seeder
             ['slug' => 'home'],
             [
                 'title' => 'Home',
-                'meta_description' => 'SupremeIT - Complete CRM Solution',
+                'meta_description' => 'Nova Agency - Complete CRM Solution',
                 'is_active' => true,
                 'is_home' => true
             ]
@@ -44,11 +44,11 @@ class StructureSeeder extends Seeder
                 'order_index' => 2,
                 'content' => [
                     'title' => 'Deliver unforgettable customer experiences',
-                    'subtitle' => 'Why SupremeIT crm',
+                    'subtitle' => 'Why Nova Agency crm',
                     'description' => 'There are many variations of passages of Lorem Ipsum available...',
                     'features' => json_encode([
                         ['title' => 'All-in-One CRM', 'description' => 'Automate your sales...'],
-                        ['title' => 'Affordable', 'description' => 'Make the most of SupremeIT...'],
+                        ['title' => 'Affordable', 'description' => 'Make the most of Nova Agency...'],
                         ['title' => 'Next-Generation', 'description' => 'Automate your sales...']
                     ])
                 ]

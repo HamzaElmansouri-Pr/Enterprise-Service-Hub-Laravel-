@@ -47,7 +47,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <h6>Author:</h6>
-                                    <span class="text-muted">{{ $blog->author ?? 'SupremeIT Team' }}</span>
+                                    <span class="text-muted">{{ $blog->author ?? 'Nova Agency Team' }}</span>
                                 </div>
                                 
                                 @if($blog->category)

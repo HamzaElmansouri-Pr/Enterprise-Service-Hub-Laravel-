@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'SupremeIT') }} - Login</title>
+        <title>{{ config('app.name', 'Nova Agency') }} - Login</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -182,7 +182,7 @@
             <div class="login-visual">
                 <div class="brand">
                     <div class="brand-logo">
-                        <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="SupremeIT" style="max-width:90px; height:auto;">
+                        <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="Nova Agency" style="max-width:90px; height:auto;">
                     </div>
                     <div class="brand-title">Welcome Back</div>
                     <div class="brand-sub">Sign in to your account to access your dashboard and manage your profile.</div>

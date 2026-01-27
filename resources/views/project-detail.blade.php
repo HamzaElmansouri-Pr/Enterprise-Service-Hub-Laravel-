@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $project->title . ' - SupremeIT Projects')
+@section('title', $project->title . ' - Nova Agency Projects')
 @section('page-title', 'Project Details')
 
 @section('content')

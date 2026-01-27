@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $page->title . ' - SupremeIT')
+@section('title', $page->title . ' - Nova Agency')
 @section('page-title', $page->title)
 
 @push('styles')

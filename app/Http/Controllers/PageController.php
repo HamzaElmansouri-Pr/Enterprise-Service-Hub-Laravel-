@@ -38,7 +38,7 @@ class PageController extends Controller
             'blog_title' => 'Direct from the Blog',
             'blog_subtitle' => 'Latest News',
             'cta' => [
-                'title' => 'Stay Connected With SupremeIT',
+                'title' => 'Stay Connected With Nova Agency',
                 'subtitle' => 'Contact Us',
                 'description' => 'Get in touch for professional IT solutions.',
                 'button_text' => 'Contact Us Now'
@@ -47,7 +47,7 @@ class PageController extends Controller
         
         $about = new \stdClass();
         $about->title = 'We Deal With The Aspects Of Professional IT Services';
-        $about->subtitle = 'About SupremeIT';
+        $about->subtitle = 'About Nova Agency';
         $about->description = 'We provide best IT solutions for your business.';
         $about->image = 'assets/img/about/about-5.png';
         $about->meta_data = ['features' => []];
@@ -140,7 +140,7 @@ class PageController extends Controller
         // Default structure if DB is empty
         $page = new \stdClass();
         $page->title = 'Deliver unforgettable customer experiences'; 
-        $page->subtitle = 'Why SupremeIT';
+        $page->subtitle = 'Why Nova Agency';
         $page->description = '';
         $page->content = '';
         $page->image = '';
@@ -276,7 +276,7 @@ class PageController extends Controller
         
         $page = new \stdClass();
         $page->contact_address = '123 Business Street, City, State 12345';
-        $page->contact_email = 'info@supremeit.com';
+        $page->contact_email = 'test@gmail.com';
         $page->contact_phone = '+1 (555) 123-4567';
         
         if ($pageModel) {

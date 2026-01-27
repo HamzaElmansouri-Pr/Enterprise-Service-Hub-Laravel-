@@ -54,7 +54,7 @@
                         <div class="mb-4">
                             <label for="features_title" class="form-label">Features Section Title</label>
                             <input type="text" class="form-control" id="features_title" name="features_title" 
-                                   value="{{ $content['features_title'] ?? 'SupremeIT key benefits' }}">
+                                   value="{{ $content['features_title'] ?? 'Nova Agency key benefits' }}">
                         </div>
                         
                         <div class="mb-4">
@@ -67,7 +67,7 @@
                             <div id="features-list">
                                 @foreach($content['features'] ?? [
                                     ['title' => 'All-in-One CRM', 'description' => 'Automate your sales, marketing, and service in one platform.'],
-                                    ['title' => 'Affordable', 'description' => 'Make the most of SupremeIT\'s modern features & integrations.'],
+                                    ['title' => 'Affordable', 'description' => 'Make the most of Nova Agency\'s modern features & integrations.'],
                                     ['title' => 'Next-Generation', 'description' => 'Automate your sales, marketing, and service in one platform.']
                                 ] as $index => $feature)
                                 <div class="feature-item border p-3 mb-3 rounded">
@@ -109,7 +109,7 @@
                         <div class="mb-4">
                             <label for="about_subtitle" class="form-label">About Subtitle</label>
                             <input type="text" class="form-control" id="about_subtitle" name="about_subtitle" 
-                                   value="{{ $content['about_subtitle'] ?? 'Why SupremeIT crm' }}">
+                                   value="{{ $content['about_subtitle'] ?? 'Why Nova Agency crm' }}">
                         </div>
                         
                         <div class="mb-4">
@@ -132,7 +132,7 @@
                         
                         <div class="mb-4">
                             <label for="contact_description" class="form-label">Contact Description</label>
-                            <textarea class="form-control" id="contact_description" name="contact_description" rows="3">{{ $content['contact_description'] ?? 'Contact us today to learn more about how SupremeIT can help your business grow.' }}</textarea>
+                            <textarea class="form-control" id="contact_description" name="contact_description" rows="3">{{ $content['contact_description'] ?? 'Contact us today to learn more about how Nova Agency can help your business grow.' }}</textarea>
                         </div>
                         
                         <div class="row">
@@ -147,7 +147,7 @@
                                 <div class="mb-4">
                                     <label for="contact_email" class="form-label">Email Address</label>
                                     <input type="email" class="form-control" id="contact_email" name="contact_email" 
-                                           value="{{ $content['contact_email'] ?? 'info@supremeit.com' }}">
+                                           value="{{ $content['contact_email'] ?? 'test@gmail.com' }}">
                                 </div>
                             </div>
                         </div>
@@ -161,12 +161,12 @@
                         <div class="mb-4">
                             <label for="site_name" class="form-label">Site Name</label>
                             <input type="text" class="form-control" id="site_name" name="site_name" 
-                                   value="{{ $content['site_name'] ?? 'SupremeIT' }}">
+                                   value="{{ $content['site_name'] ?? 'Nova Agency' }}">
                         </div>
                         
                         <div class="mb-4">
                             <label for="site_description" class="form-label">Site Description</label>
-                            <textarea class="form-control" id="site_description" name="site_description" rows="3">{{ $content['site_description'] ?? 'SupremeIT provides cutting-edge technology solutions to help businesses grow and succeed in the digital world.' }}</textarea>
+                            <textarea class="form-control" id="site_description" name="site_description" rows="3">{{ $content['site_description'] ?? 'Nova Agency provides cutting-edge technology solutions to help businesses grow and succeed in the digital world.' }}</textarea>
                         </div>
                         
                         <div class="mb-4">
@@ -220,7 +220,7 @@
                         <p class="text-muted">{{ $content['hero_subtitle'] ?? 'All your customer data, tools, and insights in one unified platform.' }}</p>
                         <button class="btn btn-primary">{{ $content['hero_button_text'] ?? 'try for free' }}</button>
                     @elseif($contentType === 'home-features')
-                        <h5>{{ $content['features_title'] ?? 'SupremeIT key benefits' }}</h5>
+                        <h5>{{ $content['features_title'] ?? 'Nova Agency key benefits' }}</h5>
                         <p class="text-muted">{{ $content['features_subtitle'] ?? 'Flexible experiences that scale with your growth' }}</p>
                     @elseif($contentType === 'about-main')
                         <h5>{{ $content['about_title'] ?? 'Deliver unforgettable customer experiences' }}</h5>
@@ -229,7 +229,7 @@
                         <h5>{{ $content['contact_title'] ?? 'Ready to get started?' }}</h5>
                         <p class="text-muted">{{ $content['contact_description'] ?? 'Contact description...' }}</p>
                         <p><strong>Phone:</strong> {{ $content['contact_phone'] ?? '+1 (555) 123-4567' }}</p>
-                        <p><strong>Email:</strong> {{ $content['contact_email'] ?? 'info@supremeit.com' }}</p>
+                        <p><strong>Email:</strong> {{ $content['contact_email'] ?? 'test@gmail.com' }}</p>
                     @endif
                 </div>
             </div>

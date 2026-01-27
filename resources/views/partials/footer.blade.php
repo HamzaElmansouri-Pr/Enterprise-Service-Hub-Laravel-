@@ -36,7 +36,7 @@
                         <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-8 col-sm-12 wow fadeInUp" data-wow-delay=".2s">
                             <div class="gt-footer-widget-items">
                                 <div class="gt-widget-head">
-                                    <h3>about SupremeIT</h3>
+                                    <h3>about Nova Agency</h3>
                                 </div>
                                 <div class="gt-footer-content">
                                     <p>
@@ -105,7 +105,7 @@
                                     </li>
                                     <li>
                                         <a href="{{ route('about') }}">
-                                           Why SupremeIT
+                                           Why Nova Agency
                                         </a>
                                     </li>
                                     <li>
@@ -161,7 +161,7 @@
                     <a href="{{ route('home') }}" class="footer-logo">
                         <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="img">
                     </a>
-                    <p>&copy; {{ date('Y') }} SupremeIT. All Rights Reserved.</p>
+                    <p>&copy; {{ date('Y') }} Nova Agency. All Rights Reserved.</p>
                     <div class="gt-social-icon d-flex align-items-center style-home-3">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>

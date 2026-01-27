@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us - SupremeIT')
+@section('title', 'Contact Us - Nova Agency')
 
 @section('content')
 <!-- Gt Breadcrumb Section Start -->
@@ -49,7 +49,7 @@
 					</div>
 					<div class="content">
 						<h3>
-							<a href="mailto:{{ optional($page)->contact_email ?? 'info@supremeit.com' }}">{{ optional($page)->contact_email ?? 'info@supremeit.com' }}</a>
+							<a href="mailto:{{ optional($page)->contact_email ?? 'test@gmail.com' }}">{{ optional($page)->contact_email ?? 'test@gmail.com' }}</a>
 						</h3>
 						<p>Email us anytime for any kind of query.</p>
 					</div>
@@ -79,7 +79,7 @@
                 Ready to get started?
             </h2>
             <p class="mt-3 wow fadeInUp" data-wow-delay=".3s">
-                Contact us today to learn more about how SupremeIT can help your business grow.
+                Contact us today to learn more about how Nova Agency can help your business grow.
             </p>
         </div>
         

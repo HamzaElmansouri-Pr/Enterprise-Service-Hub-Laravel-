@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'About Us - SupremeIT')
+@section('title', 'About Us - Nova Agency')
 @section('cta-class', 'before-white')
 
 @section('content')
@@ -41,7 +41,7 @@
                 <div class="col-xl-6">
                     <div class="gt-about-content">
                         <div class="gt-section-title style-3 mb-0">
-                            <h6 class="tt-capitalize wow fadeInUp">{{ optional($page)->subtitle ?? 'Why SupremeIT crm' }}</h6>
+                            <h6 class="tt-capitalize wow fadeInUp">{{ optional($page)->subtitle ?? 'Why Nova Agency crm' }}</h6>
                             <h2 class="char-animation">
                                 {{ optional($page)->title ?? 'Deliver unforgettable customer experiences' }}
                             </h2>
