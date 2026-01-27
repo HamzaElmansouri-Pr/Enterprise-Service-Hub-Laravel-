@@ -13,31 +13,15 @@ class Slider extends Model
         'title',
         'subtitle',
         'description',
-        'image',
         'button_text',
         'button_url',
-        'button_color',
+        'image',
         'is_active',
         'sort_order',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'sort_order' => 'integer',
     ];
-
-    /**
-     * Scope for active sliders
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    /**
-     * Scope for ordered sliders
-     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order')->orderBy('created_at', 'asc');
-    }
 }

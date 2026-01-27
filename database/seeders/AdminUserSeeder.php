@@ -19,6 +19,8 @@ class AdminUserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@supremeit.com',
             'password' => Hash::make('password123'),
+            'role' => 'admin',
+            'is_active' => true,
             'email_verified_at' => now(),
         ]);
         
@@ -27,6 +29,8 @@ class AdminUserSeeder extends Seeder
             'name' => 'Content Manager',
             'email' => 'content@supremeit.com',
             'password' => Hash::make('password123'),
+            'role' => 'editor',
+            'is_active' => true,
             'email_verified_at' => now(),
         ]);
         

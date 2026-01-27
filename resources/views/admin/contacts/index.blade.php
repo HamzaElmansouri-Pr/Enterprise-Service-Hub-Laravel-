@@ -110,7 +110,7 @@
                         </table>
                     </div>
 
-                    @if($contacts->count() > 0)
+                    {{-- @if($contacts->count() > 0)
                     <div class="mt-3">
                         <form action="{{ route('admin.contacts.bulk-delete') }}" method="POST" id="bulkDeleteForm">
                             @csrf
@@ -121,7 +121,7 @@
                             </button>
                         </form>
                     </div>
-                    @endif
+                    @endif --}}
 
                     @if($contacts->hasPages())
                     <div class="d-flex justify-content-center mt-4">

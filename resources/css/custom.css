@@ -1,0 +1,243 @@
+/* Professional UI Enhancements for SupremeIT */
+
+:root {
+    --primary-color: #3B82F6; /* Modern Blue */
+    --secondary-color: #10B981; /* Modern Green */
+    --accent-color: #6366f1;
+    --dark-bg: #111827;
+    --card-bg: #ffffff;
+    --body-bg: #f8fafc;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+}
+
+/* Global Typography & Reset Tweaks */
+body {
+    background-color: var(--body-bg);
+    color: var(--text-main);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #111827;
+    font-weight: 700;
+    letter-spacing: -0.025em; /* Tighter, modern heading spacing */
+}
+
+/* Modern Card System */
+.service-single-card,
+.case-studies-card-items,
+.blog-card-items,
+.gt-feature-box,
+.review-card {
+    background: var(--card-bg) !important;
+    border: 1px solid rgba(0,0,0,0.04) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden;
+}
+
+.service-single-card:hover,
+.case-studies-card-items:hover,
+.blog-card-items:hover,
+.gt-feature-box:hover,
+.review-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important; /* Subtle blue glow */
+}
+
+/* Card Images */
+.thumb img, 
+.icon img, 
+.service-single-card .icon img {
+    border-radius: 20px 20px 0 0 !important;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-single-card:hover .icon img,
+.case-studies-card-items:hover .thumb img,
+.blog-card-items:hover .thumb img {
+    transform: scale(1.08);
+}
+
+/* Modern Buttons (Gradient & Glow) */
+.gt-theme-btn {
+    border-radius: 50px !important;
+    padding: 14px 32px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 14px !important;
+    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4) !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.gt-theme-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.gt-theme-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5) !important;
+}
+
+.gt-theme-btn:hover::before {
+    opacity: 1;
+}
+
+/* Section Titles */
+.gt-section-title h6 {
+    color: var(--primary-color) !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    margin-bottom: 15px;
+    display: inline-block;
+    position: relative;
+}
+
+.gt-section-title h2 {
+    font-size: 3rem !important; /* Larger Titles */
+    background: -webkit-linear-gradient(45deg, #111827, #4b5563);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #c7c7c7;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Service Icons Placeholder */
+.service-placeholder, .project-placeholder, .blog-placeholder {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%) !important;
+    color: #4f46e5 !important;
+}
+
+/* Input Fields (Contact Form etc) */
+input, textarea, select {
+    border-radius: 12px !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 15px 20px !important;
+    background-color: #f9fafb !important;
+    transition: all 0.3s ease !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #6366f1 !important;
+    background-color: #fff !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+    outline: none;
+}
+
+/* Swiper Pagination Customization */
+.gt-hero-3 .swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.5) !important;
+    opacity: 1;
+    width: 10px;
+    height: 10px;
+    margin: 0 6px !important;
+    transition: all 0.3s ease;
+}
+
+.gt-hero-3 .swiper-pagination-bullet-active {
+    background: #fff !important;
+    width: 25px;
+    border-radius: 5px;
+}
+
+/* Fix Hero Section Height and Background */
+.gt-hero-3 {
+    height: auto !important;
+    padding-top: 160px !important;
+    padding-bottom: 140px !important;
+    min-height: 850px;
+    display: flex !important; /* Switch back to flex to force container expansion around content */
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    /* Apply background directly to the container */
+    background: linear-gradient(101deg, #124AFF 0%, #05111A 100%) !important;
+    border-radius: 20px;
+    overflow: visible !important; /* Allow content to dictate shape, don't clip */
+}
+
+/* Grand Display / Large Screen Optimization */
+@media (min-width: 1600px) {
+    .gt-hero-3 {
+        min-height: 1000px; /* Even taller for grand displays to avoid cramped look */
+        padding-top: 220px !important;
+        padding-bottom: 200px !important;
+    }
+    
+    .gt-hero-3 .gt-hero-content h1 {
+        font-size: 90px !important; /* Impactful font size */
+        line-height: 1.1;
+        margin-bottom: 30px;
+    }
+}
+
+/* Remove the pseudo-element background since it's now on the parent */
+.gt-hero-3::before {
+    display: none !important;
+}
+
+.gt-hero-slider {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    /* Flex grow ensures it fills the container */
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* Slide Content */
+.swiper-slide {
+    height: auto !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.swiper-slide .container {
+    height: auto; /* Let the container size based on content height */
+    min-height: 100%;
+}
+.swiper-slide .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.swiper-slide .row {
+    width: 100%;
+}

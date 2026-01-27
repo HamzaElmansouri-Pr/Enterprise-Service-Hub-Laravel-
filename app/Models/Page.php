@@ -2,46 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Page extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'name',
         'title',
-        'subtitle',
-        'description',
-        'image',
-        'contact_phone',
-        'contact_email',
-        'contact_address',
-        'contact_logo',
-        'content',
-        'meta_data',
+        'slug',
+        'meta_title',
+        'meta_description',
         'is_active',
+        'is_home'
     ];
 
     protected $casts = [
-        'meta_data' => 'array',
         'is_active' => 'boolean',
+        'is_home' => 'boolean',
     ];
 
-    /**
-     * Get the page by name
-     */
-    public static function getByName($name)
+    public function sections(): HasMany
     {
-        return static::where('name', $name)->where('is_active', true)->first();
-    }
-
-    /**
-     * Scope for active pages
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
+        return $this->hasMany(Section::class)->orderBy('order_index');
     }
 }

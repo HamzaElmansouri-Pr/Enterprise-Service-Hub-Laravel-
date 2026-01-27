@@ -344,7 +344,7 @@
                             <p class="text-muted mb-2">Main landing page content</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge bg-success">Published</span>
-                                <a href="{{ route('admin.content.edit', 'home') }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{{ route('admin.content.edit', 'home-hero') }}" class="btn btn-sm btn-outline-primary">Edit</a>
                             </div>
                         </div>
                     </div>
@@ -357,7 +357,7 @@
                             <p class="text-muted mb-2">Company information and team</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge bg-success">Published</span>
-                                <a href="{{ route('admin.content.edit', 'about') }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{{ route('admin.content.edit', 'about-main') }}" class="btn btn-sm btn-outline-primary">Edit</a>
                             </div>
                         </div>
                     </div>
@@ -370,7 +370,7 @@
                             <p class="text-muted mb-2">Contact information and form</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge bg-success">Published</span>
-                                <a href="{{ route('admin.content.edit', 'contact') }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{{ route('admin.content.edit', 'contact-info') }}" class="btn btn-sm btn-outline-primary">Edit</a>
                             </div>
                         </div>
                     </div>

@@ -42,7 +42,7 @@
                                     <td>{{ $slider->id }}</td>
                                     <td>
                                         @if($slider->image)
-                                        <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" 
+                                        <img src="{{ Storage::url($slider->image) }}" alt="{{ $slider->title }}" 
                                              class="img-thumbnail" width="80" height="50" style="object-fit: cover;">
                                         @else
                                         <div class="bg-secondary d-flex align-items-center justify-content-center" 

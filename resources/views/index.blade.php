@@ -1,415 +1,276 @@
-@extends('layouts.app')
+@extends('layouts.frontend')
 
-@section('title', 'SupremeIT - Complete CRM Solution')
-@section('body-class', 'body-bg-2')
-@section('back-to-top-class', 'color-3')
-@section('cursor-class', 'color-3')
+@section('title', 'SupremeIT - Innovative IT Solutions')
+@section('meta_description', 'SupremeIT provides cutting-edge IT services including cloud solutions, web development, and cybersecurity.')
 
 @section('content')
-<!-- Gt Hero Section Start -->
-<section class="gt-hero-section gt-hero-3">
-    <div class="hero-circle-shape">
-        <img src="{{ asset('assets/img/home-3/hero-circle.png') }}" alt="img">
-    </div>
-    <div class="container">
-        <div class="gt-hero-content">
-            <h1 class="char-animation">
-            @if($data['heroTitle'])
-                {{ $data['heroTitle'] }}
-            @else
-                The complete CRM solution
-                built for your success
-            @endif
-              
-            </h1>
-            <p class="wow fadeInUp" data-wow-delay=".3s">
-            @if($data['heroSubtitle'])
-                {{ $data['heroSubtitle'] }}
-            @else
-                {{-- All your customer data, tools, and insights in one unified platform. --}}
-            @endif
-            </p>
-            <form action="#" class="wow fadeInUp" data-wow-delay=".5s">
-                <input type="text"  placeholder="Enter Email">
-                <button class="gt-theme-btn">
-                    try for free
-                </button>
-            </form>
-            <ul class="wow fadeInUp" data-wow-delay=".7s">
-                <li>
-                    <i class="fa-regular fa-circle-check"></i>
-                    14-day free trial
-                </li>
-                <li>
-                    <i class="fa-regular fa-circle-check"></i>
-                    No credit card required
-                </li>
-                <li>
-                    <i class="fa-regular fa-circle-check"></i>
-                   Free support and migration
-                </li>
-            </ul>
-        </div>
-        {{-- <div class="gt-hero-image">
-            <img src="{{ asset('assets/img/home-3/hero/hero-image.png') }}" alt="img">
-            <div class="gt-hero-left">
-                <img src="{{ asset('assets/img/home-3/hero/hero-left.png') }}" alt="img">
-            </div>
-            <div class="gt-hero-right">
-                <img src="{{ asset('assets/img/home-3/hero/hero-right.png') }}" alt="img">
-            </div>
-        </div> --}}
-        <style>
-            /* Style for the main slider container */
-            .slider-container {
-                position: relative;
-                width: 100%;
-                height: 591px;
-                overflow: hidden; /* This hides images that are outside the view */
-            }
 
-            /* Style for each individual slider item */
-            .slider-item {
-                display: none; /* Hide all slides by default */
-                width: 100%;
-                height:100%
-                /* Add a transition for a smooth fade effect */
-                transition: opacity 0.5s ease-in-out;
-            }
+<!-- HERO SECTION (Slider) -->
+<section class="relative h-screen min-h-[600px] flex items-center overflow-hidden bg-dark-900" 
+         x-data="{ activeSlide: 0, totalSlides: {{ $sliders->count() }}, slideInterval: null }" 
+         x-init="if(totalSlides > 1) slideInterval = setInterval(() => { activeSlide = activeSlide === totalSlides - 1 ? 0 : activeSlide + 1 }, 6000)">
+    
+    @if($sliders->count() > 0)
+        @foreach($sliders as $index => $slider)
+        <div class="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
+             x-show="activeSlide === {{ $index }}"
+             x-transition:enter="transition ease-out duration-1000"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-1000"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             style="background-image: url('{{ Storage::url($slider->image) }}'); background-size: cover; background-position: center;">
+            
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-r from-dark-900/90 via-dark-900/40 to-transparent"></div>
 
-            /* Show only the active slide */
-            .slider-item.active {
-                display: block;
-            }
-
-            /* Basic button styling */
-            .prev-btn, .next-btn {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                cursor: pointer;
-                background-color: rgba(0, 0, 0, 0.5);
-                color: white;
-                border: none;
-                padding: 10px 15px;
-                font-size: 18px;
-            }
-
-            .prev-btn {
-                left: 10px;
-            }
-
-            .next-btn {
-                right: 10px;
-            }
-        </style>
-        <div class="gt-hero-image">
-    <div class="slider-container">
-        @foreach($sliders as $slider)
-            <div class="slider-item active">
-                <img  src="{{ asset($slider['image']) }}" alt="img">
-            </div>
-        @endforeach
-        {{-- <div class="slider-item active">
-            <img  src="{{ asset('assets/img/home-3/hero/hero-image.png') }}" alt="img">
-        </div>
-        <div class="slider-item">
-            <img  src="{{ asset('assets/img/home-3/hero/hero-left.png') }}" alt="img">
-        </div>
-        <div class="slider-item">
-            <img  src="{{ asset('assets/img/home-3/hero/hero-right.png') }}" alt="img">
-        </div> --}}
-    </div>
-
-    <button class="prev-btn" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
-    <button class="next-btn" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
-</div>
-    </div>
-</section>
-
-<!-- sider js -->
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    const sliderItems = document.querySelectorAll('.slider-item');
-    let currentIndex = 0;
-
-    // Function to show a specific slide
-    function showSlide(index) {
-        // Hide all slides
-        sliderItems.forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        // Show the slide at the specified index
-        sliderItems[index].classList.add('active');
-    }
-
-    // Event listener for the "Next" button
-    nextBtn.addEventListener('click', () => {
-        currentIndex++;
-        if (currentIndex >= sliderItems.length) {
-            currentIndex = 0; // Loop back to the first slide
-        }
-        showSlide(currentIndex);
-    });
-
-    // Event listener for the "Previous" button
-    prevBtn.addEventListener('click', () => {
-        currentIndex--;
-        if (currentIndex < 0) {
-            currentIndex = sliderItems.length - 1; // Loop to the last slide
-        }
-        showSlide(currentIndex);
-    });
-
-    // Initial call to show the first slide
-    showSlide(currentIndex);
-});
-</script>
-
-<!-- Home Content Sections (About, Services, Projects, Reviews, TC, Contact) -->
-<section class="gt-about-section fix section-padding pt-0">
-    <div class="container">
-        <div class="gt-about-wrapper-3 section-padding pb-0">
-            <div class="row g-4 align-items-center">
-                <div class="col-xl-6 order-xl-1 order-1">
-                    <div class="gt-about-content">
-                        <div class="gt-section-title style-3 mb-0">
-                            <h6 class="tt-capitalize wow fadeInUp">{{ optional($about)->subtitle ?? 'Why SupremeIT crm' }}</h6>
-                            <h2 class="char-animation">{{ optional($about)->title ?? 'Deliver unforgettable customer experiences' }}</h2>
-                        </div>
-                        <p class="gt-text wow fadeInUp" data-wow-delay=".3s">{{ optional($about)->description ?? "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage" }}</p>
-                        @php($homeFeatures = optional($about)->meta_data['features'] ?? [])
-                        @if(!empty($homeFeatures))
-                        <ul class="gt-list-items wow fadeInUp" data-wow-delay=".5s">
-                            @foreach($homeFeatures as $feat)
-                            <li>
-                                <span class="gt-circle-box"></span>
-                                <div class="gt-content">
-                                    <h4>{{ $feat['title'] ?? '' }}</h4>
-                                    <span>{{ $feat['description'] ?? '' }}</span>
-                                </div>
-                            </li>
-                            @endforeach
-                        </ul>
-                        @else
-                        <ul class="gt-list-items wow fadeInUp" data-wow-delay=".5s">
-                            <li>
-                                <span class="gt-circle-box"></span>
-                                <div class="gt-content">
-                                    <h4>All-in-One CRM</h4>
-                                    <span>Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.</span>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="gt-circle-box"></span>
-                                <div class="gt-content">
-                                    <h4>Affordable</h4>
-                                    <span>Make the most of SupremeIT's modern features & integrations, easy implementation and great support at an affordable price.</span>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="gt-circle-box"></span>
-                                <div class="gt-content">
-                                    <h4>Next-Generation</h4>
-                                    <span>Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.</span>
-                                </div>
-                            </li>
-                        </ul>
-                        @endif
+            <div class="container mx-auto px-4 md:px-6 h-full relative z-10 flex items-center">
+                <div class="max-w-3xl pt-20">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center space-x-2 bg-brand-500/10 border border-brand-500/20 rounded-full px-3 py-1 mb-6 backdrop-blur-sm"
+                         x-show="activeSlide === {{ $index }}"
+                         x-transition:enter="transition ease-out duration-700 delay-300"
+                         x-transition:enter-start="opacity-0 translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        <span class="text-brand-300 text-sm font-medium tracking-wide">SupremeIT Solutions</span>
                     </div>
-                </div>
-                <div class="col-xl-6 order-xl-0 order-0">
-                    <div class="gt-about-image agn-choose-5-img home-about-circle-wrapper d-flex align-items-center justify-content-center">
-                        <style>
-                            .agn-choose-5-img { position: relative; }
-                            .home-about-circle { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; }
-                            .home-about-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
-                        </style>
-                        <div class="crm-imagewow wow fadeInRight" data-wow-delay=".3s">
-                            <div class="home-about-circle">
-                                @if(optional($about)->image)
-                                    <img src="{{ asset($about->image) }}" alt="About image">
-                                @else
-                                    <img src="{{ asset('assets/img/new-add/crm-img.png') }}" alt="About image">
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
 
-<!-- Our Services Section Start -->
-<section class="gt-services-section fix section-padding pt-0">
-    <div class="container">
-        <div class="gt-section-title style-3 text-center">
-            <h6 class="wow fadeInUp tt-capitalize">our services</h6>
-            <h2 class="char-animation">What We Offer</h2>
-        </div>
-        <div class="row g-4">
-            @forelse($services as $service)
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <div class="service-single-card h-100 d-flex flex-column">
-                    <div class="icon">
-                        @if($service->image)
-                        <img src="{{ asset($service->image) }}" alt="{{ $service->title }}">
-                        @else
-                        <div class="service-placeholder d-flex align-items-center justify-content-center">
-                            <i class="{{ $service->icon ?? 'fas fa-cog' }} fa-3x"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="content">
-                        <h3><a href="{{ route('service.detail', $service) }}">{{ $service->title }}</a></h3>
-                        @if($service->subtitle)
-                        <p class="text-muted">{{ $service->subtitle }}</p>
-                        @endif
-                        <p>{{ Str::limit($service->description, 110) }}</p>
-                        <a href="{{ route('service.detail', $service) }}" class="arrow-btn"><i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            @empty
-            <div class="col-12">
-                <div class="text-center py-5">
-                    <h4>No services available at the moment.</h4>
-                </div>
-            </div>
-            @endforelse
-        </div>
-        <div class="text-center mt-5">
-            <a href="{{ route('services') }}" class="gt-theme-btn">view all services</a>
-        </div>
-    </div>
-</section>
+                    <!-- Title -->
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-heading"
+                        x-show="activeSlide === {{ $index }}"
+                        x-transition:enter="transition ease-out duration-700 delay-500"
+                        x-transition:enter-start="opacity-0 translate-y-8"
+                        x-transition:enter-end="opacity-100 translate-y-0">
+                        {{ $slider->title }}
+                    </h1>
 
-<!-- Our Projects Section Start -->
-<section class="case-studies-section-4 fix section-padding pt-0">
-    <div class="container">
-        <div class="gt-section-title style-3 text-center">
-            <h6 class="wow fadeInUp tt-capitalize">our projects</h6>
-            <h2 class="char-animation">Recent Work</h2>
-        </div>
-        <div class="row g-4">
-            @forelse($projects as $project)
-            <div class="col-xl-6 col-lg-6 col-md-6">
-                <div class="case-studies-card-items mt-0 h-100 d-flex flex-column">
-                    <div class="thumb" style="height: 420px; overflow: hidden;">
-                        @if($project->image)
-                        <img src="{{ asset($project->image) }}" alt="{{ $project->title }}" class="w-100 h-100" style="object-fit: cover;">
-                        @else
-                        <div class="project-placeholder d-flex align-items-center justify-content-center h-100 bg-light">
-                            <i class="fas fa-project-diagram fa-3x text-muted"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="content">
-                        <div class="title">
-                            <h3><a href="{{ route('project.detail', $project) }}">{{ $project->title }}</a></h3>
-                            @if($project->category)
-                            <p>{{ $project->category }}</p>
-                            @endif
-                        </div>
-                        <a href="{{ route('project.detail', $project) }}" class="icon"><i class="fa-regular fa-arrow-up-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            @empty
-            <div class="col-12">
-                <div class="text-center py-5">
-                    <h4>No projects available at the moment.</h4>
-                </div>
-            </div>
-            @endforelse
-        </div>
-        <div class="text-center mt-5">
-            <a href="{{ route('projects') }}" class="gt-theme-btn">view all projects</a>
-        </div>
-    </div>
-</section>
+                    <!-- Subtitle -->
+                    <p class="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl leading-relaxed"
+                       x-show="activeSlide === {{ $index }}"
+                       x-transition:enter="transition ease-out duration-700 delay-700"
+                       x-transition:enter-start="opacity-0 translate-y-8"
+                       x-transition:enter-end="opacity-100 translate-y-0">
+                        {{ $slider->subtitle ?? $slider->description }}
+                    </p>
 
-<!-- Reviews Section Start -->
-<section class="gt-testimonial-section fix section-padding pt-0">
-    <div class="container">
-        <div class="gt-section-title style-3 text-center">
-            <h6 class="wow fadeInUp tt-capitalize">client reviews</h6>
-            <h2 class="char-animation">What our clients say</h2>
-        </div>
-        <div class="row g-4">
-            @forelse($reviews as $review)
-            <div class="col-xl-4 col-lg-4 col-md-6">
-                <div class="gt-feature-box h-100">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="me-3" style="width:56px;height:56px;overflow:hidden;border-radius:50%;background:#f1f3f5;display:flex;align-items:center;justify-content:center;">
-                            @if($review->client_image)
-                                <img src="{{ asset($review->client_image) }}" alt="{{ $review->client_name }}" class="w-100 h-100" style="object-fit:cover;">
-                            @else
-                                <i class="fas fa-user text-muted"></i>
-                            @endif
-                        </div>
-                        <div>
-                            <h5 class="mb-0">{{ $review->client_name }}</h5>
-                            <small class="text-muted">{{ $review->client_position }} @ {{ $review->client_company }}</small>
-                        </div>
-                    </div>
-                    <p class="mb-2">{{ Str::limit($review->review_text, 180) }}</p>
-                    @if($review->rating)
-                    <div class="text-warning">
-                        @for($i=0;$i<5;$i++)
-                            <i class="fa{{ $i < $review->rating ? 's' : 'r' }} fa-star"></i>
-                        @endfor
+                    <!-- Buttons -->
+                    @if($slider->button_text)
+                    <div class="flex flex-wrap gap-4"
+                         x-show="activeSlide === {{ $index }}"
+                         x-transition:enter="transition ease-out duration-700 delay-900"
+                         x-transition:enter-start="opacity-0 translate-y-8"
+                         x-transition:enter-end="opacity-100 translate-y-0">
+                        <a href="{{ $slider->button_url ?? '#' }}" 
+                           class="bg-brand-600 hover:bg-brand-500 text-white px-8 py-3.5 rounded-lg font-semibold transition-all transform hover:-translate-y-1 shadow-lg shadow-brand-500/25 flex items-center gap-2">
+                            <span>{{ $slider->button_text }}</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="{{ route('services') }}" class="px-8 py-3.5 rounded-lg font-semibold text-white border border-white/20 hover:bg-white/10 transition-all backdrop-blur-sm">
+                            Explore Services
+                        </a>
                     </div>
                     @endif
                 </div>
             </div>
-            @empty
-            <div class="col-12">
-                <div class="text-center py-5">
-                    <h4>No reviews available at the moment.</h4>
+        </div>
+        @endforeach
+
+        @if($sliders->count() > 1)
+        <!-- Previous Button (Left Side - Centered) -->
+        <button @click="clearInterval(slideInterval); activeSlide = activeSlide === 0 ? totalSlides - 1 : activeSlide - 1; slideInterval = setInterval(() => { activeSlide = activeSlide === totalSlides - 1 ? 0 : activeSlide + 1 }, 6000)"
+                class="absolute top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md transition-all duration-300 group focus:outline-none border border-white/10 hover:border-white/30 hover:-translate-x-1"
+                style="left: 2rem;"
+                aria-label="Previous Slide">
+            <i class="fa-solid fa-chevron-left text-xl opacity-80 group-hover:opacity-100 transition-opacity"></i>
+        </button>
+
+        <!-- Next Button (Right Side - Centered) -->
+        <button @click="clearInterval(slideInterval); activeSlide = activeSlide === totalSlides - 1 ? 0 : activeSlide + 1; slideInterval = setInterval(() => { activeSlide = activeSlide === totalSlides - 1 ? 0 : activeSlide + 1 }, 6000)"
+                class="absolute top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md transition-all duration-300 group focus:outline-none border border-white/10 hover:border-white/30 hover:translate-x-1"
+                style="right: 2rem;"
+                aria-label="Next Slide">
+            <i class="fa-solid fa-chevron-right text-xl opacity-80 group-hover:opacity-100 transition-opacity"></i>
+        </button>
+
+        <!-- Indicators (Bottom Centered) -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+            <template x-for="i in totalSlides">
+                <button @click="clearInterval(slideInterval); activeSlide = i - 1; slideInterval = setInterval(() => { activeSlide = activeSlide === totalSlides - 1 ? 0 : activeSlide + 1 }, 6000)"
+                        class="h-1.5 rounded-full transition-all duration-500 shadow-sm"
+                        :class="activeSlide === i - 1 ? 'w-10 bg-brand-500' : 'w-2 bg-white/40 hover:bg-white/60'"
+                        :aria-label="'Go to slide ' + i"></button>
+            </template>
+        </div>
+        @endif
+
+    @else
+        <!-- Fallback static content -->
+        <div class="absolute inset-0 bg-dark-900">
+            <div class="container mx-auto px-4 h-full flex items-center justify-center">
+                <h1 class="text-white text-4xl">Welcome to SupremeIT</h1>
+            </div>
+        </div>
+    @endif
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about" class="py-12 md:py-20 lg:py-32 bg-white overflow-hidden">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
+            <!-- Image Side -->
+            <div class="relative group order-2 lg:order-1">
+                <div class="absolute -inset-4 bg-gradient-to-tr from-brand-500 to-accent-500 rounded-2xl opacity-20 blur-xl group-hover:opacity-30 transition duration-500"></div>
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+                    @if(optional($about)->image)
+                        <img src="{{ Storage::url(optional($about)->image) }}" alt="About Us" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
+                    @else
+                        <!-- Fallback Image -->
+                        <div class="w-full h-64 md:h-96 bg-slate-200 flex items-center justify-center">
+                            <i class="fa-regular fa-image text-4xl text-slate-400"></i>
+                        </div>
+                    @endif
+                </div>
+                <!-- Float Card -->
+                <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-xl max-w-xs hidden md:block border border-slate-100">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-check text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Project Success</p>
+                            <p class="text-xl font-bold text-slate-800">98% Rate</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            @endforelse
-        </div>
-    </div>
-</section>
 
-<!-- TC Request Section Start -->
-<section class="gt-contact-section fix section-padding pt-0">
-    <div class="container">
-        <div class="gt-section-title style-3 text-center">
-            <h6 class="wow fadeInUp tt-capitalize">request a quote</h6>
-            <h2 class="char-animation">Tell us about your project</h2>
-            <p class="mt-3 wow fadeInUp" data-wow-delay=".3s">
-                Ready to start? Contact us and we’ll get back to you quickly.
-            </p>
-            <div class="mt-4">
-                <a href="{{ route('contact') }}" class="gt-theme-btn">Go to Contact Page</a>
+            <!-- Content Side -->
+            <div class="order-1 lg:order-2">
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">About SupremeIT</span>
+                <h2 class="text-3xl md:text-5xl font-bold font-heading text-slate-900 mb-6 leading-tight">
+                    {{ optional($about)->title ?? 'Deliver unforgettable customer experiences' }}
+                </h2>
+                <p class="text-slate-600 text-lg mb-8 leading-relaxed">
+                    {{ optional($about)->description ?? 'We help businesses grow by providing top-notch IT solutions tailored to your specific needs.' }}
+                </p>
+
+                <!-- Features Grid -->
+                @php($homeFeatures = optional($about)->meta_data['features'] ?? [])
+                @if(!empty($homeFeatures))
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    @foreach($homeFeatures as $feat)
+                    <div class="flex items-start gap-4 p-4 rounded-lg hover:bg-brand-50/50 transition-colors">
+                        <div class="w-10 h-10 rounded bg-brand-100 text-brand-600 flex items-center justify-center shrink-0 mt-1">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 mb-1">{{ $feat['title'] }}</h4>
+                            <p class="text-sm text-slate-500">{{ $feat['description'] ?? '' }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                <a href="{{ route('about') }}" class="text-brand-600 font-semibold hover:text-brand-700 inline-flex items-center gap-2 group">
+                    Learn more about us
+                    <i class="fa-solid fa-arrow-right transform transition-transform group-hover:translate-x-1"></i>
+                </a>
             </div>
         </div>
     </div>
 </section>
 
-{{-- <!-- Contact Section Start -->
-<section class="gt-contact-section fix section-padding pt-0">
-    <div class="container">
-        <div class="gt-section-title style-3 text-center">
-            <h6 class="wow fadeInUp tt-capitalize">get in touch</h6>
-            <h2 class="char-animation">Ready to get started?</h2>
-            <div class="mt-4">
-                <a href="{{ route('contact') }}" class="gt-theme-btn">Go to Contact Page</a>
+<!-- SERVICES SECTION -->
+<section class="py-12 md:py-20 bg-slate-50">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center max-w-3xl mx-auto mb-10 md:mb-16">
+            <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">Our Expertise</span>
+            <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900 mb-4">High-Impact IT Services</h2>
+            <p class="text-slate-500">Comprehensive technology solutions designed to scale with your business.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            @foreach($services as $service)
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 group border border-slate-100 hover:-translate-y-1">
+                <div class="w-14 h-14 bg-brand-50 rounded-xl mb-6 flex items-center justify-center text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                    <i class="fa-solid {{ str_contains(strtolower($service->name ?? ''), 'cloud') ? 'fa-cloud' : (str_contains(strtolower($service->name ?? ''), 'web') ? 'fa-code' : 'fa-layer-group') }} text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-4 font-heading group-hover:text-brand-600 transition-colors">{{ $service->name }}</h3>
+                <p class="text-slate-500 mb-6 line-clamp-3">
+                    {{ $service->description }}
+                </p>
+                <a href="{{ route('services.show', $service->slug ?? '#') }}" class="inline-flex items-center text-sm font-semibold text-slate-900 hover:text-brand-600 transition-colors">
+                    Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </a>
             </div>
+            @endforeach
         </div>
     </div>
-</section> --}}
+</section>
 
+<!-- PROJECTS -->
+<section class="py-12 md:py-20 bg-dark-900 text-white">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-12">
+            <div class="mb-4 md:mb-0">
+                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Our Portfolio</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-heading text-white">Featured Projects</h2>
+            </div>
+            <a href="{{ route('projects') }}" class="hidden md:inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                View All Projects <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            @foreach($projects as $project)
+            <div class="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer bg-dark-800">
+                @if($project->image)
+                <img src="{{ Storage::url($project->image) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                @endif
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-900/90 via-dark-900/20 to-transparent opacity-90 transition-opacity"></div>
+                
+                <div class="absolute bottom-0 left-0 p-6 md:p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <span class="text-brand-400 text-sm font-medium mb-2 block">{{ $project->category ?? 'Case Study' }}</span>
+                    <h3 class="text-xl md:text-2xl font-bold text-white mb-2">{{ $project->title }}</h3>
+                    <p class="text-white/70 text-sm line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                        {{ $project->description }}
+                    </p>
+                </div>
+            </div>
+            @endforeach
+        </div>
 
+        <div class="mt-8 text-center md:hidden">
+            <a href="{{ route('projects') }}" class="inline-flex items-center gap-2 text-brand-400 font-semibold hover:text-white transition-colors">
+                View All Projects <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
 
+<!-- CTA SECTION -->
+<section class="py-20 bg-brand-600 relative overflow-hidden">
+    <!-- Abstract Shapes -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 translate-y-1/2"></div>
 
+    <div class="container mx-auto px-4 md:px-6 relative z-10 text-center">
+        <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Ready to Transform Your Business?</h2>
+        <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+            Let's discuss how SupremeIT can help you achieve your technology goals with our expert solutions.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="{{ route('contact') }}" class="bg-white text-brand-600 px-8 py-4 rounded-lg font-bold hover:bg-brand-50 transition-colors shadow-lg">
+                Get a Free Quote
+            </a>
+            <a href="{{ route('services') }}" class="border border-white/30 text-white px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition-colors backdrop-blur-sm">
+                View Services
+            </a>
+        </div>
+    </div>
+</section>
 
 @endsection

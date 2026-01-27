@@ -23,10 +23,12 @@ class DatabaseSeeder extends Seeder
         // Call other seeders
         $this->call([
             AdminUserSeeder::class,
-            WebsiteDataSeeder::class,
+            // WebsiteDataSeeder::class,
+            StructureSeeder::class,
             ServiceSeeder::class,
             ProjectSeeder::class,
             BlogSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }

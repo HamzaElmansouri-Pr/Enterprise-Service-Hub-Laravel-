@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Our Services - SupremeIT')
-@section('page-title', 'Our Services')
+@section('title', $page->title . ' - SupremeIT')
+@section('page-title', $page->title)
 
 @push('styles')
 <style>
@@ -135,11 +135,11 @@
 
 @section('content')
 <!-- Gt Breadcrumb Section Start -->
-<div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ asset('assets/img/breadcrumb-bg.jpg') }}');">
+<div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ $page->image ? asset($page->image) : asset('assets/img/breadcrumb-bg.jpg') }}');">
     <div class="container">
         <div class="gt-page-heading">
             <div class="gt-breadcrumb-sub-title">
-                <h1 class="wow fadeInUp" data-wow-delay=".3s">Our <span>Services</span></h1>
+                <h1 class="wow fadeInUp" data-wow-delay=".3s">{!! $page->breadcrumb_title !!}</h1>
             </div>
             <ul class="gt-breadcrumb-items wow fadeInUp" data-wow-delay=".5s">
                 <li>
@@ -161,40 +161,18 @@
 <!-- Services Section Start -->
 <section class="gt-services-section fix section-padding">
     <div class="container">
-        @if($page)
-        <div class="gt-section-title style-3 text-center mb-5">
-            <h6 class="wow fadeInUp tt-capitalize">{{ $page->subtitle ?? 'What We Offer' }}</h6>
-            <h2 class="char-animation">{{ $page->title ?? 'Our Services' }}</h2>
-            @if($page->description)
-            <p class="mt-3 wow fadeInUp" data-wow-delay=".3s">{{ $page->description }}</p>
-            @endif
-        </div>
+        @if(isset($page))
+        <x-section-title
+            :subtitle="$page->subtitle ?? 'What We Offer'"
+            :title="$page->title ?? 'Our Services'"
+            :description="$page->description ?? null"
+            alignment="text-center"
+        />
         @endif
-    <section class="service-section-2 fix section-padding pb-0">
-        <div class="container">
-        <div class="row g-4">
+
+        <div class="row g-4 pt-4">
             @forelse($services as $service)
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <div class="service-single-card h-100 d-flex flex-column">
-                    <div class="icon">
-                        @if($service->image)
-                        <img src="{{ asset($service->image) }}" alt="{{ $service->title }}">
-                        @else
-                        <div class="service-placeholder">
-                            <i class="{{ $service->icon ?? 'fas fa-cog' }} fa-3x"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="content">
-                        <h3><a href="{{ route('service.detail', $service) }}">{{ $service->title }}</a></h3>
-                        @if($service->subtitle)
-                        <p class="text-muted">{{ $service->subtitle }}</p>
-                        @endif
-                        <p>{{ Str::limit($service->description, 120) }}</p>
-                        <a href="{{ route('service.detail', $service) }}" class="arrow-btn"><i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
+                <x-service-card :service="$service" />
             @empty
             <div class="col-12">
                 <div class="text-center py-5">
@@ -204,17 +182,6 @@
             </div>
             @endforelse
         </div>
-
-        <!-- CTA Section -->
-        {{-- <div class="row mt-5">
-            <div class="col-12">
-                <div class="gt-cta-box text-center">
-                    <h3>Need a Custom Solution?</h3>
-                    <p>We can create a tailored service package that meets your specific business needs.</p>
-                    <a href="{{ route('contact') }}" class="gt-theme-btn">Get a Quote</a>
-                </div>
-            </div>
-        </div> --}}
     </div>
 </section>
 

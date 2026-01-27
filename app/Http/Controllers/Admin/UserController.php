@@ -5,98 +5,92 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
-        $users = User::latest()->paginate(15);
+        // $this->authorize('viewAny', User::class);
+        $users = User::latest()->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
     public function create()
     {
+        // $this->authorize('create', User::class);
         return view('admin.users.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,user',
-            'is_active' => 'boolean',
-        ]);
+        // $this->authorize('create', User::class);
+        
+        $data = $request->validated();
+        $data['password'] = bcrypt($data['password']);
+        
+        User::create($data);
 
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = $request->has('is_active');
-
-        User::create($validated);
-
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User created successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
     }
 
     public function show(User $user)
     {
-        return view('admin.users.show', compact('user'));
+         // $this->authorize('view', $user);
+         return view('admin.users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
+        // $this->authorize('update', $user);
         return view('admin.users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:admin,user',
-            'is_active' => 'boolean',
-        ]);
-
-        if ($validated['password']) {
-            $validated['password'] = Hash::make($validated['password']);
+        // $this->authorize('update', $user);
+        
+        $data = $request->validated();
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
         } else {
-            unset($validated['password']);
+            unset($data['password']);
         }
 
-        $validated['is_active'] = $request->has('is_active');
+        $user->update($data);
 
-        $user->update($validated);
-
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User updated successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy(User $user)
     {
-        // Prevent deleting the current admin user
-        if ($user->id === auth()->id()) {
-            return redirect()->back()->with('error', 'You cannot delete your own account.');
+        // $this->authorize('delete', $user);
+        
+        // Prevent deleting self
+        if (auth()->id() === $user->id) {
+             return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
         }
 
         $user->delete();
-
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 
     public function toggleActive(User $user)
     {
-        // Prevent deactivating the current admin user
-        if ($user->id === auth()->id()) {
-            return redirect()->back()->with('error', 'You cannot deactivate your own account.');
+        // $this->authorize('update', $user);
+        
+        if (auth()->id() === $user->id) {
+             return redirect()->back()->with('error', 'You cannot deactivate yourself.');
         }
 
-        $user->update(['is_active' => !$user->is_active]);
-        
-        $status = $user->is_active ? 'activated' : 'deactivated';
-        return redirect()->back()->with('success', "User {$status} successfully.");
+        $user->update([
+            'is_active' => !$user->is_active
+        ]);
+
+        return redirect()->back()->with('success', 'User status updated successfully.');
     }
 }

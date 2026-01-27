@@ -22,7 +22,34 @@ class User extends Authenticatable
         'email',
         'password',
         'image',
+        'role',
+        'is_active',
+        'email_verified_at',
     ];
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user is an editor.
+     */
+    public function isEditor(): bool
+    {
+        return $this->role === 'editor';
+    }
+
+    /**
+     * Check if the user has access to the admin panel.
+     */
+    public function canAccessAdminPanel(): bool
+    {
+        return $this->isAdmin() || $this->isEditor();
+    }
 
     /**
      * The attributes that should be hidden for serialization.

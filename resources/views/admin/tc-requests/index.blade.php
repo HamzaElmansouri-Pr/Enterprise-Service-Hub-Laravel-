@@ -125,7 +125,7 @@
                         </table>
                     </div>
 
-                    @if($tcRequests->count() > 0)
+                    {{-- @if($tcRequests->count() > 0)
                     <div class="mt-3">
                         <form action="{{ route('admin.tc-requests.bulk-delete') }}" method="POST" id="bulkDeleteForm">
                             @csrf
@@ -136,7 +136,7 @@
                             </button>
                         </form>
                     </div>
-                    @endif
+                    @endif --}}
 
                     @if($tcRequests->hasPages())
                     <div class="d-flex justify-content-center mt-4">

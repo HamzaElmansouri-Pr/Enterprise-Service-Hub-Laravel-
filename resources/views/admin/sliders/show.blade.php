@@ -23,7 +23,7 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 @if($slider->image)
-                                <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" 
+                                <img src="{{ Storage::url($slider->image) }}" alt="{{ $slider->title }}" 
                                      class="img-fluid rounded" style="max-height: 400px; width: 100%; object-fit: cover;">
                                 @else
                                 <div class="bg-secondary d-flex align-items-center justify-content-center rounded" 

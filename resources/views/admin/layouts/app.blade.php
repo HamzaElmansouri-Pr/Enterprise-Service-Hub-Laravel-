@@ -209,10 +209,12 @@
                 <span class="badge bg-danger ms-2">{{ \App\Models\TcRequest::where('is_read', false)->count() }}</span>
                 @endif
             </a>
+            {{--
             <a class="nav-link {{ request()->routeIs('admin.content.*') ? 'active' : '' }}" href="{{ route('admin.content.index') }}">
                 <i class="fas fa-edit"></i>
                 <span>Content Management</span>
             </a>
+            --}}
             {{-- <a class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" href="{{ route('admin.pages.index') }}">
                 <i class="fas fa-file-alt"></i>
                 <span>Pages</span>
@@ -221,10 +223,12 @@
                 <i class="fas fa-users"></i>
                 <span>Users</span>
             </a>
+            {{--
             <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
+            --}}
             <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 20px 15px;">
             <a class="nav-link" href="{{ route('home') }}" target="_blank">
                 <i class="fas fa-external-link-alt"></i>
@@ -260,8 +264,10 @@
                             @endif
                         </button>
                         <ul class="dropdown-menu">
+                            {{--
                             <li><a class="dropdown-item" href="{{ route('admin.settings.edit-profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
                             <li><a class="dropdown-item" href="{{ route('admin.settings.index') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            --}}
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

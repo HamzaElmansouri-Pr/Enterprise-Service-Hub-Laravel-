@@ -1,268 +1,332 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Page;
-use App\Models\Service;
-use App\Models\Project;
 use App\Models\Blog;
-use App\Models\Review;
-use App\Models\Slider;
 use App\Models\Contact;
+use App\Models\Page;
+use App\Models\Project;
+use App\Models\Review;
+use App\Models\Service;
+use App\Models\Slider;
 use App\Models\TcRequest;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PageController extends Controller
 {
     /**
      * Display the home page.
      */
-    public function home()
+    public function home(): View
     {
-        $sliders = Slider::active()->ordered()->get();
-        // Recent services (3) and recent projects (2)
-        $services = Service::active()->orderBy('created_at', 'desc')->take(3)->get();
-        $projects = Project::active()->orderBy('created_at', 'desc')->take(2)->get();
-        $reviews = Review::approved()->featured()->ordered()->take(6)->get();
-        $blogs = Blog::published()->featured()->orderBy('published_at', 'desc')->take(3)->get();
-        $about = Page::getByName('about');
-        
+        // Default / Fallback Data (prevent 500 error if DB is empty)
         $data = [
-            'siteDescription' => 'SupremeIT provides cutting-edge technology solutions to help businesses grow and succeed in the digital world.',
-            'heroTitle' => 'The Full CRM solution built for your success',
-            'heroSubtitle' => 'All your customer data, tools, and insights in one unified platform.',
-            'features' => [
-                [
-                    'title' => 'All-in-One CRM',
-                    'description' => 'Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.'
-                ],
-                [
-                    'title' => 'Affordable',
-                    'description' => 'Make the most of SupremeIT\'s modern features & integrations, easy implementation and great support at an affordable price.'
-                ],
-                [
-                    'title' => 'Next-Generation',
-                    'description' => 'Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.'
-                ]
-            ],
-            'stats' => [
-                'customers' => '15,000+',
-                'satisfaction' => '92',
-                'cost_reduction' => '48'
+            'heroTitle' => 'IT Services & & Technology Solutions',
+            'heroSubtitle' => 'GET IT SOLUTIONS',
+            'heroButtonText' => 'Explore More',
+            'heroImage' => 'assets/img/hero/hero-3.jpg',
+            'heroFeatures' => [], // Fallback empty
+            'services_title' => 'Our Awesome Services',
+            'services_subtitle' => 'What We Do',
+            'projects_title' => 'Our Recent Projects', 
+            'projects_subtitle' => 'Case Studies',
+            'reviews_title' => 'Customer Feedback',
+            'reviews_subtitle' => 'Testimonials',
+            'blog_title' => 'Direct from the Blog',
+            'blog_subtitle' => 'Latest News',
+            'cta' => [
+                'title' => 'Stay Connected With SupremeIT',
+                'subtitle' => 'Contact Us',
+                'description' => 'Get in touch for professional IT solutions.',
+                'button_text' => 'Contact Us Now'
             ]
         ];
-
-        return view('index', compact('data', 'sliders', 'services', 'projects', 'reviews', 'blogs', 'about'));
-    }
-
-    /**
-     * Display the about page.
-     */
-    public function about()
-    {
-        $page = Page::getByName('about');
-        $services = Service::active()->ordered()->get();
-        $reviews = Review::approved()->featured()->ordered()->take(6)->get();
         
-        $data = [
-            'siteDescription' => 'SupremeIT provides cutting-edge technology solutions to help businesses grow and succeed in the digital world.',
-            'pageTitle' => 'About Us',
-            'breadcrumb' => [
-                ['name' => 'Home', 'url' => route('home')],
-                ['name' => 'About Us', 'url' => route('about')]
-            ],
-            'features' => [
-                [
-                    'title' => 'All-in-One CRM',
-                    'description' => 'Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.'
-                ],
-                [
-                    'title' => 'Affordable',
-                    'description' => 'Make the most of SupremeIT\'s modern features & integrations, easy implementation and great support at an affordable price.'
-                ],
-                [
-                    'title' => 'Next-Generation',
-                    'description' => 'Automate your sales, marketing, and service in one platform. Avoid data leaks and enable consistent messaging.'
-                ]
-            ],
-            'stats' => [
-                'customers' => '20,000+',
-                'satisfaction' => '92',
-                'cost_reduction' => '48'
-            ]
-        ];
+        $about = new \stdClass();
+        $about->title = 'We Deal With The Aspects Of Professional IT Services';
+        $about->subtitle = 'About SupremeIT';
+        $about->description = 'We provide best IT solutions for your business.';
+        $about->image = 'assets/img/about/about-5.png';
+        $about->meta_data = ['features' => []];
 
-        return view('about', compact('data', 'page', 'services', 'reviews'));
-    }
-
-    /**
-     * Display the services page.
-     */
-    public function services()
-    {
-        $page = Page::getByName('services');
-        $services = Service::active()->ordered()->get();
+        $sliders = []; 
         
-        return view('services', compact('page', 'services'));
+        // Fetch CMS Data
+        $page = Page::with(['sections' => function ($query) {
+            $query->where('is_active', true)->orderBy('order_index');
+        }, 'sections.contentBlocks'])->where('slug', 'home')->first();
+
+        if ($page) {
+             $sections = $page->sections;
+
+            // Extract content for specific sections to populate legacy variables
+            foreach ($sections as $section) {
+                // Support for new Admin Panel Content Types
+                if ($section->type === 'home-hero') {
+                    $data['heroTitle'] = $section->getContent('hero_title') ?: $data['heroTitle'];
+                    $data['heroSubtitle'] = $section->getContent('hero_subtitle') ?: $data['heroSubtitle'];
+                    $data['heroButtonText'] = $section->getContent('hero_button_text') ?: $data['heroButtonText'];
+                    $img = $section->getContent('hero_image');
+                    if ($img) $data['heroImage'] = $img;
+                }
+                if ($section->type === 'home-about') {
+                    $about->title = $section->getContent('about_title') ?: $about->title;
+                    $about->subtitle = $section->getContent('about_subtitle') ?: $about->subtitle;
+                    $about->description = $section->getContent('about_description') ?: $about->description;
+                    $img = $section->getContent('about_image');
+                    if ($img) $about->image = $img;
+                    
+                    $featuresJson = $section->getContent('features');
+                    if ($featuresJson) {
+                        $about->meta_data['features'] = json_decode($featuresJson, true);
+                    }
+                }
+                
+                // Legacy Support
+                if ($section->type === 'hero-3') {
+                    $data['heroTitle'] = $section->getContent('title');
+                    $data['heroSubtitle'] = $section->getContent('subtitle');
+                    $data['heroFeatures'] = json_decode($section->getContent('features'), true);
+                }
+                if ($section->type === 'about-3') {
+                    $about->title = $section->getContent('title');
+                    $about->subtitle = $section->getContent('subtitle');
+                    $about->description = $section->getContent('description');
+                    $about->image = $section->getContent('image');
+                    $about->meta_data['features'] = json_decode($section->getContent('features'), true);
+                }
+                if ($section->type === 'services-list') {
+                    $data['services_title'] = $section->getContent('title');
+                    $data['services_subtitle'] = $section->getContent('subtitle');
+                }
+                if ($section->type === 'projects-list') {
+                    $data['projects_title'] = $section->getContent('title');
+                    $data['projects_subtitle'] = $section->getContent('subtitle');
+                }
+                if ($section->type === 'reviews-list') {
+                    $data['reviews_title'] = $section->getContent('title');
+                    $data['reviews_subtitle'] = $section->getContent('subtitle');
+                }
+                if ($section->type === 'blog-list') {
+                    $data['blog_title'] = $section->getContent('title');
+                    $data['blog_subtitle'] = $section->getContent('subtitle');
+                }
+                if ($section->type === 'cta-simple') {
+                    $data['cta']['title'] = $section->getContent('title');
+                    $data['cta']['subtitle'] = $section->getContent('subtitle');
+                    $data['cta']['description'] = $section->getContent('description');
+                    $data['cta']['button_text'] = $section->getContent('button_text');
+                }
+            }
+        }
+
+        // Fetch dynamic content
+        $services = Service::where('is_active', true)->orderBy('order_index')->get();
+        $projects = Project::where('is_active', true)->orderBy('order_index')->take(6)->get();
+        $reviews = Review::where('is_active', true)->orderBy('order_index')->get();
+        $blogs = Blog::where('is_active', true)->whereNotNull('published_at')->orderBy('published_at', 'desc')->take(3)->get();
+        $sliders = Slider::where('is_active', true)->orderBy('sort_order')->get();
+
+        return view('index', compact('page', 'data', 'sliders', 'services', 'projects', 'reviews', 'blogs', 'about'));
     }
 
-    /**
-     * Display a specific service.
-     */
-    public function service(Service $service)
+    public function about(): View
     {
-        // Get all services for the sidebar
-        $allServices = Service::active()->ordered()->get();
-            
-        return view('service-detail', compact('service', 'allServices'));
-    }
-
-    /**
-     * Display the projects page.
-     */
-    public function projects()
-    {
-        $page = Page::getByName('projects');
-        $projects = Project::active()->ordered()->get();
-        $categories = Project::active()->distinct()->pluck('category')->filter();
+        $pageModel = Page::with(['sections.contentBlocks'])->where('slug', 'about')->first();
         
-        return view('projects', compact('page', 'projects', 'categories'));
+        // Default structure if DB is empty
+        $page = new \stdClass();
+        $page->title = 'Deliver unforgettable customer experiences'; 
+        $page->subtitle = 'Why SupremeIT';
+        $page->description = '';
+        $page->content = '';
+        $page->image = '';
+        $page->meta_data = ['features' => []];
+
+        if ($pageModel) {
+             // Find the main content section
+             $section = $pageModel->sections->where('type', 'about-main')->first();
+             if ($section) {
+                 $page->title = $section->getContent('about_title') ?: $page->title;
+                 $page->subtitle = $section->getContent('about_subtitle') ?: $page->subtitle;
+                 $page->description = $section->getContent('about_description') ?: $page->description;
+                 $page->content = $section->getContent('about_content') ?: $page->content;
+                 $page->image = $section->getContent('about_image') ?: $page->image;
+                 
+                 $featuresJson = $section->getContent('features');
+                 if ($featuresJson) {
+                     $page->meta_data['features'] = json_decode($featuresJson, true);
+                 }
+             }
+        }
+
+        return view('about', compact('page'));
     }
 
-    /**
-     * Display a specific project.
-     */
-    public function project(Project $project)
+    public function services(): View
     {
-        $relatedProjects = Project::active()
-            ->where('id', '!=', $project->id)
-            ->where('category', $project->category)
-            ->take(3)
-            ->get();
-            
-        // Get previous and next projects for navigation
-        $previousProject = Project::active()
-            ->where('id', '<', $project->id)
-            ->orderBy('id', 'desc')
-            ->first();
-            
-        $nextProject = Project::active()
-            ->where('id', '>', $project->id)
-            ->orderBy('id', 'asc')
-            ->first();
-            
-        return view('project-detail', compact('project', 'relatedProjects', 'previousProject', 'nextProject'));
+        $services = Service::where('is_active', true)->orderBy('order_index')->get();
+
+        // CMS Integration
+        $pageModel = Page::with(['sections.contentBlocks'])->where('slug', 'services')->first();
+        $page = new \stdClass();
+        $page->title = 'Our Services';
+        $page->breadcrumb_title = 'Our <span>Services</span>'; // Default with HTML
+        $page->image = 'assets/img/breadcrumb-bg.jpg';
+
+        if ($pageModel) {
+            // Use Page Model title if specific section not found, stripping HTML tags if needed
+            $page->title = $pageModel->title ?: $page->title;
+            $page->breadcrumb_title = $pageModel->title ?: $page->breadcrumb_title;
+
+            $section = $pageModel->sections->where('type', 'page-header')->first();
+            if ($section) {
+                $page->title = $section->getContent('title') ?: $page->title;
+                $page->breadcrumb_title = $section->getContent('breadcrumb_title') ?: ($section->getContent('title') ?: $page->breadcrumb_title);
+                $img = $section->getContent('image');
+                if ($img) $page->image = $img;
+            }
+        }
+
+        return view('services', compact('services', 'page'));
     }
 
-    /**
-     * Display the blog page.
-     */
-    public function blog()
+    public function service($slug): View
     {
-        $page = Page::getByName('blog');
-        $blogs = Blog::published()->orderBy('published_at', 'desc')->paginate(6);
-        $categories = Blog::published()->distinct()->pluck('category')->filter();
-        $featuredBlogs = Blog::published()->featured()->orderBy('published_at', 'desc')->take(3)->get();
+         $service = Service::where('slug', $slug)->where('is_active', true)->firstOrFail();
+         $allServices = Service::where('is_active', true)->orderBy('order_index')->get();
+         return view('service-detail', compact('service', 'allServices'));
+    }
+
+    public function projects(): View
+    {
+        $projects = Project::where('is_active', true)->orderBy('order_index')->get();
+
+        // CMS Integration
+        $pageModel = Page::with(['sections.contentBlocks'])->where('slug', 'projects')->first();
+        $page = new \stdClass();
+        $page->title = 'Our Projects';
+        $page->breadcrumb_title = 'Our <span>Projects</span>';
+        $page->image = 'assets/img/breadcrumb-bg.jpg';
+
+        if ($pageModel) {
+            $page->title = $pageModel->title ?: $page->title;
+            $page->breadcrumb_title = $pageModel->title ?: $page->breadcrumb_title;
+
+            $section = $pageModel->sections->where('type', 'page-header')->first();
+            if ($section) {
+                $page->title = $section->getContent('title') ?: $page->title;
+                $page->breadcrumb_title = $section->getContent('breadcrumb_title') ?: ($section->getContent('title') ?: $page->breadcrumb_title);
+                $img = $section->getContent('image');
+                if ($img) $page->image = $img;
+            }
+        }
+
+        return view('projects', compact('projects', 'page'));
+    }
+
+    public function project($slug): View
+    {
+         $project = Project::where('slug', $slug)->where('is_active', true)->firstOrFail();
+         $relatedProjects = Project::where('is_active', true)->where('id', '!=', $project->id)->inRandomOrder()->take(3)->get();
+         return view('project-detail', compact('project', 'relatedProjects'));
+    }
+
+    public function blog(): View
+    {
+        $blogs = Blog::where('is_active', true)->whereNotNull('published_at')->orderBy('published_at', 'desc')->paginate(6);
+        $recentBlogs = Blog::where('is_active', true)->whereNotNull('published_at')->orderBy('published_at', 'desc')->take(3)->get();
+
+        // CMS Integration
+        $pageModel = Page::with(['sections.contentBlocks'])->where('slug', 'blog')->first();
+        $page = new \stdClass();
+        $page->title = 'Our Blog';
+        $page->breadcrumb_title = 'Latest <span>News</span>';
+        $page->image = 'assets/img/breadcrumb-bg.jpg';
+
+        if ($pageModel) {
+            $page->title = $pageModel->title ?: $page->title;
+            $page->breadcrumb_title = $pageModel->title ?: $page->breadcrumb_title;
+
+            $section = $pageModel->sections->where('type', 'page-header')->first();
+            if ($section) {
+                $page->title = $section->getContent('title') ?: $page->title;
+                $page->breadcrumb_title = $section->getContent('breadcrumb_title') ?: ($section->getContent('title') ?: $page->breadcrumb_title);
+                $img = $section->getContent('image');
+                if ($img) $page->image = $img;
+            }
+        }
+
+        return view('blog', compact('blogs', 'recentBlogs', 'page'));
+    }
+
+    public function blogPost($slug): View
+    {
+        $blog = Blog::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $recentBlogs = Blog::where('is_active', true)->whereNotNull('published_at')->where('id', '!=', $blog->id)->orderBy('published_at', 'desc')->take(3)->get();
+        return view('blog-detail', compact('blog', 'recentBlogs'));
+    }
+
+    public function contact(): View
+    {
+        $pageModel = Page::with(['sections.contentBlocks'])->where('slug', 'contact')->first();
         
-        return view('blog', compact('page', 'blogs', 'categories', 'featuredBlogs'));
-    }
-
-    /**
-     * Display a specific blog post.
-     */
-    public function blogPost(Blog $blog)
-    {
-        // Increment views
-        $blog->incrementViews();
+        $page = new \stdClass();
+        $page->contact_address = '123 Business Street, City, State 12345';
+        $page->contact_email = 'info@supremeit.com';
+        $page->contact_phone = '+1 (555) 123-4567';
         
-        $relatedBlogs = Blog::published()
-            ->where('id', '!=', $blog->id)
-            ->where('category', $blog->category)
-            ->take(3)
-            ->get();
-            
-        // Get blog categories with count
-        $blogCategories = Blog::published()
-            ->selectRaw('category, COUNT(*) as count')
-            ->groupBy('category')
-            ->whereNotNull('category')
-            ->get();
-            
-        // Get recent blogs for sidebar
-        $recentBlogs = Blog::published()
-            ->where('id', '!=', $blog->id)
-            ->orderBy('published_at', 'desc')
-            ->take(3)
-            ->get();
-            
-        // Get popular tags
-        $popularTags = Blog::published()
-            ->whereNotNull('tags')
-            ->get()
-            ->pluck('tags')
-            ->flatten()
-            ->unique()
-            ->take(9);
-            
-        return view('blog-detail', compact('blog', 'relatedBlogs', 'blogCategories', 'recentBlogs', 'popularTags'));
-    }
-
-    /**
-     * Display the contact page.
-     */
-    public function contact()
-    {
-        $page = Page::getByName('contact');
-        $services = Service::active()->ordered()->get();
+        if ($pageModel) {
+            $section = $pageModel->sections->where('type', 'contact-info')->first();
+            if ($section) {
+                $page->contact_address = $section->getContent('contact_address') ?: $page->contact_address;
+                $page->contact_email = $section->getContent('contact_email') ?: $page->contact_email;
+                $page->contact_phone = $section->getContent('contact_phone') ?: $page->contact_phone;
+            }
+        }
         
-        return view('contact', compact('page', 'services'));
+        return view('contact', compact('page'));
     }
 
-    /**
-     * Handle contact form submission.
-     */
     public function contactSubmit(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
-            'subject' => 'nullable|string|max:255',
-            'message' => 'required|string|max:2000',
-            'company' => 'nullable|string|max:255',
-            'website' => 'nullable|url|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
         ]);
 
         Contact::create($validated);
 
-        return redirect()->back()->with('success', 'Thank you for your message! We will get back to you soon.');
+        return back()->with('success', 'Thank you for contacting us! We will get back to you shortly.');
     }
 
-    /**
-     * Handle TC request form submission.
-     */
     public function tcRequestSubmit(Request $request)
     {
         $validated = $request->validate([
             'email' => 'required|email|max:255',
-            'description' => 'required|string|max:2000',
+            'description' => 'required|string',
+            'file' => 'nullable|file|max:10240', // 10MB max
             'service_id' => 'nullable|exists:services,id',
-            'attached_file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:10240', // 10MB max
         ]);
 
-        if ($request->hasFile('attached_file')) {
-            $file = $request->file('attached_file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            
-            // Move file to public/tc directory
-            $file->move(public_path('tc'), $fileName);
-            
-            // Store relative path in database
-            $validated['attached_file'] = 'tc/' . $fileName;
+        $path = null;
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('tc-requests', 'public');
         }
 
-        TcRequest::create($validated);
+        TcRequest::create([
+            'email' => $validated['email'],
+            'description' => $validated['description'],
+            'attached_file' => $path,
+            'service_id' => $validated['service_id'] ?? null,
+        ]);
 
-        return redirect()->back()->with('success', 'Your service request has been submitted successfully! We will review it and get back to you soon.');
+        return back()->with('success', 'Your request has been received. Our team will review it shortly.');
     }
 }

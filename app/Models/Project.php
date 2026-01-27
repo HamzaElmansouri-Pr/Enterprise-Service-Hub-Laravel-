@@ -11,60 +11,18 @@ class Project extends Model
 
     protected $fillable = [
         'title',
-        'subtitle',
+        'slug',
         'description',
-        'image',
-        'gallery',
         'client',
+        'completion_date',
         'category',
-        'project_date',
-        'project_url',
-        'technologies',
-        'challenge',
-        'solution',
-        'result',
-        'is_featured',
+        'image',
         'is_active',
-        'sort_order',
+        'order_index',
     ];
 
     protected $casts = [
-        'gallery' => 'array',
-        'technologies' => 'array',
-        'project_date' => 'date',
-        'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'completion_date' => 'date',
     ];
-
-    /**
-     * Scope for active projects
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    /**
-     * Scope for featured projects
-     */
-    public function scopeFeatured($query)
-    {
-        return $query->where('is_featured', true);
-    }
-
-    /**
-     * Scope for ordered projects
-     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
-    }
-
-    /**
-     * Scope for projects by category
-     */
-    public function scopeByCategory($query, $category)
-    {
-        return $query->where('category', $category);
-    }
 }

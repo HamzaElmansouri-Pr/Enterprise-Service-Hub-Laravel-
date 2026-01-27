@@ -66,13 +66,13 @@ class AdminController extends Controller
             'total_projects' => \App\Models\Project::count(),
             'total_blogs' => \App\Models\Blog::count(),
             'total_reviews' => \App\Models\Review::count(),
-            'total_sliders' => \App\Models\Slider::count(),
+            // 'total_sliders' => \App\Models\Slider::count(), // Slider removed
             'total_contacts' => \App\Models\Contact::count(),
             'total_tc_requests' => \App\Models\TcRequest::count(),
             'unread_contacts' => \App\Models\Contact::where('is_read', false)->count(),
             'unread_tc_requests' => \App\Models\TcRequest::where('is_read', false)->count(),
             'pending_tc_requests' => \App\Models\TcRequest::where('status', 'pending')->count(),
-            'published_blogs' => \App\Models\Blog::where('is_published', true)->count(),
+            'published_blogs' => \App\Models\Blog::whereNotNull('published_at')->count(),
             'featured_projects' => \App\Models\Project::where('is_featured', true)->count(),
             'active_services' => \App\Models\Service::where('is_active', true)->count(),
         ];

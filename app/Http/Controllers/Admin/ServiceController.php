@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\StoreServiceRequest;
+use App\Http\Requests\Admin\UpdateServiceRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -15,7 +16,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::ordered()->paginate(10);
+        $services = Service::orderBy('order_index')->paginate(10);
         return view('admin.services.index', compact('services'));
     }
 
@@ -30,48 +31,33 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreServiceRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'icon' => 'nullable|string|max:100',
-            'features' => 'nullable|array',
-            'features.*' => 'string|max:255',
-            'price' => 'nullable|numeric|min:0',
-            'price_unit' => 'nullable|string|max:50',
-            'is_featured' => 'boolean',
-            'is_active' => 'boolean',
-            'sort_order' => 'integer|min:0',
-        ]);
-
-        // Handle image upload
+        $data = $request->validated();
+        
+        // Auto-generate slug if not provided
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['title']);
+        }
+        
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            
-            // Create the directory if it doesn't exist
-            $serviceDir = public_path('assets/img/service');
-            if (!file_exists($serviceDir)) {
-                mkdir($serviceDir, 0755, true);
-            }
-            
-            // Move the image to the assets directory
-            $image->move($serviceDir, $imageName);
-            $validated['image'] = 'assets/img/service/' . $imageName;
+            $path = $request->file('image')->store('services', 'public');
+            $data['image'] = 'storage/' . $path;
         }
 
-        // Convert features array to JSON
-        if (isset($validated['features'])) {
-            $validated['features'] = array_filter($validated['features']); // Remove empty values
+        if ($request->hasFile('icon')) {
+             // If icon is an image upload (svg/png)
+             $path = $request->file('icon')->store('services/icons', 'public');
+             $data['icon'] = 'storage/' . $path;
+        } elseif (empty($data['icon'])) {
+             // Default icon if not provided
+             $data['icon'] = 'flaticon-settings';
         }
 
-        Service::create($validated);
+        Service::create($data);
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service created successfully!');
+            ->with('success', 'Service created successfully.');
     }
 
     /**
@@ -93,53 +79,34 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Service $service)
+    public function update(UpdateServiceRequest $request, Service $service)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'icon' => 'nullable|string|max:100',
-            'features' => 'nullable|array',
-            'features.*' => 'string|max:255',
-            'price' => 'nullable|numeric|min:0',
-            'price_unit' => 'nullable|string|max:50',
-            'is_featured' => 'boolean',
-            'is_active' => 'boolean',
-            'sort_order' => 'integer|min:0',
-        ]);
+        $data = $request->validated();
+        
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['title']);
+        }
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($service->image && file_exists(public_path($service->image))) {
-                unlink(public_path($service->image));
+            // Delete old image
+            if ($service->image) {
+                $oldPath = str_replace('storage/', '', $service->image);
+                Storage::disk('public')->delete($oldPath);
             }
             
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            
-            // Create the directory if it doesn't exist
-            $serviceDir = public_path('assets/img/service');
-            if (!file_exists($serviceDir)) {
-                mkdir($serviceDir, 0755, true);
-            }
-            
-            // Move the image to the assets directory
-            $image->move($serviceDir, $imageName);
-            $validated['image'] = 'assets/img/service/' . $imageName;
+            $path = $request->file('image')->store('services', 'public');
+            $data['image'] = 'storage/' . $path;
         }
 
-        // Convert features array to JSON
-        if (isset($validated['features'])) {
-            $validated['features'] = array_filter($validated['features']); // Remove empty values
+        if ($request->hasFile('icon')) {
+            $path = $request->file('icon')->store('services/icons', 'public');
+            $data['icon'] = 'storage/' . $path;
         }
 
-        $service->update($validated);
+        $service->update($data);
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service updated successfully!');
+            ->with('success', 'Service updated successfully.');
     }
 
     /**
@@ -147,38 +114,14 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
-        // Delete image if exists
-        if ($service->image && file_exists(public_path($service->image))) {
-            unlink(public_path($service->image));
+        if ($service->image) {
+             $oldPath = str_replace('storage/', '', $service->image);
+             Storage::disk('public')->delete($oldPath);
         }
-
+        
         $service->delete();
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service deleted successfully!');
-    }
-
-    /**
-     * Toggle service status
-     */
-    public function toggleStatus(Service $service)
-    {
-        $service->update(['is_active' => !$service->is_active]);
-        
-        $status = $service->is_active ? 'activated' : 'deactivated';
-        return redirect()->back()
-            ->with('success', "Service {$status} successfully!");
-    }
-
-    /**
-     * Toggle featured status
-     */
-    public function toggleFeatured(Service $service)
-    {
-        $service->update(['is_featured' => !$service->is_featured]);
-        
-        $status = $service->is_featured ? 'featured' : 'unfeatured';
-        return redirect()->back()
-            ->with('success', "Service {$status} successfully!");
+            ->with('success', 'Service deleted successfully.');
     }
 }

@@ -21,15 +21,17 @@ class AdminMiddleware
             return redirect()->route('admin.login');
         }
 
-        // Check if user has admin role (you can customize this logic)
-        // For now, we'll allow any authenticated user to access admin
-        // In production, you might want to add a role system
+        // Check if user has access to admin panel
         $user = Auth::user();
-        
-        // You can add role checking here
-        // if (!$user->hasRole('admin')) {
-        //     abort(403, 'Unauthorized access to admin area.');
-        // }
+        if (method_exists($user, 'canAccessAdminPanel') && !$user->canAccessAdminPanel()) {
+             abort(403, 'Unauthorized access to admin area.');
+        } elseif (!method_exists($user, 'canAccessAdminPanel')) {
+             // Fallback if method doesn't exist (should not happen with our User model)
+             // Check generic property or abort
+             if (!isset($user->role) || !in_array($user->role, ['admin', 'editor'])) {
+                 abort(403, 'Unauthorized access to admin area.');
+             }
+        }
 
         return $next($request);
     }

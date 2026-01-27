@@ -9,22 +9,22 @@
                         <div class="gt-section-title style-3 mb-0">
                             <h6 class="wow fadeInUp tt-capitalize">connect with us</h6>
                             <h2 class="char-animation">
-                                Zero Commitments. Total Freedom
+                                Ready to Get Started?
                             </h2>
                         </div>
-                        <p class="wow fadeInUp" data-wow-delay=".3s">Start your 30-day free trial. Cancel anytime.</p>
+                        <p class="wow fadeInUp" data-wow-delay=".3s">Contact us today for a free consultation.</p>
                         <div class="gt-cta-btn wow fadeInUp" data-wow-delay=".5s">
-                            <a href="{{ route('contact') }}" class="gt-theme-btn style-3 bg-header">view our demo</a>
-                            <a href="{{ route('contact') }}" class="gt-theme-btn style-3">start free trial now</a>
+                            <a href="{{ route('services') }}" class="gt-theme-btn style-3 bg-header">our services</a>
+                            <a href="{{ route('contact') }}" class="gt-theme-btn style-3">contact us now</a>
                         </div>
                         <ul class="wow fadeInUp" data-wow-delay=".7s">
                             <li>
                                 <i class="fa-regular fa-circle-check"></i>
-                                14-day free trial
+                                Professional Support
                             </li>
                             <li>
                                 <i class="fa-regular fa-circle-check"></i>
-                                No credit card required
+                                Expert Team
                             </li>
                         </ul>
                     </div>
@@ -36,18 +36,18 @@
                         <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-8 col-sm-12 wow fadeInUp" data-wow-delay=".2s">
                             <div class="gt-footer-widget-items">
                                 <div class="gt-widget-head">
-                                    <h3>about boostly</h3>
+                                    <h3>about SupremeIT</h3>
                                 </div>
                                 <div class="gt-footer-content">
                                     <p>
-                                        We've trained our AI with the knowledge of content writers and conversion experts so you can be sure it knows how to do its job well when writing content for your website or social media posts.
+                                        We provide best IT solutions for your business. Our team of experts is dedicated to delivering high-quality services to help you achieve your goals.
                                     </p>
                                     <div class="gt-social-icon d-flex align-items-center">
                                         <a href="#">
-                                            <img src="assets/img/home-3/play-store.png" alt="img">
+                                            <img src="{{ asset('assets/img/home-3/play-store.png') }}" alt="img">
                                         </a>
                                         <a href="#">
-                                            <img src="assets/img/home-3/app-store.png" alt="img">
+                                            <img src="{{ asset('assets/img/home-3/app-store.png') }}" alt="img">
                                         </a>
                                     </div>
                                 </div>
@@ -60,28 +60,28 @@
                                 </div>
                                <ul class="gt-list-area">
                                     <li>
-                                        <a href="about.html">
+                                        <a href="{{ route('about') }}">
                                             About
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="contact.html">
+                                        <a href="{{ route('contact') }}">
                                             Careers
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="news.html">
-                                            news & Blog
+                                        <a href="{{ route('blog') }}">
+                                            News & Blog
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="contact.html">
+                                        <a href="{{ route('contact') }}">
                                         Contact Us
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="pricing.html">
-                                            Pricing Plan
+                                        <a href="{{ route('services') }}">
+                                            Services
                                         </a>
                                     </li>
                                 </ul>
@@ -90,32 +90,32 @@
                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay=".6s">
                             <div class="gt-footer-widget-items">
                                 <div class="gt-widget-head">
-                                    <h3>Boostly Resources</h3>
+                                    <h3>Quick Links</h3>
                                 </div>
                                 <ul class="gt-list-area">
                                     <li>
-                                        <a href="#">
-                                           Features
+                                        <a href="{{ route('projects') }}">
+                                           Projects
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                           Key Goods
+                                        <a href="{{ route('services') }}">
+                                           Services
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                           Pro Elements
+                                        <a href="{{ route('about') }}">
+                                           Why SupremeIT
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                      Pricing
+                                        <a href="{{ route('contact') }}">
+                                      Contact Support
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                          Changelog
+                                        <a href="{{ route('contact') }}">
+                                          Get a Quote
                                         </a>
                                     </li>
                                 </ul>
@@ -124,31 +124,31 @@
                          <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-8 ps-xxl-5 wow fadeInUp" data-wow-delay=".8s">
                             <div class="gt-footer-widget-items">
                                 <div class="gt-widget-head">
-                                    <h3>boostly Features</h3>
+                                    <h3>Legal & Help</h3>
                                 </div>
                                  <ul class="gt-list-area">
                                     <li>
                                         <a href="#">
-                                            Newsletter
+                                            Privacy Policy
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                           Events
+                                           Terms of Service
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                           Help center
+                                        <a href="{{ route('contact') }}">
+                                           Help Center
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                      Tutorials
+                                        <a href="{{ route('contact') }}">
+                                      FAQ
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a href="{{ route('contact') }}">
                                          Support
                                         </a>
                                     </li>
@@ -161,7 +161,7 @@
                     <a href="{{ route('home') }}" class="footer-logo">
                         <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="img">
                     </a>
-                    <p>Copyright Boostly. Design By <b>GramenTheme</b></p>
+                    <p>&copy; {{ date('Y') }} SupremeIT. All Rights Reserved.</p>
                     <div class="gt-social-icon d-flex align-items-center style-home-3">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>

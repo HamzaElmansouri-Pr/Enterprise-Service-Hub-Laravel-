@@ -16,17 +16,14 @@
     <div class="card-body">
         @if($services->count() > 0)
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>Image</th>
+                        <th width="80">Icon</th>
                         <th>Title</th>
-                        <th>Subtitle</th>
-                        <th>Price</th>
+                        <th>Slug</th>
                         <th>Status</th>
-                        <th>Featured</th>
-                        <th>Sort Order</th>
-                        <th>Created</th>
+                        <th>Order</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -35,74 +32,42 @@
                     <tr>
                         <td>
                             @if($service->image)
-                                <img src="{{ asset($service->image) }}" alt="{{ $service->title }}" 
+                                <img src="{{ asset($service->image) }}" alt="img" 
                                      class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                             @elseif($service->icon)
                                 <div class="d-flex align-items-center justify-content-center bg-light rounded" 
                                      style="width: 50px; height: 50px;">
-                                    <i class="{{ $service->icon }} text-primary"></i>
+                                     {{-- Check if icon is a path or class --}}
+                                     @if(Str::startsWith($service->icon, 'storage/'))
+                                        <img src="{{ asset($service->icon) }}" style="width:30px;height:30px;">
+                                     @else
+                                        <i class="{{ $service->icon }} text-primary fa-lg"></i>
+                                     @endif
                                 </div>
-                            @else
-                                <div class="d-flex align-items-center justify-content-center bg-light rounded" 
-                                     style="width: 50px; height: 50px;">
-                                    <i class="fas fa-cog text-muted"></i>
-                                </div>
-                            @endif
-                        </td>
-                        <td>
-                            <div>
-                                <strong>{{ $service->title }}</strong>
-                                <br>
-                                <small class="text-muted">{{ Str::limit($service->description, 50) }}</small>
-                            </div>
-                        </td>
-                        <td>{{ $service->subtitle ?? '-' }}</td>
-                        <td>
-                            @if($service->price)
-                                <span class="fw-bold text-success">${{ number_format($service->price, 2) }}</span>
-                                @if($service->price_unit)
-                                    <small class="text-muted">/ {{ $service->price_unit }}</small>
-                                @endif
                             @else
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
+                        <td class="fw-bold">{{ $service->title }}</td>
+                        <td class="text-muted small">{{ $service->slug }}</td>
                         <td>
-                            <form action="{{ route('admin.services.toggle-status', $service) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm {{ $service->is_active ? 'btn-success' : 'btn-secondary' }}">
-                                    {{ $service->is_active ? 'Active' : 'Inactive' }}
-                                </button>
-                            </form>
+                            @if($service->is_active)
+                                <span class="badge bg-success">Active</span>
+                            @else
+                                <span class="badge bg-secondary">Draft</span>
+                            @endif
                         </td>
+                        <td>{{ $service->order_index }}</td>
                         <td>
-                            <form action="{{ route('admin.services.toggle-featured', $service) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm {{ $service->is_featured ? 'btn-warning' : 'btn-outline-warning' }}">
-                                    <i class="fas fa-star"></i>
-                                    {{ $service->is_featured ? 'Featured' : 'Not Featured' }}
-                                </button>
-                            </form>
-                        </td>
-                        <td>
-                            <span class="badge bg-info">{{ $service->sort_order }}</span>
-                        </td>
-                        <td>{{ $service->created_at->format('M d, Y') }}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('admin.services.show', $service) }}" class="btn btn-sm btn-outline-info" title="View">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="d-inline" 
-                                      onsubmit="return confirm('Are you sure you want to delete this service?')">
+                                <form action="{{ route('admin.services.destroy', $service) }}" method="POST" 
+                                      onsubmit="return confirm('Are you sure?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -113,58 +78,21 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-4">
-            {{ $services->links() }}
+        <div class="mt-4">
+            {{ $services->links('pagination::bootstrap-5') }}
         </div>
         @else
         <div class="text-center py-5">
-            <i class="fas fa-cogs fa-3x text-muted mb-3"></i>
-            <h4>No Services Found</h4>
-            <p class="text-muted">Start by creating your first service.</p>
-            <a href="{{ route('admin.services.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>
-                Add New Service
+            <div class="mb-3">
+                <i class="fas fa-cogs fa-3x text-muted opacity-50"></i>
+            </div>
+            <h5 class="text-muted">No services found</h5>
+            <p class="text-muted small">Get started by creating your first service.</p>
+            <a href="{{ route('admin.services.create') }}" class="btn btn-primary mt-2">
+                Create Service
             </a>
         </div>
         @endif
-    </div>
-</div>
-
-<!-- Quick Stats -->
-<div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card stats-card">
-            <div class="card-body text-center">
-                <div class="stats-number">{{ $services->total() }}</div>
-                <div>Total Services</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stats-card">
-            <div class="card-body text-center">
-                <div class="stats-number">{{ $services->where('is_active', true)->count() }}</div>
-                <div>Active Services</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stats-card">
-            <div class="card-body text-center">
-                <div class="stats-number">{{ $services->where('is_featured', true)->count() }}</div>
-                <div>Featured Services</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stats-card">
-            <div class="card-body text-center">
-                <div class="stats-number">{{ $services->where('price', '>', 0)->count() }}</div>
-                <div>Paid Services</div>
-            </div>
-        </div>
     </div>
 </div>
 @endsection

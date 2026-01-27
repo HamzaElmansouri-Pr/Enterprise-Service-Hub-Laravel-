@@ -1,127 +1,92 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Edit Review')
+@section('page-title', 'Edit Review')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Edit Review</h3>
-                    <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Reviews
-                    </a>
-                </div>
-                <div class="card-body">
-                    @if($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ route('admin.reviews.update', $review) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Client Name <span class="text-danger">*</span></label>
+                        <input type="text" name="client_name" class="form-control" value="{{ old('client_name', $review->client_name) }}" required>
+                        @error('client_name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    </div>
 
-                    <form action="{{ route('admin.reviews.update', $review) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $review->name) }}" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Company Name</label>
+                            <input type="text" name="client_company" class="form-control" value="{{ old('client_company', $review->client_company) }}">
+                            @error('client_company') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Position / Role</label>
+                            <input type="text" name="client_position" class="form-control" value="{{ old('client_position', $review->client_position) }}">
+                            @error('client_position') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Review Text <span class="text-danger">*</span></label>
+                        <textarea name="review_text" class="form-control" rows="5" required>{{ old('review_text', $review->review_text) }}</textarea>
+                        @error('review_text') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Rating</label>
+                            <select name="rating" class="form-select">
+                                <option value="5" {{ old('rating', $review->rating) == 5 ? 'selected' : '' }}>5 Stars</option>
+                                <option value="4" {{ old('rating', $review->rating) == 4 ? 'selected' : '' }}>4 Stars</option>
+                                <option value="3" {{ old('rating', $review->rating) == 3 ? 'selected' : '' }}>3 Stars</option>
+                                <option value="2" {{ old('rating', $review->rating) == 2 ? 'selected' : '' }}>2 Stars</option>
+                                <option value="1" {{ old('rating', $review->rating) == 1 ? 'selected' : '' }}>1 Star</option>
+                            </select>
+                            @error('rating') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Client Image</label>
+                            @if($review->client_image)
+                                <div class="mb-2">
+                                    <img src="{{ asset($review->client_image) }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $review->email) }}" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="company" class="form-label">Company</label>
-                                    <input type="text" class="form-control" id="company" name="company" value="{{ old('company', $review->company) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="position" class="form-label">Position</label>
-                                    <input type="text" class="form-control" id="position" name="position" value="{{ old('position', $review->position) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="rating" class="form-label">Rating <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="rating" name="rating" required>
-                                        <option value="">Select Rating</option>
-                                        <option value="1" {{ old('rating', $review->rating) == '1' ? 'selected' : '' }}>1 Star</option>
-                                        <option value="2" {{ old('rating', $review->rating) == '2' ? 'selected' : '' }}>2 Stars</option>
-                                        <option value="3" {{ old('rating', $review->rating) == '3' ? 'selected' : '' }}>3 Stars</option>
-                                        <option value="4" {{ old('rating', $review->rating) == '4' ? 'selected' : '' }}>4 Stars</option>
-                                        <option value="5" {{ old('rating', $review->rating) == '5' ? 'selected' : '' }}>5 Stars</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="image" class="form-label">Profile Image</label>
-                                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                                    @if($review->image)
-                                    <div class="mt-2">
-                                        <img src="{{ asset($review->image) }}" alt="{{ $review->name }}" 
-                                             class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                                        <p class="text-muted small">Current image</p>
-                                    </div>
-                                    @endif
-                                    <div class="form-text">Recommended size: 200x200px. Max size: 2MB</div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label for="title" class="form-label">Review Title <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $review->title) }}" required>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label for="comment" class="form-label">Review Comment <span class="text-danger">*</span></label>
-                                    <textarea class="form-control" id="comment" name="comment" rows="5" required>{{ old('comment', $review->comment) }}</textarea>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" 
-                                               {{ old('is_featured', $review->is_featured) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_featured">
-                                            Featured Review
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="is_approved" name="is_approved" 
-                                               {{ old('is_approved', $review->is_approved) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_approved">
-                                            Approved
-                                        </label>
-                                    </div>
-                                </div>
+                            @endif
+                            <input type="file" name="client_image" class="form-control" accept="image/*">
+                            @error('client_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Sorting Order</label>
+                            <input type="number" name="order_index" class="form-control" value="{{ old('order_index', $review->order_index) }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block">Status</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" name="is_active" value="1" id="isActive" {{ $review->is_active ? 'checked' : '' }}>
+                                <label class="form-check-label" for="isActive">Active</label>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Update Review
-                            </button>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block">Featured</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" name="is_featured" value="1" id="isFeatured" {{ $review->is_featured ? 'checked' : '' }}>
+                                <label class="form-check-label" for="isFeatured">Featured on Home</label>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Update Review</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

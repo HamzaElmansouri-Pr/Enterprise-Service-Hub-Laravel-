@@ -68,7 +68,7 @@
                                 <div class="mb-3">
                                     <label for="image" class="form-label">Slider Image <span class="text-danger">*</span></label>
                                     <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                                    <div class="form-text">Recommended size: 1920x1080px. Max size: 5MB</div>
+                                    <div class="form-text">Recommended size: 1920x1080px. Max size: 2MB</div>
                                 </div>
                             </div>
                             <div class="col-12">

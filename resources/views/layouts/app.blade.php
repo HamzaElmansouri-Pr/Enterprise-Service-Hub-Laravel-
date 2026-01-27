@@ -5,7 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>@yield('title', config('app.name', 'SupremeIT'))</title>
+
+        <!-- Template CSS Assets -->
+        <link rel="shortcut icon" href="{{ asset('assets/img/favicon.svg') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/meanmenu.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -15,26 +27,15 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            {{-- @include('layouts.navigation') --}}
-
-            <!-- Page Heading -->
-            {{-- @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset --}}
-            @include('partials.header')
+    <body class="@yield('body-class', 'body-bg-2')">
+        
+        @include('partials.header')
 
             <!-- Page Content -->
             <main>
-                {{-- {{ $slot }} --}}
                 @yield('content')
             </main>
-        </div>
+            
         @include('partials.footer')
         @stack('scripts')
     </body>

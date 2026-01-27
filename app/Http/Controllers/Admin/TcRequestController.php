@@ -4,101 +4,94 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TcRequest;
-use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TcRequestController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
-        $tcRequests = TcRequest::with('service')->latest()->paginate(15);
+        $this->authorize('viewAny', TcRequest::class);
+        $tcRequests = TcRequest::with('service')->latest()->paginate(10);
         return view('admin.tc-requests.index', compact('tcRequests'));
     }
 
-    public function show(TcRequest $tcRequest)
+    public function show($id)
     {
-        // Mark as read
-        if (!$tcRequest->is_read) {
-            $tcRequest->update(['is_read' => true]);
-        }
+        $tcRequest = TcRequest::with('service')->findOrFail($id);
+        $this->authorize('view', $tcRequest);
         
+        if (!$tcRequest->is_read) {
+            $tcRequest->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+        }
         return view('admin.tc-requests.show', compact('tcRequest'));
     }
 
-    public function destroy(TcRequest $tcRequest)
+    public function destroy($id)
     {
-        // Delete attached file if exists
-        if ($tcRequest->attached_file && file_exists(public_path($tcRequest->attached_file))) {
-            unlink(public_path($tcRequest->attached_file));
-        }
-
+        $tcRequest = TcRequest::findOrFail($id);
+        $this->authorize('delete', $tcRequest);
+        
         $tcRequest->delete();
 
         return redirect()->route('admin.tc-requests.index')
             ->with('success', 'Service request deleted successfully.');
     }
 
-    public function markAsRead(TcRequest $tcRequest)
-    {
-        $tcRequest->update(['is_read' => true]);
-        
-        return redirect()->back()->with('success', 'Service request marked as read.');
-    }
-
-    public function markAsUnread(TcRequest $tcRequest)
-    {
-        $tcRequest->update(['is_read' => false]);
-        
-        return redirect()->back()->with('success', 'Service request marked as unread.');
-    }
-
     public function markAllAsRead()
     {
-        TcRequest::where('is_read', false)->update(['is_read' => true]);
+        $this->authorize('viewAny', TcRequest::class);
+        
+        TcRequest::where('is_read', false)->update([
+            'is_read' => true,
+            'read_at' => now(),
+        ]);
         
         return redirect()->back()->with('success', 'All service requests marked as read.');
     }
 
-    public function bulkDelete(Request $request)
+    public function markAsRead($id)
     {
-        $tcRequestIds = $request->input('tc_request_ids', []);
+        $tcRequest = TcRequest::findOrFail($id);
+        $this->authorize('update', $tcRequest);
         
-        if (empty($tcRequestIds)) {
-            return redirect()->back()->with('error', 'No service requests selected for deletion.');
-        }
-
-        $tcRequests = TcRequest::whereIn('id', $tcRequestIds)->get();
+        $tcRequest->update([
+            'is_read' => true,
+            'read_at' => now(),
+        ]);
         
-        // Delete attached files
-        foreach ($tcRequests as $tcRequest) {
-            if ($tcRequest->attached_file && file_exists(public_path($tcRequest->attached_file))) {
-                unlink(public_path($tcRequest->attached_file));
-            }
-        }
-
-        TcRequest::whereIn('id', $tcRequestIds)->delete();
-        
-        return redirect()->back()->with('success', 'Selected service requests deleted successfully.');
+        return redirect()->back()->with('success', 'Service request marked as read.');
     }
 
-    public function downloadFile(TcRequest $tcRequest)
+    public function markAsUnread($id)
     {
-        if (!$tcRequest->attached_file) {
-            return redirect()->back()->with('error', 'No file attached to this request.');
-        }
+        $tcRequest = TcRequest::findOrFail($id);
+        $this->authorize('update', $tcRequest);
         
-        $filePath = public_path($tcRequest->attached_file);
+        $tcRequest->update([
+            'is_read' => false,
+            'read_at' => null,
+        ]);
         
-        if (!file_exists($filePath)) {
-            // File doesn't exist - clear the file reference from database
-            $tcRequest->update(['attached_file' => null]);
-            
-            return redirect()->back()->with('error', 'File not found on server. The file may have been deleted or moved. The file reference has been cleared from this request.');
-        }
+        return redirect()->back()->with('success', 'Service request marked as unread.');
+    }
 
-        // Get the original filename for download
-        $originalName = basename($tcRequest->attached_file);
+    public function updateStatus(Request $request, $id)
+    {
+        $tcRequest = TcRequest::findOrFail($id);
+        $this->authorize('update', $tcRequest);
         
-        return response()->download($filePath, $originalName);
+        $request->validate([
+            'status' => 'required|in:pending,reviewed,contacted,completed,rejected'
+        ]);
+
+        $tcRequest->update(['status' => $request->status]);
+
+        return redirect()->back()->with('success', 'Request status updated successfully.');
     }
 }

@@ -8,21 +8,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/services', [PageController::class, 'services'])->name('services');
-Route::get('/services/{service}', [PageController::class, 'service'])->name('service.detail');
+Route::get('/services/{service}', [PageController::class, 'service'])->name('services.show');
 Route::get('/projects', [PageController::class, 'projects'])->name('projects');
-Route::get('/projects/{project}', [PageController::class, 'project'])->name('project.detail');
+Route::get('/projects/{project}', [PageController::class, 'project'])->name('projects.show');
 Route::get('/blog', [PageController::class, 'blog'])->name('blog');
-Route::get('/blog/{blog}', [PageController::class, 'blogPost'])->name('blog.detail');
+Route::get('/blog/{blog}', [PageController::class, 'blogPost'])->name('blog.show');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 // Form submissions
 Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit');
 Route::post('/tc-request', [PageController::class, 'tcRequestSubmit'])->name('tc-request.submit');
-
-// Default Laravel routes (keeping for compatibility)
-Route::get('/welcome', function () {
-    return view('welcome');
-});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

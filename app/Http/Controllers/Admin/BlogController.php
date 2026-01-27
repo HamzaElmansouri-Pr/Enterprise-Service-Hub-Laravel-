@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\StoreBlogRequest;
+use App\Http\Requests\Admin\UpdateBlogRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogController extends Controller
@@ -14,7 +17,7 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = Blog::orderBy('created_at', 'desc')->paginate(10);
+        $blogs = Blog::with('author')->latest()->paginate(10);
         return view('admin.blogs.index', compact('blogs'));
     }
 
@@ -29,55 +32,24 @@ class BlogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBlogRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:blogs,slug',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'author' => 'nullable|string|max:255',
-            'category' => 'nullable|string|max:100',
-            'tags' => 'nullable|array',
-            'tags.*' => 'string|max:50',
-            'is_featured' => 'boolean',
-            'is_published' => 'boolean',
-            'published_at' => 'nullable|date',
-        ]);
-
-        // Generate slug if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
+        $data = $request->validated();
+        
+        $data['author_id'] = Auth::id();
+        $data['slug'] = $request->filled('slug') ? Str::slug($request->input('slug')) : Str::slug($request->input('title'));
+        $data['is_active'] = $request->has('is_published') || $request->has('is_active');
+        
+        // Handle publishing date
+        if (empty($data['published_at']) && $data['is_active']) {
+            $data['published_at'] = now();
         }
 
-        // Handle featured image upload
         if ($request->hasFile('featured_image')) {
-            $image = $request->file('featured_image');
-            $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            
-            // Create the directory if it doesn't exist
-            $blogDir = public_path('assets/img/blog');
-            if (!file_exists($blogDir)) {
-                mkdir($blogDir, 0755, true);
-            }
-            
-            // Move the image to the assets directory
-            $image->move($blogDir, $imageName);
-            $validated['featured_image'] = 'assets/img/blog/' . $imageName;
+            $data['image'] = $request->file('featured_image')->store('assets/img/blog', 'public');
         }
 
-        // Convert tags array to JSON
-        if (isset($validated['tags'])) {
-            $validated['tags'] = array_filter($validated['tags']); // Remove empty values
-        }
-
-        // Set published_at if publishing
-        if ($validated['is_published'] && empty($validated['published_at'])) {
-            $validated['published_at'] = now();
-        }
-
-        Blog::create($validated);
+        Blog::create($data);
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post created successfully!');
@@ -102,60 +74,22 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Blog $blog)
+    public function update(UpdateBlogRequest $request, Blog $blog)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:blogs,slug,' . $blog->id,
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
-            'author' => 'nullable|string|max:255',
-            'category' => 'nullable|string|max:100',
-            'tags' => 'nullable|array',
-            'tags.*' => 'string|max:50',
-            'is_featured' => 'boolean',
-            'is_published' => 'boolean',
-            'published_at' => 'nullable|date',
-        ]);
+        $data = $request->validated();
+        
+        $data['slug'] = $request->filled('slug') ? Str::slug($request->input('slug')) : Str::slug($request->input('title'));
+        $data['is_active'] = $request->has('is_published') || $request->has('is_active');
 
-        // Generate slug if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
-        }
-
-        // Handle featured image upload
         if ($request->hasFile('featured_image')) {
-            // Delete old image if exists
-            if ($blog->featured_image && file_exists(public_path($blog->featured_image))) {
-                unlink(public_path($blog->featured_image));
+            // Delete old image
+            if ($blog->image && Storage::disk('public')->exists($blog->image)) {
+                Storage::disk('public')->delete($blog->image);
             }
-            
-            $image = $request->file('featured_image');
-            $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            
-            // Create the directory if it doesn't exist
-            $blogDir = public_path('assets/img/blog');
-            if (!file_exists($blogDir)) {
-                mkdir($blogDir, 0755, true);
-            }
-            
-            // Move the image to the assets directory
-            $image->move($blogDir, $imageName);
-            $validated['featured_image'] = 'assets/img/blog/' . $imageName;
+            $data['image'] = $request->file('featured_image')->store('assets/img/blog', 'public');
         }
 
-        // Convert tags array to JSON
-        if (isset($validated['tags'])) {
-            $validated['tags'] = array_filter($validated['tags']); // Remove empty values
-        }
-
-        // Set published_at if publishing for the first time
-        if ($validated['is_published'] && !$blog->is_published && empty($validated['published_at'])) {
-            $validated['published_at'] = now();
-        }
-
-        $blog->update($validated);
+        $blog->update($data);
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post updated successfully!');
@@ -166,41 +100,13 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        // Delete featured image if exists
-        if ($blog->featured_image && file_exists(public_path($blog->featured_image))) {
-            unlink(public_path($blog->featured_image));
+        if ($blog->image && Storage::disk('public')->exists($blog->image)) {
+            Storage::disk('public')->delete($blog->image);
         }
 
         $blog->delete();
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post deleted successfully!');
-    }
-
-    /**
-     * Toggle published status
-     */
-    public function togglePublished(Blog $blog)
-    {
-        $blog->update([
-            'is_published' => !$blog->is_published,
-            'published_at' => !$blog->is_published ? now() : null
-        ]);
-        
-        $status = $blog->is_published ? 'published' : 'unpublished';
-        return redirect()->back()
-            ->with('success', "Blog post {$status} successfully!");
-    }
-
-    /**
-     * Toggle featured status
-     */
-    public function toggleFeatured(Blog $blog)
-    {
-        $blog->update(['is_featured' => !$blog->is_featured]);
-        
-        $status = $blog->is_featured ? 'featured' : 'unfeatured';
-        return redirect()->back()
-            ->with('success', "Blog post {$status} successfully!");
     }
 }

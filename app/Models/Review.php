@@ -18,45 +18,14 @@ class Review extends Model
         'rating',
         'project_type',
         'is_featured',
-        'is_approved',
-        'sort_order',
+        'is_active',
+        'order_index',
     ];
 
     protected $casts = [
         'is_featured' => 'boolean',
-        'is_approved' => 'boolean',
+        'is_active' => 'boolean',
         'rating' => 'integer',
+        'order_index' => 'integer',
     ];
-
-    /**
-     * Scope for approved reviews
-     */
-    public function scopeApproved($query)
-    {
-        return $query->where('is_approved', true);
-    }
-
-    /**
-     * Scope for featured reviews
-     */
-    public function scopeFeatured($query)
-    {
-        return $query->where('is_featured', true);
-    }
-
-    /**
-     * Scope for ordered reviews
-     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
-    }
-
-    /**
-     * Scope for reviews by rating
-     */
-    public function scopeByRating($query, $rating)
-    {
-        return $query->where('rating', $rating);
-    }
 }

@@ -56,6 +56,28 @@
                                 <strong>Home Page</strong>
                             </div>
                         </td>
+                        <td>About Section</td>
+                        <td><span class="badge bg-secondary">Text & Image</span></td>
+                        <td><span class="badge bg-success">Published</span></td>
+                        <td>{{ now()->subHours(3)->format('M d, Y H:i') }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ route('admin.content.edit', 'home-about') }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ route('home') }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-home text-primary me-2"></i>
+                                <strong>Home Page</strong>
+                            </div>
+                        </td>
                         <td>Features Section</td>
                         <td><span class="badge bg-warning">List Items</span></td>
                         <td><span class="badge bg-success">Published</span></td>
