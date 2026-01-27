@@ -241,3 +241,97 @@ input:focus, textarea:focus, select:focus {
 .swiper-slide .row {
     width: 100%;
 }
+
+/* --- Theme Unification Overrides (Added) --- */
+
+/* Force Fonts */
+body, p, span, a, li, div {
+    font-family: 'Inter', sans-serif;
+}
+h1, h2, h3, h4, h5, h6, .gt-breadcrumb-sub-title, .gt-section-title h2, .font-heading {
+    font-family: 'Space Grotesk', sans-serif !important;
+}
+
+/* Fix Inner Page Text Colors */
+.gt-breadcrumb-sub-title h1,
+.gt-breadcrumb-items li a,
+.gt-breadcrumb-items li {
+    color: #ffffff !important;
+}
+
+/* Override Buttons to match Home */
+.gt-theme-btn, .gt-theme-btn.style-3 {
+    background: #0284c7 !important; /* brand-600 */
+    color: #ffffff !important;
+    border-radius: 0.5rem !important; /* rounded-lg */
+    font-weight: 600 !important;
+    padding: 12px 30px !important;
+    text-transform: capitalize !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.gt-theme-btn:hover {
+    background: #0ea5e9 !important; /* brand-500 */
+    transform: translateY(-2px);
+    color: white !important;
+}
+
+/* Override Section Titles */
+.gt-section-title h6 {
+    color: #0ea5e9 !important; /* brand-500 */
+    font-weight: 700 !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+/* Fix Layout Spacing for Fixed Header */
+.gt-breadcrumb-wrapper {
+    /* Ensure it sits behind the fixed header */
+    margin-top: 0 !important; 
+    padding-top: 180px !important; 
+    position: relative;
+    z-index: 1;
+    /* Add modern overlay matching home */
+}
+
+.gt-breadcrumb-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(17, 24, 39, 0.9) 0%, rgba(17, 24, 39, 0.6) 50%, rgba(17, 24, 39, 0.2) 100%);
+    z-index: -1;
+}
+
+/* Ensure text is above overlay */
+.gt-breadcrumb-wrapper .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Hide Old Header/Footer if they sneak in */
+.gt-header-area, .gt-footer-section-3 {
+    display: none !important;
+}
+
+/* Enhancements for legacy elements */
+.gt-service-box-3, .gt-about-content {
+    background: white;
+    border-radius: 1rem;
+}
+
+input[type="text"], input[type="email"], textarea {
+    border-radius: 0.5rem !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 0.75rem 1rem !important;
+}
+input:focus, textarea:focus {
+    border-color: #0ea5e9 !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
+}
+
+/* Fix footer issues */
+.footer-3 {
+    display: none !important; /* Hide old footer completely */
+}

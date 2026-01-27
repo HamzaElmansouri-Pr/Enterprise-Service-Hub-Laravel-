@@ -20,23 +20,33 @@
         <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+        
+        <!-- Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        
+        <style>
+            [x-cloak] { display: none !important; }
+            /* header space handled by hero sections */
+        </style>
         @stack('styles')
     </head>
-    <body class="@yield('body-class', 'body-bg-2')">
+    <body class="font-sans antialiased text-slate-800 bg-white selection:bg-brand-500 selection:text-white flex flex-col min-h-screen @yield('body-class', 'body-bg-2')">
         
-        @include('partials.header')
+        @include('partials.frontend-header')
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-grow">
                 @yield('content')
             </main>
             
-        @include('partials.footer')
+        @include('partials.frontend-footer')
         @stack('scripts')
     </body>
 </html>
