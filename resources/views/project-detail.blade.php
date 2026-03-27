@@ -70,7 +70,7 @@
                                     <img src="{{ asset($related->image) }}" alt="{{ $related->title }}" style="width: 100%; height: 100%; object-fit: cover;" class="rounded">
                                 </div>
                                 <div class="related-content">
-                                    <h6 class="mb-0"><a href="{{ route('project.detail', $related->slug) }}" class="text-dark text-decoration-none">{{ $related->title }}</a></h6>
+                                    <h6 class="mb-0"><a href="{{ route('projects.show', $related->slug) }}" class="text-dark text-decoration-none">{{ $related->title }}</a></h6>
                                     <small class="text-muted">{{ $related->category }}</small>
                                 </div>
                             </div>

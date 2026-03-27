@@ -12,12 +12,12 @@
             @endif
         </div>
         <div class="content">
-            <h3><a href="{{ route('service.detail', $service) }}">{{ $service->title }}</a></h3>
+            <h3><a href="{{ route('services.show', $service) }}">{{ $service->title }}</a></h3>
             @if($service->subtitle)
             <p class="text-muted">{{ $service->subtitle }}</p>
             @endif
             <p>{{ Str::limit($service->description, 110) }}</p>
-            <a href="{{ route('service.detail', $service) }}" class="arrow-btn"><i class="fa-solid fa-arrow-right"></i></a>
+            <a href="{{ route('services.show', $service) }}" class="arrow-btn"><i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 </div>

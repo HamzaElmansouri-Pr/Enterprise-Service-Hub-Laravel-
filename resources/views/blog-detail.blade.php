@@ -67,7 +67,7 @@
                                     <img src="{{ asset($recent->image) }}" alt="{{ $recent->title }}" class="w-100 h-100 object-fit-cover rounded" onerror="this.src='/assets/img/news/01.jpg'">
                                 </div>
                                 <div class="recent-content">
-                                    <h6 class="mb-1"><a href="{{ route('blog.detail', $recent->slug) }}" class="text-dark text-decoration-none">{{ Str::limit($recent->title, 40) }}</a></h6>
+                                    <h6 class="mb-1"><a href="{{ route('blog.show', $recent->slug) }}" class="text-dark text-decoration-none">{{ Str::limit($recent->title, 40) }}</a></h6>
                                     <small class="text-muted">{{ $recent->published_at ? $recent->published_at->format('M d, Y') : '' }}</small>
                                 </div>
                             </div>

@@ -87,7 +87,7 @@
             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".3s">
                 <div class="project-card">
                     <img src="{{ asset($project->image) }}" alt="{{ $project->title }}" onerror="this.src='/assets/img/project/01.jpg'">
-                    <a href="{{ route('project.detail', $project->slug) }}" class="project-link"></a>
+                    <a href="{{ route('projects.show', $project->slug) }}" class="project-link"></a>
                     <div class="project-overlay">
                         <h4>{{ $project->title }}</h4>
                         <p>{{ $project->category }}</p>

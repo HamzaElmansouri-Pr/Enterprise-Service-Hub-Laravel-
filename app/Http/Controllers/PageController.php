@@ -288,7 +288,9 @@ class PageController extends Controller
             }
         }
         
-        return view('contact', compact('page'));
+        $services = Service::where('is_active', true)->orderBy('order_index')->get();
+        
+        return view('contact', compact('page', 'services'));
     }
 
     public function contactSubmit(Request $request)

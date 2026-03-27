@@ -23,4 +23,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .venv
+/database/database.sqlite
 

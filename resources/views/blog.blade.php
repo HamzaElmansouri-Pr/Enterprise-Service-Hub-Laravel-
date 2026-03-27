@@ -120,10 +120,10 @@
                             <span><i class="fa-solid fa-calendar-days"></i> {{ $blog->published_at ? $blog->published_at->format('M d, Y') : '' }}</span>
                         </div>
                         <h3 class="blog-title">
-                            <a href="{{ route('blog.detail', $blog->slug) }}">{{ Str::limit($blog->title, 55) }}</a>
+                            <a href="{{ route('blog.show', $blog->slug) }}">{{ Str::limit($blog->title, 55) }}</a>
                         </h3>
                         <p>{{ Str::limit($blog->excerpt ?? $blog->content, 100) }}</p>
-                        <a href="{{ route('blog.detail', $blog->slug) }}" class="blog-btn">Read More <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="{{ route('blog.show', $blog->slug) }}" class="blog-btn">Read More <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>

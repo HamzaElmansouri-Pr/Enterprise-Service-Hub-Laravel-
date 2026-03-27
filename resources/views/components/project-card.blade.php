@@ -13,12 +13,12 @@
         </div>
         <div class="content">
             <div class="title">
-                <h3><a href="{{ route('project.detail', $project) }}">{{ $project->title }}</a></h3>
+                <h3><a href="{{ route('projects.show', $project) }}">{{ $project->title }}</a></h3>
                 @if($project->category)
                 <p>{{ $project->category }}</p>
                 @endif
             </div>
-            <a href="{{ route('project.detail', $project) }}" class="icon"><i class="fa-regular fa-arrow-up-right"></i></a>
+            <a href="{{ route('projects.show', $project) }}" class="icon"><i class="fa-regular fa-arrow-up-right"></i></a>
         </div>
     </div>
 </div>

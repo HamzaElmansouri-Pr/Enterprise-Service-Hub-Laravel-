@@ -49,7 +49,7 @@
                                     @if($allServices && $allServices->count() > 0)
                                         @foreach($allServices as $serviceItem)
                                         <li class="{{ $serviceItem->id == $service->id ? 'active' : '' }}">
-                                            <a href="{{ route('service.detail', $serviceItem) }}">{{ $serviceItem->title }}</a>
+                                            <a href="{{ route('services.show', $serviceItem) }}">{{ $serviceItem->title }}</a>
                                             <span><i class="fa-regular fa-arrow-right-long"></i></span>
                                         </li>
                                         @endforeach

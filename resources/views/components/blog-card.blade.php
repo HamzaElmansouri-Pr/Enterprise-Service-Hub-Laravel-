@@ -18,9 +18,9 @@
                     <li><i class="fa-regular fa-calendar-days"></i> {{ $blog->published_at->format('M d, Y') }}</li>
                     @endif
             </ul>
-            <h3><a href="{{ route('blog.detail', $blog) }}">{{ $blog->title }}</a></h3>
+            <h3><a href="{{ route('blog.show', $blog) }}">{{ $blog->title }}</a></h3>
             <p>{{ Str::limit($blog->excerpt, 100) }}</p>
-            <a href="{{ route('blog.detail', $blog) }}" class="read-more">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="{{ route('blog.show', $blog) }}" class="read-more">Read More <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 </div>
