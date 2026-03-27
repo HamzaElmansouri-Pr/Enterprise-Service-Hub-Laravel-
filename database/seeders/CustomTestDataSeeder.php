@@ -13,6 +13,10 @@ class CustomTestDataSeeder extends Seeder
 {
     public function run(): void
     {
+        Service::truncate();
+        Project::truncate();
+        Blog::truncate();
+
         $images = [
             'assets/img/seeded/WhatsApp Image 2025-12-29 at 12.49.31 (1).jpeg',
             'assets/img/seeded/WhatsApp Image 2025-12-29 at 12.49.31.jpeg',

@@ -6,61 +6,77 @@
 
 A powerful, modern, and fully responsive Content Management System (CMS) tailored for Digital Agencies and IT Service providers. Built on **Laravel 12**, it features a beautiful **Tailwind CSS** frontend and a comprehensive Admin Panel for dynamic content control.
 
-## 📸 Project Screenshots
+## 📸 Public Website Preview
 
-### Public Website
-| Homepage | Services |
-| :---: | :---: |
-| ![Home](docs/images/public_home_1774610606976.png) | ![Services](docs/images/public_services_1774610648023.png) |
+| Home | Services | Projects |
+| :---: | :---: | :---: |
+| ![Home](docs/images/public_home_png_1774612645127.png) | ![Services](docs/images/public_services_png_1774612663243.png) | ![Projects](docs/images/public_projects_png_1774612674603.png) |
 
-| Projects | Blog |
+| Blog | Contact |
 | :---: | :---: |
-| ![Projects](docs/images/public_projects_1774610684907.png) | ![Blog](docs/images/public_blog_1774610708249.png) |
+| ![Blog](docs/images/public_blog_png_1774612693780.png) | ![Contact](docs/images/public_contact_png_1774612704989.png) |
 
-### Admin Backoffice
-| Dashboard | Content Management |
+## 🛠️ Admin Backoffice (Full Control)
+
+The backoffice provides modular control over every aspect of the agency's online presence.
+
+### Dashboard & Analytics
+| Dashboard | Content & Settings |
 | :---: | :---: |
-| ![Dashboard](docs/images/admin_dashboard_1774610801996.png) | ![Content](docs/images/admin_content_1774610868406.png) |
+| ![Dashboard](docs/images/admin_dashboard_png_1774612741554.png) | ![Settings](docs/images/admin_settings_png_1774612937758.png) |
+
+### Module Management
+| Services | Projects | Blogs |
+| :---: | :---: | :---: |
+| ![Services](docs/images/admin_services_png_1774612762699.png) | ![Projects](docs/images/admin_projects_png_1774612785108.png) | ![Blogs](docs/images/admin_blogs_png_1774612800255.png) |
+
+| Sliders | Reviews | Users |
+| :---: | :---: | :---: |
+| ![Sliders](docs/images/admin_sliders_png_1774612828105.png) | ![Reviews](docs/images/admin_reviews_png_1774612811481.png) | ![Users](docs/images/admin_users_png_1774612911364.png) |
+
+### Lead Management
+| Contact Messages | Service Requests |
+| :---: | :---: |
+| ![Contacts](docs/images/admin_contacts_png_1774612837146.png) | ![Requests](docs/images/admin_tc_requests_png_1774612900181.png) |
 
 ---
 
 ## 👥 User Roles & Use Cases
 
 ### 1. **Administrator**
-- **Role**: Full system control.
-- **Access**: Complete access to the Admin Panel (`/admin`).
+- **Role**: Full system architect and controller.
+- **Access**: Complete access to all `/admin` modules.
 - **Use Cases**:
   - Manage all website content (Services, Projects, Blogs, Sliders).
-  - Manage application users and roles.
-  - Configure global site settings.
-  - Review and manage Contact and TC (Technical) requests.
+  - Manage application users, roles, and system security.
+  - Configure global site settings and metadata.
+  - Review and analyze Contact and Technical (TC) requests.
 
 ### 2. **Content Editor**
-- **Role**: Content management focus.
-- **Access**: Limited access to the Admin Panel.
+- **Role**: Marketing and content focus.
+- **Access**: Access to dynamic content modules (Services, Blogs, Projects).
 - **Use Cases**:
-  - Create and edit Blog posts and Portfolio projects.
-  - Update Service descriptions and Testimonials.
-  - Manage Sliders for marketing campaigns.
+  - Keep the agency blog updated with industry trends.
+  - Add new successful projects to the portfolio.
+  - Manage client testimonials and homepage sliders.
 
 ### 3. **Public Visitor / Client**
 - **Role**: End-user.
 - **Access**: Public frontend (`/`).
 - **Use Cases**:
-  - Browse agency services and "About Us" information.
-  - Explore past projects and case studies.
-  - Read industry insights on the Blog.
-  - Submit inquiries via the Contact form or request a quote via the TC Request form.
+  - Research agency services and expertise.
+  - View "Case Studies" (Projects) with high-quality visual results.
+  - Submit service inquiries and request detailed technical quotes.
 
 ---
 
 ## 🛠️ Key Features
 
-- **Modern Frontend**: Built with Tailwind CSS and Alpine.js for a premium, responsive UI.
-- **Dynamic Content**: Every section of the site (Hero, Services, Projects, Reviews, etc.) is manageable from the backoffice.
-- **Role-Based Access**: Secure admin panel with distinct access levels for Admins and Editors.
-- **Lead Generation**: Integrated contact and request forms with status tracking in the admin panel.
-- **SEO Ready**: Dynamic meta tags and clean HTML structure.
+- **Modern Frontend**: Premium UI/UX using Tailwind CSS 3.4 and glassmorphism.
+- **Modular Backoffice**: Custom-built CRUD systems for every entity.
+- **Lead Tracking**: Built-in lead management for contacts and technical inquiries.
+- **Seeded Data**: Ready-to-use custom test data with localized imagery for immediate testing.
+- **SEO Ready**: Optimized for search engines with semantic HTML and dynamic tags.
 
 ---
 
@@ -69,7 +85,7 @@ A powerful, modern, and fully responsive Content Management System (CMS) tailore
 ### System Requirements
 - PHP 8.2+
 - Node.js & NPM
-- SQLite (or MySQL)
+- SQLite (recommended for local preview) or MySQL
 
 ### Steps
 
@@ -90,7 +106,7 @@ A powerful, modern, and fully responsive Content Management System (CMS) tailore
    cp .env.example .env
    php artisan key:generate
    ```
-   *Note: Ensure `DB_CONNECTION=sqlite` is set in `.env` for quick local testing.*
+   *Note: Set `DB_CONNECTION=sqlite` in `.env` for quick local testing.*
 
 4. **Database Setup**
    ```bash
