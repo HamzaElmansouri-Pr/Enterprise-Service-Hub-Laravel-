@@ -6,27 +6,15 @@
 
 A powerful, modern, and fully responsive Content Management System (CMS) tailored for Digital Agencies and IT Service providers. Built on **Laravel 12**, it features a beautiful **Tailwind CSS** frontend and a comprehensive Admin Panel for dynamic content control.
 
-## 📸 Public Website Preview (Full-Page)
-
-Experience the modern design across all key pages.
+## 📸 Public Website Preview
 
 | Home | About Us | Contact |
 | :---: | :---: | :---: |
-| ![Home](docs/images/public_home_long_1774619892380.png) | ![About](docs/images/public_about_long_1774619909451.png) | ![Contact](docs/images/public_contact_long_1774619674419.png) |
+| ![Home](docs/images/public_home_png_1774612645127.png) | ![About](docs/images/public_about_1774610627897.png) | ![Contact](docs/images/public_contact_png_1774612704989.png) |
 
-### Services & Projects (List & Detail)
-| Services List | Service Detail |
-| :---: | :---: |
-| ![Services](docs/images/public_services_long_1774619643047.png) | ![Service Detail](docs/images/public_service_detail_long_1774619679423.png) |
-
-| Projects List | Project Detail |
-| :---: | :---: |
-| ![Projects](docs/images/public_projects_long_1774619648644.png) | ![Project Detail](docs/images/public_project_detail_long_1774619682525.png) |
-
-### News & Insights
-| Blog / News |
-| :---: |
-| ![Blog](docs/images/public_blog_long_1774619653349.png) |
+| Services | Projects | Blog |
+| :---: | :---: | :---: |
+| ![Services](docs/images/public_services_png_1774612663243.png) | ![Projects](docs/images/public_projects_png_1774612674603.png) | ![Blog](docs/images/public_blog_png_1774612693780.png) |
 
 ## 🛠️ Admin Backoffice (Full Control)
 
