@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
@@ -73,6 +75,9 @@ class ContentController extends Controller
         foreach ($validatedData as $key => $value) {
             if (is_array($value)) {
                 $value = json_encode($value);
+            } else {
+                // Purify string content to prevent XSS
+                $value = purify_html($value);
             }
             
             $section->contentBlocks()->updateOrCreate(
@@ -80,8 +85,37 @@ class ContentController extends Controller
                 ['content' => $value]
             );
         }
+        
+        // Clear site_info cache if it was updated
+        if ($type === 'site-info') {
+            cache()->forget('site_info');
+        }
 
         return redirect()->back()->with('success', 'Content updated successfully.');
+    }
+
+    public function destroyImage(string $type, string $key)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('deleteImage', Section::class);
+
+        // Fetch section and its blocks
+        $section = Section::where('type', $type)->with('contentBlocks')->first();
+        
+        $block = $section->contentBlocks()->where('key', $key)->first();
+        if ($block) {
+            // Delete physical file if it's in storage
+            if (str_starts_with($block->content, 'storage/')) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $block->content));
+            }
+            $block->delete();
+        }
+
+        // Clear site_info cache if relevant
+        if ($type === 'site-info') {
+            cache()->forget('site_info');
+        }
+
+        return redirect()->back()->with('success', 'Image deleted successfully.');
     }
 
     private function parseType($type)
@@ -146,6 +180,15 @@ class ContentController extends Controller
                 'contact_logo' => 'nullable|string|max:255',
                 'contact_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ],
+            'site-info' => [
+                'site_name' => 'nullable|string|max:255',
+                'site_description' => 'nullable|string|max:500',
+                'site_keywords' => 'nullable|string|max:500',
+                'site_logo' => 'nullable|string|max:255',
+                'site_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'site_favicon' => 'nullable|string|max:255',
+                'site_favicon_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:512',
+            ],
         ];
         return $rules[$type] ?? [];
     }
@@ -156,6 +199,10 @@ class ContentController extends Controller
             'about-main' => ['about_image' => 'about_image_file'],
             'home-about' => ['about_image' => 'about_image_file'],
             'contact-info' => ['contact_logo' => 'contact_logo_file'],
+            'site-info' => [
+                'site_logo' => 'site_logo_file',
+                'site_favicon' => 'site_favicon_file'
+            ],
         ];
         return $map[$type] ?? [];
     }

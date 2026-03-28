@@ -20,7 +20,7 @@
              x-transition:leave="transition ease-in duration-1000"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             style="background-image: url('{{ Storage::url($slider->image) }}'); background-size: cover; background-position: center;">
+             style="background-image: url('{{ resolve_image_url($slider->image) }}'); background-size: cover; background-position: center;">
             
             <!-- Gradient Overlay -->
             <div class="absolute inset-0 bg-gradient-to-r from-dark-900/90 via-dark-900/40 to-transparent"></div>
@@ -124,7 +124,7 @@
                 <div class="absolute -inset-4 bg-gradient-to-tr from-brand-500 to-accent-500 rounded-2xl opacity-20 blur-xl group-hover:opacity-30 transition duration-500"></div>
                 <div class="relative rounded-2xl overflow-hidden shadow-2xl">
                     @if(optional($about)->image)
-                        <img src="{{ Storage::url(optional($about)->image) }}" alt="About Us" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
+                        <img src="{{ resolve_image_url(optional($about)->image) }}" alt="About Us" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
                     @else
                         <!-- Fallback Image -->
                         <div class="w-full h-64 md:h-96 bg-slate-200 flex items-center justify-center">
@@ -228,7 +228,7 @@
             @foreach($projects as $project)
             <div class="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer bg-dark-800">
                 @if($project->image)
-                <img src="{{ Storage::url($project->image) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <img src="{{ resolve_image_url($project->image) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 @endif
                 <div class="absolute inset-0 bg-gradient-to-t from-dark-900/90 via-dark-900/20 to-transparent opacity-90 transition-opacity"></div>
                 

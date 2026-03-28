@@ -8,9 +8,12 @@ use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ServiceController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -44,6 +47,9 @@ class ServiceController extends Controller
             $path = $request->file('image')->store('services', 'public');
             $data['image'] = 'storage/' . $path;
         }
+
+        $data['description'] = purify_html($data['description'] ?? '');
+        $data['subtitle'] = purify_html($data['subtitle'] ?? '');
 
         if ($request->hasFile('icon')) {
              // If icon is an image upload (svg/png)
@@ -88,15 +94,34 @@ class ServiceController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($service->image) {
-                $oldPath = str_replace('storage/', '', $service->image);
-                Storage::disk('public')->delete($oldPath);
+            $file = $request->file('image');
+            $filename = Str::slug($data['title']) . '-' . time();
+
+            // Professional Optimization: Using Intervention Image if available
+            if (class_exists('\Intervention\Image\Laravel\Facades\Image')) {
+                $manager = \Intervention\Image\Laravel\Facades\Image::getFacadeRoot();
+                
+                // 1. Optimized Main Image (WebP, Max 1200px)
+                $mainPath = 'services/' . $filename . '.webp';
+                $image = $manager->read($file);
+                $image->scale(width: 1200);
+                Storage::disk('public')->put($mainPath, (string) $image->toWebp(80));
+                $data['image'] = 'storage/' . $mainPath;
+            } else {
+                // Fallback to standard upload
+                $path = $file->store('services', 'public');
+                $data['image'] = 'storage/' . $path;
             }
-            
-            $path = $request->file('image')->store('services', 'public');
-            $data['image'] = 'storage/' . $path;
         }
+
+        // Handle OG Image
+        if ($request->hasFile('og_image')) {
+            $path = $request->file('og_image')->store('seo/og', 'public');
+            $data['og_image'] = 'storage/' . $path;
+        }
+
+        $data['description'] = purify_html($data['description'] ?? '');
+        $data['subtitle'] = purify_html($data['subtitle'] ?? '');
 
         if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('services/icons', 'public');
@@ -114,11 +139,7 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
-        if ($service->image) {
-             $oldPath = str_replace('storage/', '', $service->image);
-             Storage::disk('public')->delete($oldPath);
-        }
-        
+        $this->authorize('delete', $service);
         $service->delete();
 
         return redirect()->route('admin.services.index')

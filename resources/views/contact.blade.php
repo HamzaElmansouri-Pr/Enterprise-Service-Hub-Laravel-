@@ -193,7 +193,22 @@
 </section>
 @endsection
 
-@push('styles')
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if there's a hash in the URL and activate the corresponding tab
+    var hash = window.location.hash;
+    if (hash === '#service') {
+        var serviceTab = document.getElementById('service-tab');
+        if (serviceTab) {
+            var tab = new bootstrap.Tab(serviceTab);
+            tab.show();
+            // Optional: Scroll to the form
+            serviceTab.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+});
+</script>
 <style>
 /* Contact/TC unified form styling */
 .contact-form-items .form-clt,

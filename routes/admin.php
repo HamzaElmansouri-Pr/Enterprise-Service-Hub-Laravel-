@@ -50,6 +50,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('content', [ContentController::class, 'index'])->name('content.index');
         Route::get('content/{type}/edit', [ContentController::class, 'edit'])->name('content.edit');
         Route::put('content/{type}', [ContentController::class, 'update'])->name('content.update');
+        Route::delete('content/{type}/image/{key}', [ContentController::class, 'destroyImage'])->name('content.destroy-image');
 
         // Settings
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');

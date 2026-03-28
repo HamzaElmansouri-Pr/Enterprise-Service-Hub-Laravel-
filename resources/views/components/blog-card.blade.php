@@ -4,7 +4,7 @@
     <div class="blog-card-items style-2 mt-0 h-100 d-flex flex-column">
         <div class="thumb" style="height: 240px; overflow: hidden;">
                 @if($blog->featured_image)
-                <img src="{{ asset($blog->featured_image) }}" alt="{{ $blog->title }}" class="w-100 h-100" style="object-fit: cover;" loading="lazy">
+                <img src="{{ resolve_image_url($blog->featured_image) }}" alt="{{ $blog->title }}" class="w-100 h-100" style="object-fit: cover;" loading="lazy">
             @else
                 <div class="blog-placeholder d-flex align-items-center justify-content-center h-100 bg-light">
                     <i class="fas fa-newspaper fa-3x text-muted"></i>

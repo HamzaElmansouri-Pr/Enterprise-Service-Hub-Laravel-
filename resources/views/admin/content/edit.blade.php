@@ -48,9 +48,14 @@
                             <label for="hero_image_file" class="form-label">Hero Image</label>
                             <input type="file" class="form-control" id="hero_image_file" name="hero_image_file" accept="image/*">
                             @if(!empty($content['hero_image']))
-                            <div class="mt-2">
-                                <img src="{{ $content['hero_image'] }}" alt="Hero image" style="max-height:100px;" class="img-thumbnail">
-                                <small class="text-muted d-block mt-1">Current image</small>
+                            <div class="mt-2 text-start">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img src="{{ resolve_image_url($content['hero_image']) }}" alt="Hero image" style="max-height:100px;" class="img-thumbnail">
+                                    <button type="submit" form="delete-hero-image" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block">Current image</small>
                             </div>
                             @endif
                         </div>
@@ -126,9 +131,14 @@
                             <label class="form-label">About Image</label>
                             <input type="file" class="form-control" name="about_image_file" accept="image/*">
                             @if(!empty($content['about_image']))
-                            <div class="mt-2">
-                                <img src="{{ $content['about_image'] }}" alt="About image" style="max-height:100px;" class="img-thumbnail">
-                                <small class="text-muted d-block mt-1">Current image</small>
+                            <div class="mt-2 text-start">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img src="{{ resolve_image_url($content['about_image']) }}" alt="About image" style="max-height:100px;" class="img-thumbnail">
+                                    <button type="submit" form="delete-about-image" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block">Current image</small>
                             </div>
                             @endif
                         </div>
@@ -207,9 +217,14 @@
                             <label for="contact_logo_file" class="form-label">Contact Logo</label>
                             <input type="file" class="form-control" id="contact_logo_file" name="contact_logo_file" accept="image/*">
                             @if(!empty($content['contact_logo']))
-                            <div class="mt-2">
-                                <img src="{{ $content['contact_logo'] }}" alt="Contact logo" style="max-height:100px;" class="img-thumbnail">
-                                <small class="text-muted d-block mt-1">Current logo</small>
+                            <div class="mt-2 text-start">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img src="{{ resolve_image_url($content['contact_logo']) }}" alt="Contact logo" style="max-height:100px;" class="img-thumbnail">
+                                    <button type="submit" form="delete-contact-logo" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block">Current logo</small>
                             </div>
                             @endif
                         </div>
@@ -238,9 +253,14 @@
                                     <label for="site_logo_file" class="form-label">Site Logo</label>
                                     <input type="file" class="form-control" id="site_logo_file" name="site_logo_file" accept="image/*">
                                     @if(!empty($content['site_logo']))
-                                    <div class="mt-2">
-                                        <img src="{{ $content['site_logo'] }}" alt="Site logo" style="max-height:100px;" class="img-thumbnail">
-                                        <small class="text-muted d-block mt-1">Current logo</small>
+                                    <div class="mt-2 text-start">
+                                        <div class="d-flex align-items-center gap-3 mb-2">
+                                            <img src="{{ resolve_image_url($content['site_logo']) }}" alt="Site logo" style="max-height:100px;" class="img-thumbnail">
+                                            <button type="submit" form="delete-site-logo" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </div>
+                                        <small class="text-muted d-block">Current logo</small>
                                     </div>
                                     @endif
                                 </div>
@@ -250,9 +270,14 @@
                                     <label for="site_favicon_file" class="form-label">Site Favicon</label>
                                     <input type="file" class="form-control" id="site_favicon_file" name="site_favicon_file" accept="image/*,.ico">
                                     @if(!empty($content['site_favicon']))
-                                    <div class="mt-2">
-                                        <img src="{{ $content['site_favicon'] }}" alt="Site favicon" style="max-height:32px;" class="img-thumbnail">
-                                        <small class="text-muted d-block mt-1">Current favicon</small>
+                                    <div class="mt-2 text-start">
+                                        <div class="d-flex align-items-center gap-3 mb-2">
+                                            <img src="{{ resolve_image_url($content['site_favicon']) }}" alt="Site favicon" style="max-height:32px;" class="img-thumbnail">
+                                            <button type="submit" form="delete-site-favicon" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </div>
+                                        <small class="text-muted d-block">Current favicon</small>
                                     </div>
                                     @endif
                                 </div>
@@ -340,6 +365,29 @@
     </div>
 </div>
 @endsection
+
+@push('hidden-forms')
+    <form id="delete-hero-image" action="{{ route('admin.content.destroy-image', [$contentType, 'hero_image']) }}" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    <form id="delete-about-image" action="{{ route('admin.content.destroy-image', [$contentType, 'about_image']) }}" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    <form id="delete-contact-logo" action="{{ route('admin.content.destroy-image', [$contentType, 'contact_logo']) }}" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    <form id="delete-site-logo" action="{{ route('admin.content.destroy-image', [$contentType, 'site_logo']) }}" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    <form id="delete-site-favicon" action="{{ route('admin.content.destroy-image', [$contentType, 'site_favicon']) }}" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+@endpush
 
 @push('scripts')
 <script>

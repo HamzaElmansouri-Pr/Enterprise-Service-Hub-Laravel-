@@ -159,7 +159,7 @@
                 </div>
                 <div class="gt-footer-bottom-3">
                     <a href="{{ route('home') }}" class="footer-logo">
-                        <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="img">
+                        <img src="{{ resolve_image_url($site_info['site_logo'] ?? 'assets/img/logo/black-logo-3.svg') }}" alt="img">
                     </a>
                     <p>&copy; {{ date('Y') }} Nova Agency. All Rights Reserved.</p>
                     <div class="gt-social-icon d-flex align-items-center style-home-3">

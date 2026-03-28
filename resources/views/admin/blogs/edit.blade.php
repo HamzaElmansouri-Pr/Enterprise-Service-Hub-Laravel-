@@ -57,11 +57,35 @@
                                 </div>
                             </div>
 
+                            <!-- SEO Metadata -->
+                            <div class="mb-4">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h6 class="mb-3">SEO & Social Metadata</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label small">Meta Title</label>
+                                            <input type="text" name="meta_title" class="form-control form-control-sm" value="{{ old('meta_title', $blog->meta_title) }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label small">Meta Description</label>
+                                            <textarea name="meta_description" class="form-control form-control-sm" rows="2">{{ old('meta_description', $blog->meta_description) }}</textarea>
+                                        </div>
+                                        <div class="mb-0">
+                                            <label class="form-label small">Social Image (OG)</label>
+                                            @if($blog->og_image)
+                                                <img src="{{ resolve_image_url($blog->og_image) }}" class="rounded d-block mb-2" style="max-height: 50px;">
+                                            @endif
+                                            <input type="file" name="og_image" class="form-control form-control-sm" accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Featured Image</label>
                                 @if($blog->image)
                                     <div class="mb-2">
-                                        <img src="{{ asset($blog->image) }}" class="rounded img-fluid">
+                                        <img src="{{ resolve_image_url($blog->image) }}" class="rounded img-fluid">
                                     </div>
                                 @endif
                                 <input type="file" name="featured_image" class="form-control" accept="image/*">

@@ -20,6 +20,9 @@ class Blog extends Model
         'published_at',
         'is_active',
         'category',
+        'meta_title',
+        'meta_description',
+        'og_image',
     ];
 
     protected $casts = [

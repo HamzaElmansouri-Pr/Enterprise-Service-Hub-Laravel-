@@ -87,38 +87,58 @@ class PageController extends Controller
                 
                 // Legacy Support
                 if ($section->type === 'hero-3') {
-                    $data['heroTitle'] = $section->getContent('title');
-                    $data['heroSubtitle'] = $section->getContent('subtitle');
-                    $data['heroFeatures'] = json_decode($section->getContent('features'), true);
+                    $val = $section->getContent('title');
+                    if ($val) $data['heroTitle'] = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $data['heroSubtitle'] = $val;
+                    $val = $section->getContent('features');
+                    if ($val) $data['heroFeatures'] = json_decode($val, true);
                 }
                 if ($section->type === 'about-3') {
-                    $about->title = $section->getContent('title');
-                    $about->subtitle = $section->getContent('subtitle');
-                    $about->description = $section->getContent('description');
-                    $about->image = $section->getContent('image');
-                    $about->meta_data['features'] = json_decode($section->getContent('features'), true);
+                    $val = $section->getContent('title');
+                    if ($val) $about->title = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $about->subtitle = $val;
+                    $val = $section->getContent('description');
+                    if ($val) $about->description = $val;
+                    $val = $section->getContent('image');
+                    if ($val) $about->image = $val;
+                    $val = $section->getContent('features');
+                    if ($val) $about->meta_data['features'] = json_decode($val, true);
                 }
                 if ($section->type === 'services-list') {
-                    $data['services_title'] = $section->getContent('title');
-                    $data['services_subtitle'] = $section->getContent('subtitle');
+                    $val = $section->getContent('title');
+                    if ($val) $data['services_title'] = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $data['services_subtitle'] = $val;
                 }
                 if ($section->type === 'projects-list') {
-                    $data['projects_title'] = $section->getContent('title');
-                    $data['projects_subtitle'] = $section->getContent('subtitle');
+                    $val = $section->getContent('title');
+                    if ($val) $data['projects_title'] = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $data['projects_subtitle'] = $val;
                 }
                 if ($section->type === 'reviews-list') {
-                    $data['reviews_title'] = $section->getContent('title');
-                    $data['reviews_subtitle'] = $section->getContent('subtitle');
+                    $val = $section->getContent('title');
+                    if ($val) $data['reviews_title'] = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $data['reviews_subtitle'] = $val;
                 }
                 if ($section->type === 'blog-list') {
-                    $data['blog_title'] = $section->getContent('title');
-                    $data['blog_subtitle'] = $section->getContent('subtitle');
+                    $val = $section->getContent('title');
+                    if ($val) $data['blog_title'] = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $data['blog_subtitle'] = $val;
                 }
                 if ($section->type === 'cta-simple') {
-                    $data['cta']['title'] = $section->getContent('title');
-                    $data['cta']['subtitle'] = $section->getContent('subtitle');
-                    $data['cta']['description'] = $section->getContent('description');
-                    $data['cta']['button_text'] = $section->getContent('button_text');
+                    $val = $section->getContent('title');
+                    if ($val) $data['cta']['title'] = $val;
+                    $val = $section->getContent('subtitle');
+                    if ($val) $data['cta']['subtitle'] = $val;
+                    $val = $section->getContent('description');
+                    if ($val) $data['cta']['description'] = $val;
+                    $val = $section->getContent('button_text');
+                    if ($val) $data['cta']['button_text'] = $val;
                 }
             }
         }
@@ -308,18 +328,13 @@ class PageController extends Controller
         return back()->with('success', 'Thank you for contacting us! We will get back to you shortly.');
     }
 
-    public function tcRequestSubmit(Request $request)
+    public function tcRequestSubmit(\App\Http\Requests\TcRequestSubmitRequest $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email|max:255',
-            'description' => 'required|string',
-            'file' => 'nullable|file|max:10240', // 10MB max
-            'service_id' => 'nullable|exists:services,id',
-        ]);
+        $validated = $request->validated();
 
         $path = null;
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('tc-requests', 'public');
+        if ($request->hasFile('attached_file')) {
+            $path = $request->file('attached_file')->store('tc-requests', 'public');
         }
 
         TcRequest::create([

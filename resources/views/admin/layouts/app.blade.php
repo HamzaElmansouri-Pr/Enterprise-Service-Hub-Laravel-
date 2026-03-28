@@ -209,20 +209,20 @@
                 <span class="badge bg-danger ms-2">{{ \App\Models\TcRequest::where('is_read', false)->count() }}</span>
                 @endif
             </a>
-            {{--
             <a class="nav-link {{ request()->routeIs('admin.content.*') ? 'active' : '' }}" href="{{ route('admin.content.index') }}">
                 <i class="fas fa-edit"></i>
                 <span>Content Management</span>
             </a>
-            --}}
             {{-- <a class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" href="{{ route('admin.pages.index') }}">
                 <i class="fas fa-file-alt"></i>
                 <span>Pages</span>
             </a> --}}
+            @if(Auth::user()->isAdmin())
             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                 <i class="fas fa-users"></i>
                 <span>Users</span>
             </a>
+            @endif
             {{--
             <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
                 <i class="fas fa-cog"></i>
@@ -264,10 +264,10 @@
                             @endif
                         </button>
                         <ul class="dropdown-menu">
-                            {{--
+                            @if(Auth::user()->isAdmin())
                             <li><a class="dropdown-item" href="{{ route('admin.settings.edit-profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
                             <li><a class="dropdown-item" href="{{ route('admin.settings.index') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
-                            --}}
+                            @endif
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -327,6 +327,7 @@
         }, 5000);
     </script>
     
+    @stack('hidden-forms')
     @stack('scripts')
 </body>
 </html>

@@ -22,8 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'image',
-        'role',
-        'is_active',
+        // 'role', // Handled via dedicated method for security
+        // 'is_active', // Handled via dedicated method for security
         'email_verified_at',
     ];
 

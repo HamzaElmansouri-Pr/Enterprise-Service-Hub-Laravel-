@@ -5,7 +5,7 @@
         <div class="d-flex align-items-center mb-3">
             <div class="me-3" style="width:56px;height:56px;overflow:hidden;border-radius:50%;background:#f1f3f5;display:flex;align-items:center;justify-content:center;">
                 @if($review->client_image)
-                    <img src="{{ asset($review->client_image) }}" alt="{{ $review->client_name }}" class="w-100 h-100" style="object-fit:cover;" loading="lazy">
+                    <img src="{{ resolve_image_url($review->client_image) }}" alt="{{ $review->client_name }}" class="w-100 h-100" style="object-fit:cover;" loading="lazy">
                 @else
                     <i class="fas fa-user text-muted"></i>
                 @endif

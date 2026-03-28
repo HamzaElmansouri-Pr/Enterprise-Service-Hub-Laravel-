@@ -4,7 +4,7 @@
     <div class="service-single-card h-100 d-flex flex-column">
         <div class="icon">
             @if($service->image)
-            <img src="{{ asset($service->image) }}" alt="{{ $service->title }}" loading="lazy">
+            <img src="{{ resolve_image_url($service->image) }}" alt="{{ $service->title }}" loading="lazy">
             @else
             <div class="service-placeholder d-flex align-items-center justify-content-center">
                 <i class="{{ $service->icon ?? 'fas fa-cog' }} fa-3x"></i>

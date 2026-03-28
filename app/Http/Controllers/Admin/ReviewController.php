@@ -7,9 +7,12 @@ use App\Models\Review;
 use App\Http\Requests\Admin\StoreReviewRequest;
 use App\Http\Requests\Admin\UpdateReviewRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ReviewController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -93,6 +96,8 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
+        $this->authorize('delete', $review);
+
         if ($review->client_image && Storage::disk('public')->exists($review->client_image)) {
             Storage::disk('public')->delete($review->client_image);
         }

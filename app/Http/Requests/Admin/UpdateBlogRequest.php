@@ -37,6 +37,9 @@ class UpdateBlogRequest extends FormRequest
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'published_at' => 'nullable|date',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'og_image' => 'nullable|image|max:2048',
         ];
     }
 }

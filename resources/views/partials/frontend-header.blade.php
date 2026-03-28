@@ -8,13 +8,22 @@
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                    <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-brand-500 transition-colors">
-                        N
-                    </div>
-                    <span class="text-2xl font-heading font-bold" 
-                          :class="scanned ? 'text-slate-900' : 'text-white'">
-                        Nova<span class="text-brand-500">Agency</span>
-                    </span>
+                    @if(!empty($site_info['site_logo']))
+                        <img src="{{ resolve_image_url($site_info['site_logo']) }}" alt="{{ $site_info['site_name'] ?? 'Nova Agency' }}" class="h-10 w-auto">
+                    @else
+                        <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:bg-brand-500 transition-colors">
+                            {{ substr($site_info['site_name'] ?? 'N', 0, 1) }}
+                        </div>
+                        <span class="text-2xl font-heading font-bold" 
+                              :class="scanned ? 'text-slate-900' : 'text-white'">
+                            @php($siteName = $site_info['site_name'] ?? 'NovaAgency')
+                            @if($siteName === 'NovaAgency')
+                                Nova<span class="text-brand-500">Agency</span>
+                            @else
+                                {{ $siteName }}
+                            @endif
+                        </span>
+                    @endif
                 </a>
 
                 <!-- Desktop Menu -->
@@ -24,7 +33,7 @@
                     <a href="{{ route('services') }}" class="font-medium hover:text-brand-600 transition-colors" :class="scanned ? 'text-slate-700' : 'text-white/90'">Services</a>
                     <a href="{{ route('projects') }}" class="font-medium hover:text-brand-600 transition-colors" :class="scanned ? 'text-slate-700' : 'text-white/90'">Projects</a>
                     <a href="{{ route('blog') }}" class="font-medium hover:text-brand-600 transition-colors" :class="scanned ? 'text-slate-700' : 'text-white/90'">Blog</a>
-                    <a href="{{ route('contact') }}" 
+                    <a href="{{ route('contact') }}#service" 
                        class="px-5 py-2.5 rounded-lg font-semibold transition-all shadow-lg"
                        :class="scanned ? 'bg-brand-600 text-white hover:bg-brand-500' : 'bg-white text-brand-600 hover:bg-brand-50'">
                         Get Started
@@ -53,6 +62,6 @@
             <a href="{{ route('services') }}" class="text-slate-700 font-medium hover:text-brand-600">Services</a>
             <a href="{{ route('projects') }}" class="text-slate-700 font-medium hover:text-brand-600">Projects</a>
             <a href="{{ route('blog') }}" class="text-slate-700 font-medium hover:text-brand-600">Blog</a>
-            <a href="{{ route('contact') }}" class="bg-brand-600 text-white px-5 py-3 rounded-lg text-center font-semibold hover:bg-brand-500">Get Started</a>
+            <a href="{{ route('contact') }}#service" class="bg-brand-600 text-white px-5 py-3 rounded-lg text-center font-semibold hover:bg-brand-500">Get Started</a>
         </div>
     </nav>

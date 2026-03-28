@@ -16,8 +16,8 @@ Route::get('/blog/{blog}', [PageController::class, 'blogPost'])->name('blog.show
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 // Form submissions
-Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit');
-Route::post('/tc-request', [PageController::class, 'tcRequestSubmit'])->name('tc-request.submit');
+Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit')->middleware('throttle:form-submissions');
+Route::post('/tc-request', [PageController::class, 'tcRequestSubmit'])->name('tc-request.submit')->middleware('throttle:form-submissions');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

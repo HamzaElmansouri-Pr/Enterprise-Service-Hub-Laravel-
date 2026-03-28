@@ -23,6 +23,9 @@ class StoreServiceRequest extends FormRequest
             'icon' => 'nullable', 
             'is_active' => 'boolean',
             'order_index' => 'integer|min:0',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'og_image' => 'nullable|image|max:2048',
         ];
     }
 

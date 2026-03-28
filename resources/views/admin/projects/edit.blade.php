@@ -48,7 +48,7 @@
                             <label class="form-label">Project Image</label>
                             @if($project->image)
                                 <div class="mb-2">
-                                    <img src="{{ asset($project->image) }}" class="rounded" style="max-height: 100px;">
+                                    <img src="{{ resolve_image_url($project->image) }}" class="rounded" style="max-height: 100px;">
                                 </div>
                             @endif
                             <input type="file" name="image" class="form-control" accept="image/*">
@@ -71,6 +71,33 @@
                             <div class="form-check form-switch mt-2">
                                 <input class="form-check-input" type="checkbox" name="is_active" value="1" id="isActive" {{ $project->is_active ? 'checked' : '' }}>
                                 <label class="form-check-label" for="isActive">Active</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEO Metadata -->
+                    <div class="card bg-light border-0 shadow-none mt-4">
+                        <div class="card-header bg-transparent border-0 ps-0">
+                            <h5 class="mb-0">SEO & Social Metadata</h5>
+                        </div>
+                        <div class="card-body ps-0 pe-0">
+                            <div class="mb-3">
+                                <label class="form-label">Meta Title (SEO)</label>
+                                <input type="text" name="meta_title" class="form-control" value="{{ old('meta_title', $project->meta_title) }}" placeholder="Leave empty to use project title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Meta Description</label>
+                                <textarea name="meta_description" class="form-control" rows="3" placeholder="Brief summary for search engines">{{ old('meta_description', $project->meta_description) }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Social Share Image (OG Image)</label>
+                                @if($project->og_image)
+                                    <div class="mb-2">
+                                        <img src="{{ resolve_image_url($project->og_image) }}" class="rounded shadow-sm" style="max-height: 80px;">
+                                    </div>
+                                @endif
+                                <input type="file" name="og_image" class="form-control" accept="image/*">
+                                <div class="form-text">Recommended size: 1200x630px. If empty, the project image will be used.</div>
                             </div>
                         </div>
                     </div>

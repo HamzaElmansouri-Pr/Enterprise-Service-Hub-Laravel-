@@ -135,7 +135,7 @@
 
 @section('content')
 <!-- Gt Breadcrumb Section Start -->
-<div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ $page->image ? asset($page->image) : asset('assets/img/breadcrumb-bg.jpg') }}');">
+<div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ resolve_image_url($page->image ?? 'assets/img/breadcrumb-bg.jpg') }}');">
     <div class="container">
         <div class="gt-page-heading">
             <div class="gt-breadcrumb-sub-title">

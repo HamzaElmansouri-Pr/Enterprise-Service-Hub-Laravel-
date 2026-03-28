@@ -57,7 +57,7 @@
 
 @section('content')
 <!-- Gt Breadcrumb Section Start -->
-<div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ $page->image ? asset($page->image) : asset('assets/img/breadcrumb-bg.jpg') }}');">
+<div class="gt-breadcrumb-wrapper bg-cover" style="background-image: url('{{ resolve_image_url($page->image ?? 'assets/img/breadcrumb-bg.jpg') }}');">
     <div class="container">
         <div class="gt-page-heading">
             <div class="gt-breadcrumb-sub-title">
@@ -86,7 +86,7 @@
             @forelse($projects as $project)
             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".3s">
                 <div class="project-card">
-                    <img src="{{ asset($project->image) }}" alt="{{ $project->title }}" onerror="this.src='/assets/img/project/01.jpg'">
+                    <img src="{{ resolve_image_url($project->image) }}" alt="{{ $project->title }}" onerror="this.src='/assets/img/project/01.jpg'">
                     <a href="{{ route('projects.show', $project->slug) }}" class="project-link"></a>
                     <div class="project-overlay">
                         <h4>{{ $project->title }}</h4>

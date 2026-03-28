@@ -39,6 +39,6 @@ class Section extends Model
     {
         // This is a naive implementation; in production we might eager load this differently
         $block = $this->contentBlocks->where('key', $key)->first();
-        return $block ? $block->content : $default;
+        return (string) ($block ? $block->content : $default);
     }
 }

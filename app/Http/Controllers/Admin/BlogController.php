@@ -9,9 +9,12 @@ use App\Http\Requests\Admin\UpdateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BlogController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -49,6 +52,7 @@ class BlogController extends Controller
             $data['image'] = $request->file('featured_image')->store('assets/img/blog', 'public');
         }
 
+        $data['title'] = purify_html($data['title']);
         Blog::create($data);
 
         return redirect()->route('admin.blogs.index')
@@ -82,12 +86,16 @@ class BlogController extends Controller
         $data['is_active'] = $request->has('is_published') || $request->has('is_active');
 
         if ($request->hasFile('featured_image')) {
-            // Delete old image
-            if ($blog->image && Storage::disk('public')->exists($blog->image)) {
-                Storage::disk('public')->delete($blog->image);
-            }
             $data['image'] = $request->file('featured_image')->store('assets/img/blog', 'public');
         }
+
+        // Handle OG Image
+        if ($request->hasFile('og_image')) {
+            $data['og_image'] = $request->file('og_image')->store('seo/og', 'public');
+        }
+
+        $data['title'] = purify_html($data['title']);
+        $data['content'] = purify_html($data['content'] ?? '');
 
         $blog->update($data);
 
@@ -100,6 +108,8 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
+        $this->authorize('delete', $blog);
+
         if ($blog->image && Storage::disk('public')->exists($blog->image)) {
             Storage::disk('public')->delete($blog->image);
         }

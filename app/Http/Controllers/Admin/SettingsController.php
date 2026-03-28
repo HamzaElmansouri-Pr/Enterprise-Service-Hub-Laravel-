@@ -8,14 +8,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SettingsController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display the settings index page
      */
     public function index()
     {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Only administrators can access site settings.');
+        }
         $user = Auth::user();
         return view('admin.settings.index', compact('user'));
     }

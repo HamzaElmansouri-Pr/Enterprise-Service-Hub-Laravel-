@@ -53,17 +53,28 @@ class UserService
             }
         }
         
-        // Only set is_active if it is provided (checkbox behavior usually)
-        // But for Admin update, it is passed. For profile update, it might NOT be passed.
-        // We should only touch is_active if 'is_active' key exists or maybe not touch it in profile update?
         // Profile update only passes name/email.
-        if (array_key_exists('is_active', $data)) {
-             $data['is_active'] = (bool)$data['is_active'];
-        }
-
+        // Sensitive fields like role/is_active are ignored here because they are not fillable.
+        
         return $this->userRepository->update($id, $data);
     }
 
+    /**
+     * Set user role (Administrative action only).
+     */
+    public function assignRole(int $id, string $role): bool
+    {
+        $user = $this->userRepository->find($id);
+        if (!$user) return false;
+
+        // Using forceFill as role is no longer fillable
+        $user->forceFill(['role' => $role])->save();
+        return true;
+    }
+
+    /**
+     * Delete user with self-delete protection.
+     */
     public function deleteUser(int $id): bool
     {
         // Check if self-delete logic needed? 

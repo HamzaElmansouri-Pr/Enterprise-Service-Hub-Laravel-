@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', $project->title . ' - Nova Agency Projects')
+@section('meta_title', $project->meta_title ?: $project->title . ' | Nova Agency')
+@section('meta_description', $project->meta_description ?: Str::limit(strip_tags($project->description), 160))
+@section('og_image', resolve_image_url($project->og_image ?: $project->image))
 @section('page-title', 'Project Details')
 
 @section('content')
@@ -43,7 +46,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="project-details-image mb-30">
-                        <img src="{{ asset($project->image) }}" alt="{{ $project->title }}" class="img-fluid rounded w-100" onerror="this.src='/assets/img/project/01.jpg'">
+                        <img src="{{ resolve_image_url($project->image) }}" alt="{{ $project->title }}" class="img-fluid rounded w-100" onerror="this.src='/assets/img/project/01.jpg'">
                     </div>
                     <div class="project-details-content">
                         <h3 class="mb-3">{{ $project->title }}</h3>
@@ -67,7 +70,7 @@
                             @foreach($relatedProjects as $related)
                             <div class="related-project-item mb-3 d-flex align-items-center">
                                 <div class="related-thumb me-3" style="width: 80px; height: 60px; flex-shrink: 0;">
-                                    <img src="{{ asset($related->image) }}" alt="{{ $related->title }}" style="width: 100%; height: 100%; object-fit: cover;" class="rounded">
+                                    <img src="{{ resolve_image_url($related->image) }}" alt="{{ $related->title }}" style="width: 100%; height: 100%; object-fit: cover;" class="rounded">
                                 </div>
                                 <div class="related-content">
                                     <h6 class="mb-0"><a href="{{ route('projects.show', $related->slug) }}" class="text-dark text-decoration-none">{{ $related->title }}</a></h6>

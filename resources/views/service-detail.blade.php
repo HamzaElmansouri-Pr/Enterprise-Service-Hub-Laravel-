@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', $service->title . ' - Service Details')
+@section('meta_title', $service->meta_title ?: $service->title . ' | Nova Agency')
+@section('meta_description', $service->meta_description ?: Str::limit(strip_tags($service->description), 160))
+@section('og_image', resolve_image_url($service->og_image ?: $service->image))
 
 @section('content')
 <!-- Gt Breadcrumb Section Start -->
@@ -33,7 +36,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="details-image">
-                        <img src="{{ $service->image ? asset($service->image) : asset('assets/img/inner/service/service-details-1.jpg') }}" alt="{{ $service->title }}">
+                        <img src="{{ resolve_image_url($service->image ?? 'assets/img/inner/service/service-details-1.jpg') }}" alt="{{ $service->title }}">
                     </div>
                 </div>
             </div>
@@ -95,7 +98,7 @@
                             @endif
                         </p>
                         <div class="thumb">
-                            <img src="{{ $service->image ? asset($service->image) : asset('assets/img/inner/service/service-details-2.jpg') }}" alt="{{ $service->title }}">
+                            <img src="{{ resolve_image_url($service->image ?? 'assets/img/inner/service/service-details-2.jpg') }}" alt="{{ $service->title }}">
                         </div>
                         <h3>
                             The Challange

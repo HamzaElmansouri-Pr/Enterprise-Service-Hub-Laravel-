@@ -78,7 +78,7 @@ class SliderController extends Controller
 
     public function destroy(Slider $slider)
     {
-        // $this->authorize('delete', $slider);
+        $this->authorize('delete', $slider);
         
         if ($slider->image) {
             Storage::disk('public')->delete($slider->image);

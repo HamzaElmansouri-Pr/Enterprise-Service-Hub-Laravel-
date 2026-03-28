@@ -15,20 +15,20 @@ class UserController extends Controller
 
     public function index()
     {
-        // $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', User::class);
         $users = User::latest()->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
     public function create()
     {
-        // $this->authorize('create', User::class);
+        $this->authorize('create', User::class);
         return view('admin.users.create');
     }
 
     public function store(StoreUserRequest $request)
     {
-        // $this->authorize('create', User::class);
+        $this->authorize('create', User::class);
         
         $data = $request->validated();
         $data['password'] = bcrypt($data['password']);
@@ -40,19 +40,19 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-         // $this->authorize('view', $user);
+         $this->authorize('view', $user);
          return view('admin.users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
-        // $this->authorize('update', $user);
+        $this->authorize('update', $user);
         return view('admin.users.edit', compact('user'));
     }
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        // $this->authorize('update', $user);
+        $this->authorize('update', $user);
         
         $data = $request->validated();
         if (isset($data['password']) && !empty($data['password'])) {
@@ -68,9 +68,9 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        // $this->authorize('delete', $user);
+        $this->authorize('delete', $user);
         
-        // Prevent deleting self
+        // Prevent deleting self (Duplicate check but safe)
         if (auth()->id() === $user->id) {
              return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
         }
@@ -81,7 +81,7 @@ class UserController extends Controller
 
     public function toggleActive(User $user)
     {
-        // $this->authorize('update', $user);
+        $this->authorize('update', $user);
         
         if (auth()->id() === $user->id) {
              return redirect()->back()->with('error', 'You cannot deactivate yourself.');

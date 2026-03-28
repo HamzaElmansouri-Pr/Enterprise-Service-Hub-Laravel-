@@ -71,7 +71,7 @@
                                     <input type="file" class="form-control" id="image" name="image" accept="image/*">
                                     @if($slider->image)
                                     <div class="mt-2">
-                                        <img src="{{ Storage::url($slider->image) }}" alt="{{ $slider->title }}" 
+                                        <img src="{{ resolve_image_url($slider->image) }}" alt="{{ $slider->title }}" 
                                              class="img-thumbnail" style="max-height: 200px;">
                                         <p class="text-muted small">Current image</p>
                                     </div>

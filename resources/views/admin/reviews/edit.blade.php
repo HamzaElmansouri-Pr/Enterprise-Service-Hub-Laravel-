@@ -53,7 +53,7 @@
                             <label class="form-label">Client Image</label>
                             @if($review->client_image)
                                 <div class="mb-2">
-                                    <img src="{{ asset($review->client_image) }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <img src="{{ resolve_image_url($review->client_image) }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
                                 </div>
                             @endif
                             <input type="file" name="client_image" class="form-control" accept="image/*">

@@ -19,6 +19,9 @@ class Project extends Model
         'image',
         'is_active',
         'order_index',
+        'meta_title',
+        'meta_description',
+        'og_image',
     ];
 
     protected $casts = [

@@ -4,8 +4,21 @@
                 <!-- Brand -->
                 <div>
                     <a href="{{ route('home') }}" class="flex items-center gap-2 mb-6">
-                        <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">N</div>
-                        <span class="text-2xl font-heading font-bold text-white">Nova<span class="text-brand-500">Agency</span></span>
+                        @if(!empty($site_info['site_logo']))
+                            <img src="{{ resolve_image_url($site_info['site_logo']) }}" alt="{{ $site_info['site_name'] ?? 'Nova Agency' }}" class="h-10 w-auto">
+                        @else
+                            <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                                {{ substr($site_info['site_name'] ?? 'N', 0, 1) }}
+                            </div>
+                            <span class="text-2xl font-heading font-bold text-white">
+                                @php($siteName = $site_info['site_name'] ?? 'NovaAgency')
+                                @if($siteName === 'NovaAgency')
+                                    Nova<span class="text-brand-500">Agency</span>
+                                @else
+                                    {{ $siteName }}
+                                @endif
+                            </span>
+                        @endif
                     </a>
                     <p class="text-slate-400 mb-6 leading-relaxed">
                         Transforming businesses through innovative technology solutions. Your partner in digital excellence.

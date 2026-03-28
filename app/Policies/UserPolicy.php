@@ -1,16 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any models.
      */
@@ -24,8 +20,6 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        // Admin can view anyone. Users can see themselves (if we had a dashboard, but strictly Admin Panel here).
-        // Since this controls Admin Panel access mostly, standard users shouldn't be here.
         return $user->isAdmin() || $user->id === $model->id;
     }
 
@@ -42,6 +36,8 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        // Only admins can update other users. 
+        // Users can update themselves via Settings (handled separately there usually, but Policy provides backstop).
         return $user->isAdmin() || $user->id === $model->id;
     }
 
@@ -50,10 +46,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        // Prevent deleting self to avoid lockout
-        if ($user->id === $model->id) {
-            return false;
-        }
-        return $user->isAdmin();
+        // Only admins can delete, and cannot delete themselves (handled in controller too)
+        return $user->isAdmin() && $user->id !== $model->id;
     }
 }

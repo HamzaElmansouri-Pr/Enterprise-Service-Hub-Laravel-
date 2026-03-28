@@ -4,9 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="@yield('meta_description', 'Nova Agency - Professional IT Solutions & Consulting')">
+    <meta name="description" content="@yield('meta_description', $meta_description ?? 'Nova Agency - Professional IT Solutions & Consulting')">
+    <meta property="og:title" content="@yield('title', 'Nova Agency') | IT Solutions">
+    <meta property="og:description" content="@yield('meta_description', $meta_description ?? 'Nova Agency')">
+    <meta property="og:image" content="@yield('og_image', asset($og_image ?? 'images/og-default.jpg'))">
+    <meta name="twitter:card" content="summary_large_image">
 
-    <title>@yield('title', 'Nova Agency') | IT Solutions</title>
+    <title>@yield('meta_title', 'Nova Agency | IT Solutions')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -18,6 +18,9 @@ class Service extends Model
         'image',
         'order_index',
         'is_active',
+        'meta_title',
+        'meta_description',
+        'og_image',
     ];
 
     public function getRouteKeyName()
