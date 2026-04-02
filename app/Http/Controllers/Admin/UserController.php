@@ -68,12 +68,12 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        $this->authorize('delete', $user);
-        
-        // Prevent deleting self (Duplicate check but safe)
+        // Prevent deleting self (Check BEFORE authorization to allow redirect instead of 403)
         if (auth()->id() === $user->id) {
              return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
         }
+
+        $this->authorize('delete', $user);
 
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
@@ -81,11 +81,11 @@ class UserController extends Controller
 
     public function toggleActive(User $user)
     {
-        $this->authorize('update', $user);
-        
         if (auth()->id() === $user->id) {
              return redirect()->back()->with('error', 'You cannot deactivate yourself.');
         }
+
+        $this->authorize('update', $user);
 
         $user->update([
             'is_active' => !$user->is_active

@@ -34,4 +34,12 @@ class Blog extends Model
     {
         return $this->belongsTo(User::class, 'author_id');
     }
+
+    /**
+     * Scope a query to only include active blog posts.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true)->whereNotNull('published_at');
+    }
 }

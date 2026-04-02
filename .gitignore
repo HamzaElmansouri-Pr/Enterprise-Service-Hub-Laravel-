@@ -24,4 +24,17 @@ Homestead.yaml
 Thumbs.db
 .venv
 /database/database.sqlite
+/database/database.sqlite-journal
+
+# Temporary tool files
+test_results.txt
+fix_admin_properly.php
+
+# Additional Laravel & IDE
+.phpunit.result.cache
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
+.env.*
+!.env.example
 

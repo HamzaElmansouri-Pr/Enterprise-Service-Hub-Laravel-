@@ -47,7 +47,7 @@ class FormSubmissionTest extends TestCase
         $data = [
             'email' => $this->faker->email,
             'description' => 'I need help with this project.',
-            'file' => $file,
+            'attached_file' => $file,
         ];
 
         $response = $this->post(route('tc-request.submit'), $data);

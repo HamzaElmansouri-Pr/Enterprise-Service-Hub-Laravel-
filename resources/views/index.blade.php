@@ -6,8 +6,8 @@
 @section('content')
 
 <!-- HERO SECTION (Slider) -->
-<section class="relative h-screen min-h-[600px] flex items-center overflow-hidden bg-dark-900" 
-         x-data="{ activeSlide: 0, totalSlides: {{ $sliders->count() }}, slideInterval: null }" 
+<section class="relative h-screen flex items-center overflow-hidden bg-dark-900" 
+         x-data="{ activeSlide: 0, totalSlides: {{ $sliders->count() ?? 0 }}, slideInterval: null }" 
          x-init="if(totalSlides > 1) slideInterval = setInterval(() => { activeSlide = activeSlide === totalSlides - 1 ? 0 : activeSlide + 1 }, 6000)">
     
     @if($sliders->count() > 0)
@@ -20,13 +20,13 @@
              x-transition:leave="transition ease-in duration-1000"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             style="background-image: url('{{ resolve_image_url($slider->image) }}'); background-size: cover; background-position: center;">
+             style="background-image: url('{{ resolve_image_url($slider->image) }}'); background-size: cover; background-position: center center;">
             
             <!-- Gradient Overlay -->
             <div class="absolute inset-0 bg-gradient-to-r from-dark-900/90 via-dark-900/40 to-transparent"></div>
 
             <div class="container mx-auto px-4 md:px-6 h-full relative z-10 flex items-center">
-                <div class="max-w-3xl pt-20">
+                <div class="max-w-3xl pt-10">
                     <!-- Badge -->
                     <div class="inline-flex items-center space-x-2 bg-brand-500/10 border border-brand-500/20 rounded-full px-3 py-1 mb-6 backdrop-blur-sm"
                          x-show="activeSlide === {{ $index }}"
@@ -188,17 +188,17 @@
     <div class="container mx-auto px-4 md:px-6">
         <div class="text-center max-w-3xl mx-auto mb-10 md:mb-16">
             <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">Our Expertise</span>
-            <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900 mb-4">High-Impact IT Services</h2>
-            <p class="text-slate-500">Comprehensive technology solutions designed to scale with your business.</p>
+            <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900 mb-4">{{ $cms->services_title ?? 'High-Impact IT Services' }}</h2>
+            <p class="text-slate-500">{{ $cms->services_subtitle ?? 'Comprehensive technology solutions designed to scale with your business.' }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             @foreach($services as $service)
             <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 group border border-slate-100 hover:-translate-y-1">
                 <div class="w-14 h-14 bg-brand-50 rounded-xl mb-6 flex items-center justify-center text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
-                    <i class="fa-solid {{ str_contains(strtolower($service->name ?? ''), 'cloud') ? 'fa-cloud' : (str_contains(strtolower($service->name ?? ''), 'web') ? 'fa-code' : 'fa-layer-group') }} text-2xl"></i>
+                    <i class="fa-solid {{ str_contains(strtolower($service->title ?? ''), 'cloud') ? 'fa-cloud' : (str_contains(strtolower($service->title ?? ''), 'web') ? 'fa-code' : 'fa-layer-group') }} text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 mb-4 font-heading group-hover:text-brand-600 transition-colors">{{ $service->name }}</h3>
+                <h3 class="text-xl font-bold text-slate-900 mb-4 font-heading group-hover:text-brand-600 transition-colors">{{ $service->title }}</h3>
                 <p class="text-slate-500 mb-6 line-clamp-3">
                     {{ $service->description }}
                 </p>
@@ -216,8 +216,8 @@
     <div class="container mx-auto px-4 md:px-6">
         <div class="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-12">
             <div class="mb-4 md:mb-0">
-                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Our Portfolio</span>
-                <h2 class="text-3xl md:text-4xl font-bold font-heading text-white">Featured Projects</h2>
+                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">{{ $cms->projects_subtitle ?? 'Our Portfolio' }}</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-heading text-white">{{ $cms->projects_title ?? 'Featured Projects' }}</h2>
             </div>
             <a href="{{ route('projects') }}" class="hidden md:inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
                 View All Projects <i class="fa-solid fa-arrow-right"></i>
@@ -247,6 +247,56 @@
             <a href="{{ route('projects') }}" class="inline-flex items-center gap-2 text-brand-400 font-semibold hover:text-white transition-colors">
                 View All Projects <i class="fa-solid fa-arrow-right"></i>
             </a>
+        </div>
+    </div>
+</section>
+
+@if($partnersSection && $partnersSection->is_active && $partners->count() > 0)
+    @include('components.partner-marquee')
+@endif
+
+<!-- REVIEWS SECTION -->
+<section class="py-12 md:py-20 lg:py-32 bg-slate-50">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">{{ $cms->reviews_subtitle ?? 'Testimonials' }}</span>
+            <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900 mb-4">{{ $cms->reviews_title ?? 'What our clients say' }}</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @forelse($reviews as $review)
+                <x-review-card :review="$review" />
+            @empty
+                <div class="col-span-full text-center text-slate-400 py-10">
+                    No reviews available yet.
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+<!-- BLOG SECTION -->
+<section class="py-12 md:py-20 lg:py-32 bg-white">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+            <div class="mb-4 md:mb-0">
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm mb-2 block">{{ $cms->blog_subtitle ?? 'Latest News' }}</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900">{{ $cms->blog_title ?? 'Direct from the Blog' }}</h2>
+            </div>
+            <a href="{{ route('blog') }}" class="hidden md:inline-flex items-center gap-2 text-brand-600 font-bold hover:text-brand-700 transition-colors group">
+                View All Posts 
+                <i class="fa-solid fa-arrow-right transform transition-transform group-hover:translate-x-1"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @forelse($blogs as $blog)
+                <x-blog-card :blog="$blog" />
+            @empty
+                <div class="col-span-full text-center text-slate-400 py-10">
+                    No blog posts published yet.
+                </div>
+            @endforelse
         </div>
     </div>
 </section>

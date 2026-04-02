@@ -8,6 +8,7 @@ use Database\Seeders\StructureSeeder;
 use Database\Seeders\ServiceSeeder;
 use Database\Seeders\ProjectSeeder;
 use Database\Seeders\BlogSeeder;
+use Database\Seeders\SliderSeeder;
 use Database\Seeders\ReviewSeeder;
 
 class HomePageTest extends TestCase
@@ -17,6 +18,7 @@ class HomePageTest extends TestCase
     public function test_homepage_loads_correctly_with_cms_data_and_all_modules(): void
     {
         // 1. Run Seeders
+        $this->seed(SliderSeeder::class);
         $this->seed(StructureSeeder::class);
         $this->seed(ServiceSeeder::class);
         $this->seed(ProjectSeeder::class);
@@ -29,8 +31,8 @@ class HomePageTest extends TestCase
         // 3. Assert Status 200
         $response->assertStatus(200);
 
-        // 4. Assert CMS content
-        $response->assertSee('The complete CRM solution built for your success');
+        // 4. Assert CMS content (Hero comes from SliderSeeder)
+        $response->assertSee('Innovative IT Solutions');
         $response->assertSee('What We Offer');
         $response->assertSee('Recent Work');
         $response->assertSee('What our clients say');

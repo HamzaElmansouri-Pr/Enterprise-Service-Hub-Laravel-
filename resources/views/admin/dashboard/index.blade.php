@@ -4,67 +4,78 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+{{-- High Priority Dashboard Heartbeat --}}
+@if(($stats['unread_contacts'] ?? 0) > 0 || ($stats['pending_tc_requests'] ?? 0) > 0)
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center alert-card-pulse py-3">
+            <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+            <div>
+                <h5 class="alert-heading mb-1 fw-bold">Action Required: New Inquiries Pending</h5>
+                <p class="mb-0">You have <strong>{{ ($stats['unread_contacts'] ?? 0) + ($stats['unread_tc_requests'] ?? 0) }}</strong> unread messages and <strong>{{ $stats['pending_tc_requests'] ?? 0 }}</strong> pending service requests that need your attention.</p>
+            </div>
+            <div class="ms-auto">
+                <a href="{{ route('admin.contacts.index') }}" class="btn btn-danger btn-sm px-3 rounded-pill me-2">View Contacts</a>
+                <a href="{{ route('admin.tc-requests.index') }}" class="btn btn-dark btn-sm px-3 rounded-pill">View Requests</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 <div class="row">
     <!-- Stats Cards Row 1 -->
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-primary">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_users'] ?? '0' }}</div>
-                        <div class="text-white-50">Total Users</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_users'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Total Users</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-users fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-users fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-success">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_services'] ?? '0' }}</div>
-                        <div class="text-white-50">Services</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_services'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Services</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-cogs fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-cogs fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-info">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_projects'] ?? '0' }}</div>
-                        <div class="text-white-50">Projects</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_projects'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Projects</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-project-diagram fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-project-diagram fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-warning">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_blogs'] ?? '0' }}</div>
-                        <div class="text-white-50">Blog Posts</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_blogs'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Blog Posts</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-blog fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-blog fa-2x"></i>
                 </div>
             </div>
         </div>
@@ -74,115 +85,56 @@
 <div class="row">
     <!-- Stats Cards Row 2 -->
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-dark">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_contacts'] ?? '0' }}</div>
-                        <div class="text-white-50">Contact Forms</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_contacts'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Inquiries</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-envelope fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-envelope fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-danger">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_tc_requests'] ?? '0' }}</div>
-                        <div class="text-white-50">Service Requests</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_tc_requests'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Service Leads</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-file-alt fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-star fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-info">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_reviews'] ?? '0' }}</div>
-                        <div class="text-white-50">Reviews</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_reviews'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Client Reviews</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-star fa-2x opacity-75"></i>
-                    </div>
+                    <i class="fas fa-quote-right fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card stats-card">
+        <div class="card stat-card-elite bg-gradient-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stats-number">{{ $stats['total_sliders'] ?? '0' }}</div>
-                        <div class="text-white-50">Sliders</div>
+                        <div class="h3 fw-bold mb-0 text-white">{{ $stats['total_partners'] ?? '0' }}</div>
+                        <div class="text-white-50 small text-uppercase fw-bold">Elite Partners</div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-images fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <!-- Alert Cards -->
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-warning">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="stats-number text-warning">{{ $stats['unread_contacts'] ?? '0' }}</div>
-                        <div class="text-muted">Unread Contacts</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-envelope-open fa-2x text-warning"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-info">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="stats-number text-info">{{ $stats['unread_tc_requests'] ?? '0' }}</div>
-                        <div class="text-muted">Unread Service Requests</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-file-alt fa-2x text-info"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-danger">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="stats-number text-danger">{{ $stats['pending_tc_requests'] ?? '0' }}</div>
-                        <div class="text-muted">Pending Requests</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-clock fa-2x text-danger"></i>
-                    </div>
+                    <i class="fas fa-handshake fa-2x"></i>
                 </div>
             </div>
         </div>
