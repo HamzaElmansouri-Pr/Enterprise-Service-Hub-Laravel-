@@ -5,6 +5,7 @@
 
 @section('content')
 
+@if($heroSection && $heroSection->is_active)
 <!-- HERO SECTION (Slider) -->
 <section class="relative h-screen flex items-center overflow-hidden bg-dark-900" 
          x-data="{ activeSlide: 0, totalSlides: {{ $sliders->count() ?? 0 }}, slideInterval: null }" 
@@ -114,7 +115,9 @@
         </div>
     @endif
 </section>
+@endif
 
+@if($aboutSection && $aboutSection->is_active)
 <!-- ABOUT SECTION -->
 <section id="about" class="py-12 md:py-20 lg:py-32 bg-white overflow-hidden">
     <div class="container mx-auto px-4 md:px-6">
@@ -182,7 +185,9 @@
         </div>
     </div>
 </section>
+@endif
 
+@if($servicesSection && $servicesSection->is_active)
 <!-- SERVICES SECTION -->
 <section class="py-12 md:py-20 bg-slate-50">
     <div class="container mx-auto px-4 md:px-6">
@@ -210,7 +215,9 @@
         </div>
     </div>
 </section>
+@endif
 
+@if($projectsSection && $projectsSection->is_active)
 <!-- PROJECTS -->
 <section class="py-12 md:py-20 bg-dark-900 text-white">
     <div class="container mx-auto px-4 md:px-6">
@@ -250,11 +257,13 @@
         </div>
     </div>
 </section>
+@endif
 
 @if($partnersSection && $partnersSection->is_active && $partners->count() > 0)
     @include('components.partner-marquee')
 @endif
 
+@if($reviewsSection && $reviewsSection->is_active)
 <!-- REVIEWS SECTION -->
 <section class="py-12 md:py-20 lg:py-32 bg-slate-50">
     <div class="container mx-auto px-4 md:px-6">
@@ -274,7 +283,9 @@
         </div>
     </div>
 </section>
+@endif
 
+@if($blogSection && $blogSection->is_active)
 <!-- BLOG SECTION -->
 <section class="py-12 md:py-20 lg:py-32 bg-white">
     <div class="container mx-auto px-4 md:px-6">
@@ -300,7 +311,9 @@
         </div>
     </div>
 </section>
+@endif
 
+@if($ctaSection && $ctaSection->is_active)
 <!-- CTA SECTION -->
 <section class="py-20 bg-brand-600 relative overflow-hidden">
     <!-- Abstract Shapes -->
@@ -308,13 +321,15 @@
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 translate-y-1/2"></div>
 
     <div class="container mx-auto px-4 md:px-6 relative z-10 text-center">
-        <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">Ready to Transform Your Business?</h2>
+        <h2 class="text-3xl md:text-5xl font-bold font-heading text-white mb-6">
+            {{ $cms->cta->title ?? 'Ready to Transform Your Business?' }}
+        </h2>
         <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-            Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions.
+            {{ $cms->cta->description ?? "Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions." }}
         </p>
         <div class="flex flex-col md:flex-row gap-4 justify-center">
-            <a href="{{ route('contact') }}" class="bg-white text-brand-600 px-8 py-4 rounded-lg font-bold hover:bg-brand-50 transition-colors shadow-lg">
-                Get a Free Quote
+            <a href="{{ $cms->cta->button_url ?? route('contact') }}" class="bg-white text-brand-600 px-8 py-4 rounded-lg font-bold hover:bg-brand-50 transition-colors shadow-lg">
+                {{ $cms->cta->button_text ?? 'Get a Free Quote' }}
             </a>
             <a href="{{ route('services') }}" class="border border-white/30 text-white px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition-colors backdrop-blur-sm">
                 View Services
@@ -322,5 +337,6 @@
         </div>
     </div>
 </section>
+@endif
 
 @endsection

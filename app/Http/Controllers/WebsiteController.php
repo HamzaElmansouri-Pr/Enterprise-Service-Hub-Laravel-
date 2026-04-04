@@ -93,12 +93,24 @@ class WebsiteController extends Controller
         $blogs = Blog::active()->with('author')->orderBy('published_at', 'desc')->take(3)->get();
         $sliders = Slider::where('is_active', true)->orderBy('sort_order')->get();
         
+        // Fetch specific sections for visibility checks
+        $heroSection = Section::where('type', 'home-hero')->first();
+        $aboutSection = Section::where('type', 'home-about')->first();
+        $servicesSection = Section::where('type', 'services-list')->first();
+        $projectsSection = Section::where('type', 'projects-list')->first();
+        $reviewsSection = Section::where('type', 'reviews-list')->first();
+        $blogSection = Section::where('type', 'blog-list')->first();
+        $ctaSection = Section::where('type', 'cta-simple')->first();
         $partnersSection = Section::where('type', 'home-partners')->first();
+
         $partners = ($partnersSection && $partnersSection->is_active) 
             ? Partner::where('is_active', true)->orderBy('order_index')->get() 
             : collect();
 
-        return view('index', compact('cms', 'page', 'data', 'sliders', 'services', 'projects', 'reviews', 'blogs', 'about', 'partners', 'partnersSection'));
+        return view('index', compact(
+            'cms', 'page', 'data', 'sliders', 'services', 'projects', 'reviews', 'blogs', 'about', 'partners', 
+            'heroSection', 'aboutSection', 'servicesSection', 'projectsSection', 'reviewsSection', 'blogSection', 'ctaSection', 'partnersSection'
+        ));
     }
 
     /**

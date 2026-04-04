@@ -20,7 +20,8 @@ class ContentController extends Controller
 
     public function index()
     {
-        return view('admin.content.index');
+        $sections = \App\Models\Section::all()->groupBy('type');
+        return view('admin.content.index', compact('sections'));
     }
 
     public function edit(string $type)

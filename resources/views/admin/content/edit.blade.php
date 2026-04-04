@@ -679,6 +679,65 @@
                             </small>
                         </div>
 
+                    @elseif($contentType === 'reviews-list')
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Reviews Section Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ $content['title'] ?? 'What our clients say' }}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="subtitle" class="form-label">Reviews Subtitle</label>
+                            <input type="text" class="form-control" id="subtitle" name="subtitle" 
+                                   value="{{ $content['subtitle'] ?? 'Testimonials' }}">
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Manage specific customer reviews in the <a href="{{ route('admin.reviews.index') }}" class="fw-bold">Reviews Management</a> section.
+                        </div>
+
+                    @elseif($contentType === 'blog-list')
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Blog Section Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ $content['title'] ?? 'Direct from the Blog' }}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="subtitle" class="form-label">Blog Subtitle</label>
+                            <input type="text" class="form-control" id="subtitle" name="subtitle" 
+                                   value="{{ $content['subtitle'] ?? 'Latest News' }}">
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            The blog section automatically displays your latest published posts from the <a href="{{ route('admin.blogs.index') }}" class="fw-bold">Blog Management</a>.
+                        </div>
+
+                    @elseif($contentType === 'cta-simple')
+                        <div class="mb-4">
+                            <label for="title" class="form-label">CTA Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ $content['title'] ?? 'Ready to Transform Your Business?' }}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="description" class="form-label">CTA Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3">{{ $content['description'] ?? "Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions." }}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="button_text" class="form-label">Button Text</label>
+                                    <input type="text" class="form-control" id="button_text" name="button_text" 
+                                           value="{{ $content['button_text'] ?? 'Get a Free Quote' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="button_url" class="form-label">Button URL (Optional)</label>
+                                    <input type="text" class="form-control" id="button_url" name="button_url" 
+                                           value="{{ $content['button_url'] ?? '' }}" placeholder="/contact">
+                                </div>
+                            </div>
+                        </div>
+
                     @elseif(str_contains($contentType, 'page-header'))
                         <div class="mb-4">
                             <label for="title" class="form-label">Page Title</label>
@@ -759,8 +818,7 @@
                                         @php($s = ($services ?? collect())->firstWhere('id', $fService['id']))
                                         <span class="badge bg-primary">{{ $s->title ?? 'Service #'.$fService['id'] }}</span>
                                     @endforeach
-                                </div>
-                            @else
+                                @else
                                 <span class="text-muted small">All active services will be shown (Default).</span>
                             @endif
                         </div>
@@ -769,6 +827,18 @@
                         <p class="text-muted">{{ $content['contact_description'] ?? 'Contact description...' }}</p>
                         <p><strong>Phone:</strong> {{ $content['contact_phone'] ?? '+1 (555) 123-4567' }}</p>
                         <p><strong>Email:</strong> {{ $content['contact_email'] ?? 'info@supremeit.com' }}</p>
+                    @elseif($contentType === 'reviews-list')
+                        <span class="badge bg-primary mb-2">{{ $content['subtitle'] ?? 'Testimonials' }}</span>
+                        <h5>{{ $content['title'] ?? 'What our clients say' }}</h5>
+                    @elseif($contentType === 'blog-list')
+                        <span class="badge bg-primary mb-2">{{ $content['subtitle'] ?? 'Latest News' }}</span>
+                        <h5>{{ $content['title'] ?? 'Direct from the Blog' }}</h5>
+                    @elseif($contentType === 'cta-simple')
+                        <div class="p-3 bg-primary text-white rounded shadow-sm">
+                            <h6 class="fw-bold mb-2">{{ $content['title'] ?? 'Ready to Transform Your Business?' }}</h6>
+                            <p class="small mb-3 opacity-90">{{ $content['description'] ?? 'CTA description...' }}</p>
+                            <button class="btn btn-sm btn-light text-primary fw-bold">{{ $content['button_text'] ?? 'Get a Free Quote' }}</button>
+                        </div>
                     @endif
                 </div>
             </div>

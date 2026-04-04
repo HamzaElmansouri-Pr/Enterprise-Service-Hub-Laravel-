@@ -20,7 +20,7 @@
         <div class="flex items-center gap-4 mb-4 text-sm text-slate-500">
             <div class="flex items-center gap-1.5">
                 <i class="fa-regular fa-user text-brand-500"></i>
-                <span>{{ $blog->author }}</span>
+                <span>{{ $blog->author_name ?? (is_object($blog->author) ? $blog->author->name : $blog->author) }}</span>
             </div>
             @if($blog->published_at)
             <div class="flex items-center gap-1.5">

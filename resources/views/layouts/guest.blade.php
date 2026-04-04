@@ -5,194 +5,214 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Nova Agency') }} - Login</title>
+        <title>{{ config('app.name', 'Nova Agency') }} - Secure Auth</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
         
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Font Awesome -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <!-- Tailwind for helper classes -->
+        <script src="https://cdn.tailwindcss.com"></script>
         
         <style>
-            body { 
-                min-height: 100vh; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                background: #0f172a; 
+            :root {
+                --brand-primary: #10b981;
+                --brand-secondary: #3b82f6;
+                --dark-bg: #020617;
             }
-            .bg-overlay { 
-                position: fixed; 
-                inset: 0; 
-                background: url('{{ asset('assets/img/breadcrumb-bg.jpg') }}') center/cover no-repeat; 
-                filter: brightness(.5); 
-                z-index: -2; 
+
+            body {
+                background-color: var(--dark-bg);
+                font-family: 'Inter', sans-serif;
+                overflow-x: hidden;
             }
-            .bg-tint { 
-                position: fixed; 
-                inset: 0; 
-                background: linear-gradient(135deg, rgba(16,185,129,.55), rgba(59,130,246,.55)); 
-                z-index: -1; 
+
+            .font-heading { font-family: 'Outfit', sans-serif; }
+
+            /* Animated Background Blobs */
+            .blob-bg {
+                position: fixed;
+                inset: 0;
+                z-index: -1;
+                filter: blur(80px);
+                opacity: 0.4;
             }
-            .login-container { 
-                background: rgba(255,255,255,.96); 
-                border-radius: 22px; 
-                box-shadow: 0 25px 60px rgba(2,6,23,.35); 
-                overflow: hidden; 
-                max-width: 980px; 
-                width: 100%; 
-                margin: 20px; 
-                display: grid; 
-                grid-template-columns: 1.1fr .9fr; 
+
+            .blob {
+                position: absolute;
+                border-radius: 50%;
+                animation: animate-blob 15s infinite alternate ease-in-out;
             }
-            @media (max-width: 992px){ 
-                .login-container { 
-                    grid-template-columns: 1fr; 
-                } 
+
+            .blob-1 {
+                width: 500px;
+                height: 500px;
+                background: var(--brand-primary);
+                top: -200px;
+                left: -100px;
             }
-            .login-visual { 
-                position: relative; 
-                background: linear-gradient(135deg, rgba(16,185,129,.12), rgba(59,130,246,.12)); 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                padding: 40px; 
+
+            .blob-2 {
+                width: 600px;
+                height: 600px;
+                background: var(--brand-secondary);
+                bottom: -200px;
+                right: -100px;
+                animation-delay: -5s;
             }
-            .brand { 
-                display: flex; 
-                flex-direction: column; 
-                align-items: center; 
-                gap: 14px; 
-                color: #0f172a; 
+
+            @keyframes animate-blob {
+                0% { transform: translate(0, 0) scale(1); }
+                100% { transform: translate(100px, 100px) scale(1.1); }
             }
-            .brand-logo { 
-                width: 120px; 
-                height: 120px; 
-                display: inline-flex; 
-                align-items: center; 
-                justify-content: center; 
-                background: #ffffff; 
-                border-radius: 18px; 
-                box-shadow: 0 10px 30px rgba(2,6,23,.1); 
+
+            /* Auth Glass Card */
+            .auth-card {
+                background: rgba(255, 255, 255, 0.03);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 24px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                overflow: hidden;
+                width: 100%;
+                max-width: 450px;
             }
-            .brand-title { 
-                font-weight: 800; 
-                font-size: 1.4rem; 
-                letter-spacing: .3px; 
+
+            .auth-header {
+                padding: 3rem 2rem 1.5rem;
+                text-align: center;
             }
-            .brand-sub { 
-                color: #64748b; 
-                font-size: .95rem; 
-                text-align: center; 
-                max-width: 320px; 
+
+            .auth-body {
+                padding: 0 2.5rem 3rem;
             }
-            .login-body { 
-                padding: 42px 34px; 
+
+            .brand-logo-container {
+                width: 80px;
+                height: 80px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             }
-            .login-body h2 { 
-                margin: 0 0 8px; 
-                font-weight: 800; 
-                color: #0f172a; 
+
+            /* Custom Premium Inputs */
+            .premium-input-wrapper {
+                position: relative;
+                margin-bottom: 1.5rem;
             }
-            .login-body p.helper { 
-                margin: 0 0 26px; 
-                color: #64748b; 
+
+            .premium-input-icon {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255,255,255,0.3);
+                transition: color 0.3s;
             }
-            .form-group { 
-                margin-bottom: 22px; 
+
+            .premium-input {
+                width: 100%;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: white;
+                padding: 0.85rem 1rem 0.85rem 2.8rem;
+                border-radius: 12px;
+                outline: none;
+                transition: all 0.3s;
             }
-            .form-group label { 
-                font-weight: 600; 
-                color: #0f172a; 
-                margin-bottom: 8px; 
+
+            .premium-input:focus {
+                border-color: var(--brand-primary);
+                background: rgba(255, 255, 255, 0.06);
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
             }
-            .input-group-text { 
-                background: #f1f5f9; 
-                border: 2px solid #e2e8f0; 
-                border-right: 0; 
-                border-radius: 14px 0 0 14px; 
-                color: #64748b; 
+
+            .premium-input:focus + .premium-input-icon {
+                color: var(--brand-primary);
             }
-            .input-group .form-control { 
-                border-left: 0; 
-                border-radius: 0 14px 14px 0; 
+
+            /* Button Styling */
+            .btn-architect {
+                background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+                color: white;
+                font-weight: 700;
+                padding: 0.9rem;
+                border-radius: 12px;
+                border: none;
+                width: 100%;
+                transition: all 0.3s;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 0.9rem;
             }
-            .form-control { 
-                border: 2px solid #e2e8f0; 
-                border-radius: 14px; 
-                padding: 12px 14px; 
-                transition: all .2s ease; 
+
+            .btn-architect:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+                filter: brightness(1.1);
             }
-            .form-control:focus { 
-                border-color: #3b82f6; 
-                box-shadow: 0 0 0 .25rem rgba(59,130,246,.15); 
+
+            .text-dim { color: rgba(255, 255, 255, 0.5); }
+            .link-premium {
+                color: var(--brand-secondary);
+                text-decoration: none;
+                font-weight: 600;
+                transition: opacity 0.3s;
             }
-            .btn-login { 
-                background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); 
-                border: none; 
-                border-radius: 12px; 
-                padding: 12px 16px; 
-                font-weight: 700; 
-                letter-spacing: .2px; 
-                color: #fff; 
-                width: 100%; 
-            }
-            .btn-login:hover { 
-                filter: brightness(1.05); 
-                box-shadow: 0 10px 26px rgba(59,130,246,.35); 
-            }
-            .remember-forgot { 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                margin-bottom: 16px; 
-            }
-            .form-check-input:checked { 
-                background-color: #3b82f6; 
-                border-color: #3b82f6; 
-            }
-            .link { 
-                color:#3b82f6; 
-                text-decoration:none; 
-                font-weight:600; 
-            }
-            .link:hover{ 
-                text-decoration:underline; 
-            }
-            .alert { 
-                border-radius: 12px; 
-                border: none; 
-            }
+            .link-premium:hover { opacity: 0.8; }
         </style>
         
         @stack('styles')
     </head>
-    <body>
-        <div class="bg-overlay"></div>
-        <div class="bg-tint"></div>
+    <body class="antialiased">
+        <!-- Animated Background -->
+        <div class="blob-bg">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+        </div>
 
-        <div class="login-container">
-            <div class="login-visual">
-                <div class="brand">
-                    <div class="brand-logo">
-                        <img src="{{ asset('assets/img/logo/black-logo-3.svg') }}" alt="Nova Agency" style="max-width:90px; height:auto;">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="brand-logo-container">
+                        @php
+                            $logoPath = public_path('assets/img/logo/white-logo-3.svg');
+                            $hasLogo = file_exists($logoPath);
+                        @endphp
+                        
+                        @if($hasLogo)
+                            <img src="{{ asset('assets/img/logo/white-logo-3.svg') }}" alt="Nova Agency" style="max-width:50px; height:auto;">
+                        @else
+                            <!-- Styled Fallback Logo (Rocket/Architect Icon) -->
+                            <div class="flex items-center justify-center text-emerald-400">
+                                <i class="fas fa-rocket fa-2x"></i>
+                            </div>
+                        @endif
                     </div>
-                    <div class="brand-title">Welcome Back</div>
-                    <div class="brand-sub">Sign in to your account to access your dashboard and manage your profile.</div>
+                    <h2 class="text-2xl font-bold text-white font-heading mb-1">Welcome Back</h2>
+                    <p class="text-dim text-sm">Secure access to your project hub</p>
                 </div>
-            </div>
 
-            <div class="login-body">
-                <h2>Sign in</h2>
-                <p class="helper">Use your credentials to continue</p>
-                {{ $slot }}
+                <div class="auth-body">
+                    {{ $slot }}
+                </div>
+
+                <div class="px-10 pb-8 text-center border-t border-white/5 pt-6">
+                    <p class="text-dim text-xs">
+                        &copy; {{ date('Y') }} Nova Agency Architecture. All rights reserved.
+                    </p>
+                </div>
             </div>
         </div>
         

@@ -289,6 +289,19 @@ class CMSManager
             $section->save();
         }
 
+        // Remove is_active from validatedData so it doesn't create a ContentBlock
+        unset($validatedData['is_active']);
+
+        // Filter out items in arrays that don't have IDs (like empty featured picks)
+        foreach (['featured_services', 'featured_projects'] as $arrKey) {
+            if (isset($validatedData[$arrKey]) && is_array($validatedData[$arrKey])) {
+                $validatedData[$arrKey] = collect($validatedData[$arrKey])
+                    ->filter(fn($item) => !empty($item['id']))
+                    ->values()
+                    ->toArray();
+            }
+        }
+
         // Handle Files
         $imageFields = $this->getImageFields($type);
         foreach ($imageFields as $field => $fileField) {
@@ -476,15 +489,30 @@ class CMSManager
                 'title' => 'required|string|max:255',
                 'subtitle' => 'required|string|max:500',
                 'featured_services' => 'nullable|array',
-                'featured_services.*.id' => 'required|integer|exists:services,id',
-                'featured_services.*.order' => 'required|integer|min:0',
+                'featured_services.*.id' => 'nullable|integer|exists:services,id',
+                'featured_services.*.order' => 'nullable|integer|min:0',
             ],
             'projects-list' => [
                 'title' => 'required|string|max:255',
                 'subtitle' => 'nullable|string|max:500',
                 'featured_projects' => 'nullable|array',
-                'featured_projects.*.id' => 'required|integer|exists:projects,id',
-                'featured_projects.*.order' => 'required|integer|min:0',
+                'featured_projects.*.id' => 'nullable|integer|exists:projects,id',
+                'featured_projects.*.order' => 'nullable|integer|min:0',
+            ],
+            'reviews-list' => [
+                'title' => 'required|string|max:255',
+                'subtitle' => 'nullable|string|max:500',
+            ],
+            'blog-list' => [
+                'title' => 'required|string|max:255',
+                'subtitle' => 'nullable|string|max:500',
+            ],
+            'cta-simple' => [
+                'title' => 'required|string|max:255',
+                'subtitle' => 'nullable|string|max:500',
+                'description' => 'required|string|max:1000',
+                'button_text' => 'required|string|max:50',
+                'button_url' => 'nullable|string|max:255',
             ],
         ];
 
