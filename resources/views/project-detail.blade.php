@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="project-details-image mb-30">
-                        <img src="{{ resolve_image_url($project->image) }}" alt="{{ $project->title }}" class="img-fluid rounded w-100" onerror="this.src='/assets/img/project/01.jpg'">
+                        <img src="{{ resolve_image_url($project->image) }}" alt="{{ $project->title }}" class="img-fluid rounded w-100" onerror="this.src='{{ asset('assets/img/project/01.jpg') }}'">
                     </div>
                     <div class="project-details-content">
                         <h3 class="mb-3">{{ $project->title }}</h3>

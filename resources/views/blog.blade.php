@@ -112,7 +112,7 @@
             <div class="col-xl-4 col-md-6 wow fadeInUp" data-wow-delay=".3s">
                 <div class="blog-card">
                     <div class="blog-thumb">
-                        <img src="{{ resolve_image_url($blog->image) }}" alt="{{ $blog->title }}" onerror="this.src='/assets/img/news/01.jpg'">
+                        <img src="{{ resolve_image_url($blog->image) }}" alt="{{ $blog->title }}" onerror="this.src='{{ asset('assets/img/news/01.jpg') }}'">
                     </div>
                     <div class="blog-content">
                         <div class="blog-meta d-flex justify-content-between align-items-center">

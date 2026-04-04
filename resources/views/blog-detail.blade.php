@@ -45,7 +45,7 @@
             <div class="col-lg-8">
                 <div class="blog-details-wrapper">
                     <div class="blog-details-thumb mb-30">
-                        <img src="{{ resolve_image_url($blog->image) }}" alt="{{ $blog->title }}" class="w-100 rounded" onerror="this.src='/assets/img/news/01.jpg'">
+                        <img src="{{ resolve_image_url($blog->image) }}" alt="{{ $blog->title }}" class="w-100 rounded" onerror="this.src='{{ asset('assets/img/news/01.jpg') }}'">
                     </div>
                     <div class="blog-meta-items mb-3">
                         <span class="me-4"><i class="fa-solid fa-user text-primary me-2"></i> {{ $blog->author->name ?? 'Admin' }}</span>
@@ -67,7 +67,7 @@
                             @foreach($recentBlogs as $recent)
                             <div class="recent-post-item d-flex align-items-center mb-3">
                                 <div class="recent-thumb me-3" style="width: 70px; height: 70px; flex-shrink: 0;">
-                                    <img src="{{ resolve_image_url($recent->image) }}" alt="{{ $recent->title }}" class="w-100 h-100 object-fit-cover rounded" onerror="this.src='/assets/img/news/01.jpg'">
+                                    <img src="{{ resolve_image_url($recent->image) }}" alt="{{ $recent->title }}" class="w-100 h-100 object-fit-cover rounded" onerror="this.src='{{ asset('assets/img/news/01.jpg') }}'">
                                 </div>
                                 <div class="recent-content">
                                     <h6 class="mb-1"><a href="{{ route('blog.show', $recent->slug) }}" class="text-dark text-decoration-none">{{ Str::limit($recent->title, 40) }}</a></h6>
