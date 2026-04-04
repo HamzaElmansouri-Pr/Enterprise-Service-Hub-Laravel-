@@ -25,7 +25,7 @@ auth.json
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php
-/database/database.sqlite
+database/database.sqlite
 /database/database.sqlite-journal
 /tmp/
 test_results.txt
