@@ -19,6 +19,7 @@ class UpdatePartnerRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'logo_url' => 'nullable|url|max:2048',
             'url' => 'nullable|url|max:255',
             'is_active' => 'boolean',
             'order_index' => 'integer|min:0',

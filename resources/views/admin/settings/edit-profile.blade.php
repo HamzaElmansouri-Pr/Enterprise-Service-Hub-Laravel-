@@ -54,14 +54,19 @@
                         <label for="image" class="form-label">Profile Image</label>
                         <input type="file" class="form-control @error('image') is-invalid @enderror" 
                                id="image" name="image" accept="image/*">
+                        <input type="url" class="form-control @error('image_url') is-invalid @enderror mt-2"
+                               id="image_url" name="image_url" value="{{ old('image_url') }}" placeholder="Or paste image URL (https://...)">
                         @error('image')
                             <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        @error('image_url')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                         
                         @if($user && $user->image)
                         <div class="mt-3">
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('storage/' . $user->image) }}" alt="Current Profile Image" 
+                                <img src="{{ resolve_image_url($user->image) }}" alt="Current Profile Image" 
                                      class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
                                 <div>
                                     <p class="mb-1"><strong>Current Image:</strong></p>
@@ -106,7 +111,7 @@
             <div class="card-body text-center">
                 <div class="mb-3">
                     @if($user->image)
-                        <img src="{{ asset('storage/' . $user->image) }}" alt="Profile Image" 
+                        <img src="{{ resolve_image_url($user->image) }}" alt="Profile Image" 
                              class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
                     @else
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto" 

@@ -52,7 +52,11 @@
                                 </div>
                             @endif
                             <input type="file" name="image" class="form-control" accept="image/*">
+                            <input type="url" name="image_url" class="form-control mt-2"
+                                   value="{{ old('image_url', (str_starts_with($project->image ?? '', 'http://') || str_starts_with($project->image ?? '', 'https://')) ? $project->image : '') }}"
+                                   placeholder="Or paste image URL (https://...)">
                             @error('image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            @error('image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Completion Date</label>
@@ -97,6 +101,9 @@
                                     </div>
                                 @endif
                                 <input type="file" name="og_image" class="form-control" accept="image/*">
+                                <input type="url" name="og_image_url" class="form-control mt-2"
+                                       value="{{ old('og_image_url', (str_starts_with($project->og_image ?? '', 'http://') || str_starts_with($project->og_image ?? '', 'https://')) ? $project->og_image : '') }}"
+                                       placeholder="Or paste OG image URL (https://...)">
                                 <div class="form-text">Recommended size: 1200x630px. If empty, the project image will be used.</div>
                             </div>
                         </div>

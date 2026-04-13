@@ -26,6 +26,7 @@ class StoreReviewRequest extends FormRequest
             'client_position' => 'nullable|string|max:255',
             'client_company' => 'nullable|string|max:255',
             'client_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'client_image_url' => 'nullable|url|max:2048',
             'review_text' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
             'project_type' => 'nullable|string|max:255',

@@ -46,18 +46,26 @@ class SettingsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|url|max:2048',
         ]);
+
+        if (!empty($validated['image_url'])) {
+            if ($user->image !== $validated['image_url']) {
+                $this->deleteLocalImage($user->image);
+            }
+
+            $validated['image'] = $validated['image_url'];
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($user->image && Storage::disk('public')->exists($user->image)) {
-                Storage::disk('public')->delete($user->image);
-            }
+            $this->deleteLocalImage($user->image);
             
             $path = $request->file('image')->store('uploads/profiles', 'public');
             $validated['image'] = $path;
         }
+
+        unset($validated['image_url']);
 
         $user->update($validated);
 
@@ -107,13 +115,29 @@ class SettingsController extends Controller
     {
         $user = Auth::user();
         
-        if ($user->image && Storage::disk('public')->exists($user->image)) {
-            Storage::disk('public')->delete($user->image);
-        }
+        $this->deleteLocalImage($user->image);
         
         $user->update(['image' => null]);
 
         return redirect()->route('admin.settings.edit-profile')
             ->with('success', 'Profile image deleted successfully!');
+    }
+
+    private function deleteLocalImage(?string $path): void
+    {
+        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
+            return;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+
+        Storage::disk('public')->delete($path);
+    }
+
+    private function isExternalUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

@@ -66,9 +66,10 @@
                             </div>
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <label for="image" class="form-label">Slider Image <span class="text-danger">*</span></label>
-                                    <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                                    <div class="form-text">Recommended size: 1920x1080px. Max size: 2MB</div>
+                                    <label for="image" class="form-label">Slider Image Upload</label>
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                    <input type="url" class="form-control mt-2" id="image_url" name="image_url" value="{{ old('image_url') }}" placeholder="Or paste image URL (https://...)">
+                                    <div class="form-text">Provide either an upload or a public image URL. Recommended size: 1920x1080px, max 2MB for uploads.</div>
                                 </div>
                             </div>
                             <div class="col-12">

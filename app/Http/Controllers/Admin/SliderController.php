@@ -32,10 +32,16 @@ class SliderController extends Controller
         // $this->authorize('create', Slider::class);
         $data = $request->validated();
 
+        if (!empty($data['image_url'])) {
+            $data['image'] = $data['image_url'];
+        }
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('sliders', 'public');
             $data['image'] = $imagePath;
         }
+
+        unset($data['image_url']);
 
         Slider::create($data);
 
@@ -61,14 +67,21 @@ class SliderController extends Controller
         
         $data = $request->validated();
 
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($slider->image) {
-                Storage::disk('public')->delete($slider->image);
+        if (!empty($data['image_url'])) {
+            if ($slider->image !== $data['image_url']) {
+                $this->deleteLocalImage($slider->image);
             }
+
+            $data['image'] = $data['image_url'];
+        }
+
+        if ($request->hasFile('image')) {
+            $this->deleteLocalImage($slider->image);
             $imagePath = $request->file('image')->store('sliders', 'public');
             $data['image'] = $imagePath;
         }
+
+        unset($data['image_url']);
 
         $slider->update($data);
 
@@ -80,9 +93,7 @@ class SliderController extends Controller
     {
         $this->authorize('delete', $slider);
         
-        if ($slider->image) {
-            Storage::disk('public')->delete($slider->image);
-        }
+        $this->deleteLocalImage($slider->image);
         
         $slider->delete();
         return redirect()->route('admin.sliders.index')
@@ -99,5 +110,23 @@ class SliderController extends Controller
 
         return redirect()->route('admin.sliders.index')
             ->with('success', 'Slider status updated successfully.');
+    }
+
+    private function deleteLocalImage(?string $path): void
+    {
+        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
+            return;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+
+        Storage::disk('public')->delete($path);
+    }
+
+    private function isExternalUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

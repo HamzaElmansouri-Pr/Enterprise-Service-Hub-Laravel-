@@ -27,7 +27,8 @@ class StoreSliderRequest extends FormRequest
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:100',
             'button_url' => 'nullable|url|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|required_without:image_url|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_url' => 'nullable|required_without:image|url|max:2048',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ];

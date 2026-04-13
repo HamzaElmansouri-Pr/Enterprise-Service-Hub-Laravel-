@@ -22,11 +22,13 @@ class UpdateProjectRequest extends FormRequest
             'category' => 'nullable|string|max:255',
             'completion_date' => 'nullable|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|url|max:2048',
             'is_active' => 'boolean',
             'order_index' => 'integer|min:0',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'og_image' => 'nullable|image|max:2048',
+            'og_image_url' => 'nullable|url|max:2048',
         ];
     }
 

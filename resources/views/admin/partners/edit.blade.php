@@ -36,9 +36,16 @@
                         <label for="logo" class="form-label">Change Logo (Optional)</label>
                         <input type="file" class="form-control @error('logo') is-invalid @enderror" 
                                id="logo" name="logo">
+                        <input type="url" class="form-control @error('logo_url') is-invalid @enderror mt-2"
+                               id="logo_url" name="logo_url"
+                               value="{{ old('logo_url', (str_starts_with($partner->logo ?? '', 'http://') || str_starts_with($partner->logo ?? '', 'https://')) ? $partner->logo : '') }}"
+                               placeholder="Or paste logo URL (https://...)">
                         <div class="form-text">Keep empty to retain the current logo.</div>
                         @error('logo')
                             <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        @error('logo_url')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 

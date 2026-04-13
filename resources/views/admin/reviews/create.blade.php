@@ -52,6 +52,8 @@
                             <label class="form-label">Client Image</label>
                             <input type="file" name="client_image" class="form-control" accept="image/*">
                             @error('client_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            <input type="url" name="client_image_url" class="form-control mt-2" value="{{ old('client_image_url') }}" placeholder="Or paste image URL (https://...)">
+                            @error('client_image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 

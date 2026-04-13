@@ -12,8 +12,8 @@ class ProjectObserver
      */
     public function deleted(Project $project): void
     {
-        if ($project->image && !str_starts_with($project->image, 'assets/')) {
-            Storage::disk('public')->delete($project->image);
+        if ($project->image && !str_starts_with($project->image, 'assets/') && !$this->isExternalUrl($project->image)) {
+            Storage::disk('public')->delete($this->normalizePath($project->image));
         }
     }
 
@@ -24,9 +24,19 @@ class ProjectObserver
     {
         if ($project->isDirty('image')) {
             $oldImage = $project->getOriginal('image');
-            if ($oldImage && !str_starts_with($oldImage, 'assets/')) {
-                Storage::disk('public')->delete($oldImage);
+            if ($oldImage && !str_starts_with($oldImage, 'assets/') && !$this->isExternalUrl($oldImage)) {
+                Storage::disk('public')->delete($this->normalizePath($oldImage));
             }
         }
+    }
+
+    private function isExternalUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
+    }
+
+    private function normalizePath(string $path): string
+    {
+        return str_starts_with($path, 'storage/') ? substr($path, 8) : $path;
     }
 }

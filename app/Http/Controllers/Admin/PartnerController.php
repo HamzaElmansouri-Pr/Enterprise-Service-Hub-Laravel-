@@ -28,11 +28,17 @@ class PartnerController extends Controller
     public function store(StorePartnerRequest $request)
     {
         $data = $request->validated();
+
+        if (!empty($data['logo_url'])) {
+            $data['logo'] = $data['logo_url'];
+        }
         
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('partners', 'public');
             $data['logo'] = 'storage/' . $path;
         }
+
+        unset($data['logo_url']);
 
         Partner::create($data);
 
@@ -48,16 +54,23 @@ class PartnerController extends Controller
     public function update(UpdatePartnerRequest $request, Partner $partner)
     {
         $data = $request->validated();
+
+        if (!empty($data['logo_url'])) {
+            if ($partner->logo !== $data['logo_url']) {
+                $this->deleteLocalLogo($partner->logo);
+            }
+
+            $data['logo'] = $data['logo_url'];
+        }
         
         if ($request->hasFile('logo')) {
-            // Delete old logo
-            if ($partner->logo && str_starts_with($partner->logo, 'storage/')) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $partner->logo));
-            }
+            $this->deleteLocalLogo($partner->logo);
             
             $path = $request->file('logo')->store('partners', 'public');
             $data['logo'] = 'storage/' . $path;
         }
+
+        unset($data['logo_url']);
 
         $partner->update($data);
 
@@ -69,13 +82,25 @@ class PartnerController extends Controller
     {
         $this->authorize('delete', $partner);
 
-        if ($partner->logo && str_starts_with($partner->logo, 'storage/')) {
-            Storage::disk('public')->delete(str_replace('storage/', '', $partner->logo));
-        }
+        $this->deleteLocalLogo($partner->logo);
 
         $partner->delete();
 
         return redirect()->route('admin.partners.index')
             ->with('success', 'Partner deleted successfully.');
+    }
+
+    private function deleteLocalLogo(?string $path): void
+    {
+        if (empty($path) || $this->isExternalUrl($path) || !str_starts_with($path, 'storage/')) {
+            return;
+        }
+
+        Storage::disk('public')->delete(substr($path, 8));
+    }
+
+    private function isExternalUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

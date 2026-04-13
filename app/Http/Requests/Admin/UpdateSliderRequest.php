@@ -28,7 +28,8 @@ class UpdateSliderRequest extends FormRequest
             'button_text' => 'nullable|string|max:100',
             'button_url' => 'nullable|url|max:255',
             // PHP upload_max_filesize is 2MB, so we limit validation to match
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_url' => 'nullable|url|max:2048',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ];

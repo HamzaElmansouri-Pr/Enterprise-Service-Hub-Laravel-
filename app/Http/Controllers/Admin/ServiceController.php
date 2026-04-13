@@ -42,6 +42,14 @@ class ServiceController extends Controller
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['title']);
         }
+
+        if (!empty($data['image_url'])) {
+            $data['image'] = $data['image_url'];
+        }
+
+        if (!empty($data['og_image_url'])) {
+            $data['og_image'] = $data['og_image_url'];
+        }
         
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('services', 'public');
@@ -59,6 +67,8 @@ class ServiceController extends Controller
              // Default icon if not provided
              $data['icon'] = 'flaticon-settings';
         }
+
+           unset($data['image_url'], $data['og_image_url']);
 
         Service::create($data);
 
@@ -93,7 +103,24 @@ class ServiceController extends Controller
             $data['slug'] = Str::slug($data['title']);
         }
 
+        if (!empty($data['image_url'])) {
+            if ($service->image !== $data['image_url']) {
+                $this->deleteLocalMedia($service->image);
+            }
+
+            $data['image'] = $data['image_url'];
+        }
+
+        if (!empty($data['og_image_url'])) {
+            if (($service->og_image ?? null) !== $data['og_image_url']) {
+                $this->deleteLocalMedia($service->og_image ?? null);
+            }
+
+            $data['og_image'] = $data['og_image_url'];
+        }
+
         if ($request->hasFile('image')) {
+            $this->deleteLocalMedia($service->image);
             $file = $request->file('image');
             $filename = Str::slug($data['title']) . '-' . time();
 
@@ -116,6 +143,7 @@ class ServiceController extends Controller
 
         // Handle OG Image
         if ($request->hasFile('og_image')) {
+            $this->deleteLocalMedia($service->og_image ?? null);
             $path = $request->file('og_image')->store('seo/og', 'public');
             $data['og_image'] = 'storage/' . $path;
         }
@@ -127,6 +155,8 @@ class ServiceController extends Controller
             $path = $request->file('icon')->store('services/icons', 'public');
             $data['icon'] = 'storage/' . $path;
         }
+
+        unset($data['image_url'], $data['og_image_url']);
 
         $service->update($data);
 
@@ -144,5 +174,23 @@ class ServiceController extends Controller
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
+    }
+
+    private function deleteLocalMedia(?string $path): void
+    {
+        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
+            return;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+
+        Storage::disk('public')->delete($path);
+    }
+
+    private function isExternalUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

@@ -41,9 +41,15 @@ class ReviewController extends Controller
         $data['is_active'] = $request->has('is_active');
         $data['order_index'] = $request->input('order_index', 0);
 
+        if (!empty($data['client_image_url'])) {
+            $data['client_image'] = $data['client_image_url'];
+        }
+
         if ($request->hasFile('client_image')) {
             $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial', 'public');
         }
+
+        unset($data['client_image_url']);
 
         Review::create($data);
 
@@ -77,13 +83,20 @@ class ReviewController extends Controller
         $data['is_featured'] = $request->has('is_featured');
         $data['is_active'] = $request->has('is_active');
 
-        if ($request->hasFile('client_image')) {
-            // Delete old image
-            if ($review->client_image && Storage::disk('public')->exists($review->client_image)) {
-                Storage::disk('public')->delete($review->client_image);
+        if (!empty($data['client_image_url'])) {
+            if ($review->client_image !== $data['client_image_url']) {
+                $this->deleteLocalMedia($review->client_image);
             }
+
+            $data['client_image'] = $data['client_image_url'];
+        }
+
+        if ($request->hasFile('client_image')) {
+            $this->deleteLocalMedia($review->client_image);
             $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial', 'public');
         }
+
+        unset($data['client_image_url']);
 
         $review->update($data);
 
@@ -98,13 +111,29 @@ class ReviewController extends Controller
     {
         $this->authorize('delete', $review);
 
-        if ($review->client_image && Storage::disk('public')->exists($review->client_image)) {
-            Storage::disk('public')->delete($review->client_image);
-        }
+        $this->deleteLocalMedia($review->client_image);
 
         $review->delete();
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Review deleted successfully.');
+    }
+
+    private function deleteLocalMedia(?string $path): void
+    {
+        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
+            return;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+
+        Storage::disk('public')->delete($path);
+    }
+
+    private function isExternalUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

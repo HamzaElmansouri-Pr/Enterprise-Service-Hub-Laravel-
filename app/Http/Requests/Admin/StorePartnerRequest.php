@@ -18,7 +18,8 @@ class StorePartnerRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'logo' => 'nullable|required_without:logo_url|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'logo_url' => 'nullable|required_without:logo|url|max:2048',
             'url' => 'nullable|url|max:255',
             'is_active' => 'boolean',
             'order_index' => 'integer|min:0',

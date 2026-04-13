@@ -57,7 +57,11 @@
                                 </div>
                             @endif
                             <input type="file" name="client_image" class="form-control" accept="image/*">
+                            <input type="url" name="client_image_url" class="form-control mt-2"
+                                   value="{{ old('client_image_url', (str_starts_with($review->client_image ?? '', 'http://') || str_starts_with($review->client_image ?? '', 'https://')) ? $review->client_image : '') }}"
+                                   placeholder="Or paste image URL (https://...)">
                             @error('client_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            @error('client_image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 

@@ -45,7 +45,11 @@
                                 </div>
                             @endif
                             <input type="file" name="image" class="form-control" accept="image/*">
+                            <input type="url" name="image_url" class="form-control mt-2"
+                                   value="{{ old('image_url', (str_starts_with($service->image ?? '', 'http://') || str_starts_with($service->image ?? '', 'https://')) ? $service->image : '') }}"
+                                   placeholder="Or paste image URL (https://...)">
                             @error('image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            @error('image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Icon</label>
@@ -96,6 +100,9 @@
                                     </div>
                                 @endif
                                 <input type="file" name="og_image" class="form-control" accept="image/*">
+                                <input type="url" name="og_image_url" class="form-control mt-2"
+                                       value="{{ old('og_image_url', (str_starts_with($service->og_image ?? '', 'http://') || str_starts_with($service->og_image ?? '', 'https://')) ? $service->og_image : '') }}"
+                                       placeholder="Or paste OG image URL (https://...)">
                             </div>
                         </div>
                     </div>

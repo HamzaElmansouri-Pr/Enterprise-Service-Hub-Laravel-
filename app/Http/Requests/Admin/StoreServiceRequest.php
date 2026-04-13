@@ -19,6 +19,7 @@ class StoreServiceRequest extends FormRequest
             'subtitle' => 'nullable|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|url|max:2048',
             // Allow string (class name) or file (upload)
             'icon' => 'nullable', 
             'is_active' => 'boolean',
@@ -26,6 +27,7 @@ class StoreServiceRequest extends FormRequest
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'og_image' => 'nullable|image|max:2048',
+            'og_image_url' => 'nullable|url|max:2048',
         ];
     }
 

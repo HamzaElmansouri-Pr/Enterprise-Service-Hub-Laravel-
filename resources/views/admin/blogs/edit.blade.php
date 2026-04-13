@@ -76,6 +76,9 @@
                                                 <img src="{{ resolve_image_url($blog->og_image) }}" class="rounded d-block mb-2" style="max-height: 50px;">
                                             @endif
                                             <input type="file" name="og_image" class="form-control form-control-sm" accept="image/*">
+                                            <input type="url" name="og_image_url" class="form-control form-control-sm mt-2"
+                                                   value="{{ old('og_image_url', (str_starts_with($blog->og_image ?? '', 'http://') || str_starts_with($blog->og_image ?? '', 'https://')) ? $blog->og_image : '') }}"
+                                                   placeholder="Or paste OG image URL (https://...)">
                                         </div>
                                     </div>
                                 </div>
@@ -89,7 +92,11 @@
                                     </div>
                                 @endif
                                 <input type="file" name="featured_image" class="form-control" accept="image/*">
+                                <input type="url" name="featured_image_url" class="form-control mt-2"
+                                       value="{{ old('featured_image_url', (str_starts_with($blog->image ?? '', 'http://') || str_starts_with($blog->image ?? '', 'https://')) ? $blog->image : '') }}"
+                                       placeholder="Or paste featured image URL (https://...)">
                                 @error('featured_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                                @error('featured_image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                             </div>
 
                             <div class="mb-3">
