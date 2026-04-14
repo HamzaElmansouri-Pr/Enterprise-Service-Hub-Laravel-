@@ -78,33 +78,8 @@ class SaveProjectAction
         return Project::create($data);
     }
 
-    /**
-     * Process project image with optimization if available.
-     */
     protected function processImage($file, string $title): string
     {
-        $filename = Str::slug($title) . '-' . time();
-        
-        // Professional Optimization: Using Intervention Image if available
-        if (class_exists('\Intervention\Image\Laravel\Facades\Image')) {
-            $manager = \Intervention\Image\Laravel\Facades\Image::getFacadeRoot();
-            
-            // 1. Optimized Main Image (WebP, Max 1200px)
-            $mainPath = 'projects/' . $filename . '.webp';
-            $image = $manager->read($file);
-            $image->scale(width: 1200);
-            Storage::disk('public')->put($mainPath, (string) $image->toWebp(80));
-            
-            // 2. Thumbnail (WebP, 400x300 Cover)
-            $thumbPath = 'projects/thumbs/' . $filename . '.webp';
-            $thumb = $manager->read($file);
-            $thumb->cover(400, 300);
-            Storage::disk('public')->put($thumbPath, (string) $thumb->toWebp(70));
-            
-            return $mainPath;
-        }
-
-        // Fallback to standard upload
         $path = $file->store('projects');
         return $path;
     }
