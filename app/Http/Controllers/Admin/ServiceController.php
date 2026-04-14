@@ -52,8 +52,8 @@ class ServiceController extends Controller
         }
         
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('services', 'public');
-            $data['image'] = 'storage/' . $path;
+            $path = $request->file('image')->store('services');
+            $data['image'] = $path;
         }
 
         $data['description'] = purify_html($data['description'] ?? '');
@@ -61,8 +61,8 @@ class ServiceController extends Controller
 
         if ($request->hasFile('icon')) {
              // If icon is an image upload (svg/png)
-             $path = $request->file('icon')->store('services/icons', 'public');
-             $data['icon'] = 'storage/' . $path;
+             $path = $request->file('icon')->store('services/icons');
+             $data['icon'] = $path;
         } elseif (empty($data['icon'])) {
              // Default icon if not provided
              $data['icon'] = 'flaticon-settings';
@@ -122,38 +122,23 @@ class ServiceController extends Controller
         if ($request->hasFile('image')) {
             $this->deleteLocalMedia($service->image);
             $file = $request->file('image');
-            $filename = Str::slug($data['title']) . '-' . time();
-
-            // Professional Optimization: Using Intervention Image if available
-            if (class_exists('\Intervention\Image\Laravel\Facades\Image')) {
-                $manager = \Intervention\Image\Laravel\Facades\Image::getFacadeRoot();
-                
-                // 1. Optimized Main Image (WebP, Max 1200px)
-                $mainPath = 'services/' . $filename . '.webp';
-                $image = $manager->read($file);
-                $image->scale(width: 1200);
-                Storage::disk('public')->put($mainPath, (string) $image->toWebp(80));
-                $data['image'] = 'storage/' . $mainPath;
-            } else {
-                // Fallback to standard upload
-                $path = $file->store('services', 'public');
-                $data['image'] = 'storage/' . $path;
-            }
+            $path = $file->store('services');
+            $data['image'] = $path;
         }
 
         // Handle OG Image
         if ($request->hasFile('og_image')) {
             $this->deleteLocalMedia($service->og_image ?? null);
-            $path = $request->file('og_image')->store('seo/og', 'public');
-            $data['og_image'] = 'storage/' . $path;
+            $path = $request->file('og_image')->store('seo/og');
+            $data['og_image'] = $path;
         }
 
         $data['description'] = purify_html($data['description'] ?? '');
         $data['subtitle'] = purify_html($data['subtitle'] ?? '');
 
         if ($request->hasFile('icon')) {
-            $path = $request->file('icon')->store('services/icons', 'public');
-            $data['icon'] = 'storage/' . $path;
+            $path = $request->file('icon')->store('services/icons');
+            $data['icon'] = $path;
         }
 
         unset($data['image_url'], $data['og_image_url']);
@@ -186,7 +171,7 @@ class ServiceController extends Controller
             $path = substr($path, 8);
         }
 
-        Storage::disk('public')->delete($path);
+        Storage::delete($path);
     }
 
     private function isExternalUrl(string $path): bool

@@ -63,8 +63,8 @@ class SaveProjectAction
                 $this->deleteLocalMedia($project->og_image ?? null);
             }
 
-            $path = $data['og_image']->store('seo/og', 'public');
-            $data['og_image'] = 'storage/' . $path;
+            $path = $data['og_image']->store('seo/og');
+            $data['og_image'] = $path;
         }
 
         unset($data['image_url'], $data['og_image_url']);
@@ -101,12 +101,12 @@ class SaveProjectAction
             $thumb->cover(400, 300);
             Storage::disk('public')->put($thumbPath, (string) $thumb->toWebp(70));
             
-            return 'storage/' . $mainPath;
+            return $mainPath;
         }
 
         // Fallback to standard upload
-        $path = $file->store('projects', 'public');
-        return 'storage/' . $path;
+        $path = $file->store('projects');
+        return $path;
     }
 
     protected function deleteLocalMedia(?string $path): void
@@ -119,7 +119,7 @@ class SaveProjectAction
             $path = substr($path, 8);
         }
 
-        Storage::disk('public')->delete($path);
+        Storage::delete($path);
     }
 
     protected function isExternalUrl(string $path): bool

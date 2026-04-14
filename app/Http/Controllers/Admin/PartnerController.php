@@ -34,8 +34,8 @@ class PartnerController extends Controller
         }
         
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('partners', 'public');
-            $data['logo'] = 'storage/' . $path;
+            $path = $request->file('logo')->store('partners');
+            $data['logo'] = $path;
         }
 
         unset($data['logo_url']);
@@ -66,8 +66,8 @@ class PartnerController extends Controller
         if ($request->hasFile('logo')) {
             $this->deleteLocalLogo($partner->logo);
             
-            $path = $request->file('logo')->store('partners', 'public');
-            $data['logo'] = 'storage/' . $path;
+            $path = $request->file('logo')->store('partners');
+            $data['logo'] = $path;
         }
 
         unset($data['logo_url']);
@@ -92,11 +92,7 @@ class PartnerController extends Controller
 
     private function deleteLocalLogo(?string $path): void
     {
-        if (empty($path) || $this->isExternalUrl($path) || !str_starts_with($path, 'storage/')) {
-            return;
-        }
-
-        Storage::disk('public')->delete(substr($path, 8));
+        Storage::delete($path);
     }
 
     private function isExternalUrl(string $path): bool

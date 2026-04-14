@@ -61,7 +61,7 @@ class SettingsController extends Controller
         if ($request->hasFile('image')) {
             $this->deleteLocalImage($user->image);
             
-            $path = $request->file('image')->store('uploads/profiles', 'public');
+            $path = $request->file('image')->store('uploads/profiles');
             $validated['image'] = $path;
         }
 
@@ -133,7 +133,7 @@ class SettingsController extends Controller
             $path = substr($path, 8);
         }
 
-        Storage::disk('public')->delete($path);
+        Storage::delete($path);
     }
 
     private function isExternalUrl(string $path): bool

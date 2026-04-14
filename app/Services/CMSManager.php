@@ -308,7 +308,7 @@ class CMSManager
             if ($request->hasFile($fileField)) {
                 $file = $request->file($fileField);
                 $path = $file->store('uploads/content', 'public');
-                $validatedData[$field] = 'storage/' . $path;
+                $validatedData[$field] = $path;
             } else {
                 // Keep existing if not provided
                 $existing = $section->contentBlocks()->where('key', $field)->value('content');
@@ -325,7 +325,7 @@ class CMSManager
                 if (isset($fileData['image_file'])) {
                     $file = $fileData['image_file'];
                     $path = $file->store('uploads/content', 'public');
-                    $validatedData['members'][$index]['image'] = 'storage/' . $path;
+                    $validatedData['members'][$index]['image'] = $path;
                 }
             }
         }
@@ -368,7 +368,7 @@ class CMSManager
         if ($request->hasFile("item_file")) {
             $file = $request->file("item_file");
             $path = $file->store('uploads/content', 'public');
-            $itemData['image'] = 'storage/' . $path;
+            $itemData['image'] = $path;
         }
 
         $items[$index] = array_merge($items[$index], $itemData);

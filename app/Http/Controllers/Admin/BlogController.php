@@ -57,11 +57,11 @@ class BlogController extends Controller
         }
 
         if ($request->hasFile('featured_image')) {
-            $data['image'] = $request->file('featured_image')->store('assets/img/blog', 'public');
+            $data['image'] = $request->file('featured_image')->store('assets/img/blog');
         }
 
         if ($request->hasFile('og_image')) {
-            $data['og_image'] = $request->file('og_image')->store('seo/og', 'public');
+            $data['og_image'] = $request->file('og_image')->store('seo/og');
         }
 
         unset($data['featured_image_url'], $data['og_image_url']);
@@ -117,13 +117,13 @@ class BlogController extends Controller
 
         if ($request->hasFile('featured_image')) {
             $this->deleteLocalMedia($blog->image);
-            $data['image'] = $request->file('featured_image')->store('assets/img/blog', 'public');
+            $data['image'] = $request->file('featured_image')->store('assets/img/blog');
         }
 
         // Handle OG Image
         if ($request->hasFile('og_image')) {
             $this->deleteLocalMedia($blog->og_image ?? null);
-            $data['og_image'] = $request->file('og_image')->store('seo/og', 'public');
+            $data['og_image'] = $request->file('og_image')->store('seo/og');
         }
 
         unset($data['featured_image_url'], $data['og_image_url']);
@@ -163,7 +163,7 @@ class BlogController extends Controller
             $path = substr($path, 8);
         }
 
-        Storage::disk('public')->delete($path);
+        Storage::delete($path);
     }
 
     private function isExternalUrl(string $path): bool

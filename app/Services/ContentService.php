@@ -46,8 +46,8 @@ class ContentService
 
             if ($request->hasFile($fileInputName)) {
                 $file = $request->file($fileInputName);
-                $path = $file->store('uploads/content', 'public');
-                $data[$fieldName] = 'storage/' . $path;
+                $path = $file->store('uploads/content');
+                $data[$fieldName] = $path;
             }
         }
         

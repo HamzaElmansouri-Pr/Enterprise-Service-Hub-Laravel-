@@ -64,7 +64,7 @@ class ContactController extends Controller
 
         $path = null;
         if ($request->hasFile('attached_file')) {
-            $path = $request->file('attached_file')->store('tc-requests', 'public');
+            $path = $request->file('attached_file')->store('tc-requests');
         }
 
         TcRequest::create([

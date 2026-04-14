@@ -36,10 +36,8 @@ class SliderController extends Controller
             $data['image'] = $data['image_url'];
         }
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('sliders', 'public');
+            $imagePath = $request->file('image')->store('sliders');
             $data['image'] = $imagePath;
-        }
 
         unset($data['image_url']);
 
@@ -77,7 +75,7 @@ class SliderController extends Controller
 
         if ($request->hasFile('image')) {
             $this->deleteLocalImage($slider->image);
-            $imagePath = $request->file('image')->store('sliders', 'public');
+            $imagePath = $request->file('image')->store('sliders');
             $data['image'] = $imagePath;
         }
 
@@ -122,7 +120,7 @@ class SliderController extends Controller
             $path = substr($path, 8);
         }
 
-        Storage::disk('public')->delete($path);
+        Storage::delete($path);
     }
 
     private function isExternalUrl(string $path): bool

@@ -46,7 +46,7 @@ class ReviewController extends Controller
         }
 
         if ($request->hasFile('client_image')) {
-            $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial', 'public');
+            $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial');
         }
 
         unset($data['client_image_url']);
@@ -93,7 +93,7 @@ class ReviewController extends Controller
 
         if ($request->hasFile('client_image')) {
             $this->deleteLocalMedia($review->client_image);
-            $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial', 'public');
+            $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial');
         }
 
         unset($data['client_image_url']);
@@ -129,7 +129,7 @@ class ReviewController extends Controller
             $path = substr($path, 8);
         }
 
-        Storage::disk('public')->delete($path);
+        Storage::delete($path);
     }
 
     private function isExternalUrl(string $path): bool
