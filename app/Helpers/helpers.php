@@ -15,7 +15,7 @@ if (!function_exists('resolve_image_url')) {
             return null;
         }
 
-        // If it's already a full URL
+        // If it's already a full URL (Cloudinary URLs or any external URL)
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             return $path;
         }
@@ -28,6 +28,19 @@ if (!function_exists('resolve_image_url')) {
         // If it already has storage/ prefix (common in some CMS/DB setups)
         if (str_starts_with($path, 'storage/')) {
             $path = substr($path, 8); // Remove 'storage/'
+        }
+
+        // When using Cloudinary as the default disk, old relative paths
+        // cannot be resolved via Storage::url() (it makes a costly API call
+        // that will fail for missing resources). Return the local fallback.
+        if (config('filesystems.default') === 'cloudinary') {
+            // Try to serve from the public disk as a fallback for old data
+            $localPath = storage_path('app/public/' . $path);
+            if (file_exists($localPath)) {
+                return asset('storage/' . $path);
+            }
+            // Old data that no longer exists anywhere
+            return null;
         }
 
         return Storage::url($path);
