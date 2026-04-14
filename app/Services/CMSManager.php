@@ -8,6 +8,7 @@ use App\Models\Page;
 use App\Models\Section;
 use stdClass;
 use Illuminate\Support\Collection;
+use App\Services\CloudinaryUploadService;
 
 class CMSManager
 {
@@ -303,12 +304,12 @@ class CMSManager
         }
 
         // Handle Files
+        $uploadService = app(CloudinaryUploadService::class);
         $imageFields = $this->getImageFields($type);
         foreach ($imageFields as $field => $fileField) {
             if ($request->hasFile($fileField)) {
                 $file = $request->file($fileField);
-                $path = $file->store('uploads/content', 'public');
-                $validatedData[$field] = $path;
+                $validatedData[$field] = $uploadService->upload($file, 'content');
             } else {
                 // Keep existing if not provided
                 $existing = $section->contentBlocks()->where('key', $field)->value('content');
@@ -324,8 +325,7 @@ class CMSManager
             foreach ($request->file('members') as $index => $fileData) {
                 if (isset($fileData['image_file'])) {
                     $file = $fileData['image_file'];
-                    $path = $file->store('uploads/content', 'public');
-                    $validatedData['members'][$index]['image'] = $path;
+                    $validatedData['members'][$index]['image'] = $uploadService->upload($file, 'content/members');
                 }
             }
         }
@@ -367,8 +367,8 @@ class CMSManager
         // Handle File Upload for this item
         if ($request->hasFile("item_file")) {
             $file = $request->file("item_file");
-            $path = $file->store('uploads/content', 'public');
-            $itemData['image'] = $path;
+            $uploadService = app(CloudinaryUploadService::class);
+            $itemData['image'] = $uploadService->upload($file, 'content');
         }
 
         $items[$index] = array_merge($items[$index], $itemData);

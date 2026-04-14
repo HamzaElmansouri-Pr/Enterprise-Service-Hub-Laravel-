@@ -8,11 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\Admin\StoreSliderRequest;
 use App\Http\Requests\Admin\UpdateSliderRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryUploadService;
 
 class SliderController extends Controller
 {
     use AuthorizesRequests;
+
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
 
     public function index()
     {
@@ -36,8 +43,9 @@ class SliderController extends Controller
             $data['image'] = $data['image_url'];
         }
 
-            $imagePath = $request->file('image')->store('sliders');
-            $data['image'] = $imagePath;
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->uploadService->upload($request->file('image'), 'sliders');
+        }
 
         unset($data['image_url']);
 
@@ -67,16 +75,15 @@ class SliderController extends Controller
 
         if (!empty($data['image_url'])) {
             if ($slider->image !== $data['image_url']) {
-                $this->deleteLocalImage($slider->image);
+                $this->uploadService->delete($slider->image);
             }
 
             $data['image'] = $data['image_url'];
         }
 
         if ($request->hasFile('image')) {
-            $this->deleteLocalImage($slider->image);
-            $imagePath = $request->file('image')->store('sliders');
-            $data['image'] = $imagePath;
+            $this->uploadService->delete($slider->image);
+            $data['image'] = $this->uploadService->upload($request->file('image'), 'sliders');
         }
 
         unset($data['image_url']);
@@ -91,7 +98,7 @@ class SliderController extends Controller
     {
         $this->authorize('delete', $slider);
         
-        $this->deleteLocalImage($slider->image);
+        $this->uploadService->delete($slider->image);
         
         $slider->delete();
         return redirect()->route('admin.sliders.index')
@@ -108,23 +115,5 @@ class SliderController extends Controller
 
         return redirect()->route('admin.sliders.index')
             ->with('success', 'Slider status updated successfully.');
-    }
-
-    private function deleteLocalImage(?string $path): void
-    {
-        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
-            return;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, 8);
-        }
-
-        Storage::delete($path);
-    }
-
-    private function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

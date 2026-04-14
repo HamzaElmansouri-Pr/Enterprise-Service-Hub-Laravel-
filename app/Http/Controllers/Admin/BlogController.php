@@ -6,14 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Http\Requests\Admin\StoreBlogRequest;
 use App\Http\Requests\Admin\UpdateBlogRequest;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BlogController extends Controller
 {
     use AuthorizesRequests;
+
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -57,11 +64,11 @@ class BlogController extends Controller
         }
 
         if ($request->hasFile('featured_image')) {
-            $data['image'] = $request->file('featured_image')->store('assets/img/blog');
+            $data['image'] = $this->uploadService->upload($request->file('featured_image'), 'blog');
         }
 
         if ($request->hasFile('og_image')) {
-            $data['og_image'] = $request->file('og_image')->store('seo/og');
+            $data['og_image'] = $this->uploadService->upload($request->file('og_image'), 'seo/og');
         }
 
         unset($data['featured_image_url'], $data['og_image_url']);
@@ -101,7 +108,7 @@ class BlogController extends Controller
 
         if (!empty($data['featured_image_url'])) {
             if ($blog->image !== $data['featured_image_url']) {
-                $this->deleteLocalMedia($blog->image);
+                $this->uploadService->delete($blog->image);
             }
 
             $data['image'] = $data['featured_image_url'];
@@ -109,21 +116,21 @@ class BlogController extends Controller
 
         if (!empty($data['og_image_url'])) {
             if (($blog->og_image ?? null) !== $data['og_image_url']) {
-                $this->deleteLocalMedia($blog->og_image ?? null);
+                $this->uploadService->delete($blog->og_image ?? null);
             }
 
             $data['og_image'] = $data['og_image_url'];
         }
 
         if ($request->hasFile('featured_image')) {
-            $this->deleteLocalMedia($blog->image);
-            $data['image'] = $request->file('featured_image')->store('assets/img/blog');
+            $this->uploadService->delete($blog->image);
+            $data['image'] = $this->uploadService->upload($request->file('featured_image'), 'blog');
         }
 
         // Handle OG Image
         if ($request->hasFile('og_image')) {
-            $this->deleteLocalMedia($blog->og_image ?? null);
-            $data['og_image'] = $request->file('og_image')->store('seo/og');
+            $this->uploadService->delete($blog->og_image ?? null);
+            $data['og_image'] = $this->uploadService->upload($request->file('og_image'), 'seo/og');
         }
 
         unset($data['featured_image_url'], $data['og_image_url']);
@@ -144,30 +151,12 @@ class BlogController extends Controller
     {
         $this->authorize('delete', $blog);
 
-        $this->deleteLocalMedia($blog->image);
-        $this->deleteLocalMedia($blog->og_image ?? null);
+        $this->uploadService->delete($blog->image);
+        $this->uploadService->delete($blog->og_image ?? null);
 
         $blog->delete();
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post deleted successfully!');
-    }
-
-    private function deleteLocalMedia(?string $path): void
-    {
-        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
-            return;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, 8);
-        }
-
-        Storage::delete($path);
-    }
-
-    private function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

@@ -6,13 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Partner;
 use App\Http\Requests\Admin\StorePartnerRequest;
 use App\Http\Requests\Admin\UpdatePartnerRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PartnerController extends Controller
 {
     use AuthorizesRequests;
+
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
 
     public function index()
     {
@@ -34,8 +41,7 @@ class PartnerController extends Controller
         }
         
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('partners');
-            $data['logo'] = $path;
+            $data['logo'] = $this->uploadService->upload($request->file('logo'), 'partners');
         }
 
         unset($data['logo_url']);
@@ -57,17 +63,15 @@ class PartnerController extends Controller
 
         if (!empty($data['logo_url'])) {
             if ($partner->logo !== $data['logo_url']) {
-                $this->deleteLocalLogo($partner->logo);
+                $this->uploadService->delete($partner->logo);
             }
 
             $data['logo'] = $data['logo_url'];
         }
         
         if ($request->hasFile('logo')) {
-            $this->deleteLocalLogo($partner->logo);
-            
-            $path = $request->file('logo')->store('partners');
-            $data['logo'] = $path;
+            $this->uploadService->delete($partner->logo);
+            $data['logo'] = $this->uploadService->upload($request->file('logo'), 'partners');
         }
 
         unset($data['logo_url']);
@@ -82,21 +86,11 @@ class PartnerController extends Controller
     {
         $this->authorize('delete', $partner);
 
-        $this->deleteLocalLogo($partner->logo);
+        $this->uploadService->delete($partner->logo);
 
         $partner->delete();
 
         return redirect()->route('admin.partners.index')
             ->with('success', 'Partner deleted successfully.');
-    }
-
-    private function deleteLocalLogo(?string $path): void
-    {
-        Storage::delete($path);
-    }
-
-    private function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

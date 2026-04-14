@@ -6,13 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ServiceController extends Controller
 {
     use AuthorizesRequests;
+
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -52,17 +59,14 @@ class ServiceController extends Controller
         }
         
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('services');
-            $data['image'] = $path;
+            $data['image'] = $this->uploadService->upload($request->file('image'), 'services');
         }
 
         $data['description'] = purify_html($data['description'] ?? '');
         $data['subtitle'] = purify_html($data['subtitle'] ?? '');
 
         if ($request->hasFile('icon')) {
-             // If icon is an image upload (svg/png)
-             $path = $request->file('icon')->store('services/icons');
-             $data['icon'] = $path;
+             $data['icon'] = $this->uploadService->upload($request->file('icon'), 'services/icons');
         } elseif (empty($data['icon'])) {
              // Default icon if not provided
              $data['icon'] = 'flaticon-settings';
@@ -105,7 +109,7 @@ class ServiceController extends Controller
 
         if (!empty($data['image_url'])) {
             if ($service->image !== $data['image_url']) {
-                $this->deleteLocalMedia($service->image);
+                $this->uploadService->delete($service->image);
             }
 
             $data['image'] = $data['image_url'];
@@ -113,32 +117,28 @@ class ServiceController extends Controller
 
         if (!empty($data['og_image_url'])) {
             if (($service->og_image ?? null) !== $data['og_image_url']) {
-                $this->deleteLocalMedia($service->og_image ?? null);
+                $this->uploadService->delete($service->og_image ?? null);
             }
 
             $data['og_image'] = $data['og_image_url'];
         }
 
         if ($request->hasFile('image')) {
-            $this->deleteLocalMedia($service->image);
-            $file = $request->file('image');
-            $path = $file->store('services');
-            $data['image'] = $path;
+            $this->uploadService->delete($service->image);
+            $data['image'] = $this->uploadService->upload($request->file('image'), 'services');
         }
 
         // Handle OG Image
         if ($request->hasFile('og_image')) {
-            $this->deleteLocalMedia($service->og_image ?? null);
-            $path = $request->file('og_image')->store('seo/og');
-            $data['og_image'] = $path;
+            $this->uploadService->delete($service->og_image ?? null);
+            $data['og_image'] = $this->uploadService->upload($request->file('og_image'), 'seo/og');
         }
 
         $data['description'] = purify_html($data['description'] ?? '');
         $data['subtitle'] = purify_html($data['subtitle'] ?? '');
 
         if ($request->hasFile('icon')) {
-            $path = $request->file('icon')->store('services/icons');
-            $data['icon'] = $path;
+            $data['icon'] = $this->uploadService->upload($request->file('icon'), 'services/icons');
         }
 
         unset($data['image_url'], $data['og_image_url']);
@@ -159,23 +159,5 @@ class ServiceController extends Controller
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
-    }
-
-    private function deleteLocalMedia(?string $path): void
-    {
-        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
-            return;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, 8);
-        }
-
-        Storage::delete($path);
-    }
-
-    private function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

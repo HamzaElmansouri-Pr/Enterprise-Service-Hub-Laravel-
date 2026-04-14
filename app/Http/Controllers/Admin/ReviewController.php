@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Review;
 use App\Http\Requests\Admin\StoreReviewRequest;
 use App\Http\Requests\Admin\UpdateReviewRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ReviewController extends Controller
 {
     use AuthorizesRequests;
+
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -46,7 +53,7 @@ class ReviewController extends Controller
         }
 
         if ($request->hasFile('client_image')) {
-            $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial');
+            $data['client_image'] = $this->uploadService->upload($request->file('client_image'), 'testimonials');
         }
 
         unset($data['client_image_url']);
@@ -85,15 +92,15 @@ class ReviewController extends Controller
 
         if (!empty($data['client_image_url'])) {
             if ($review->client_image !== $data['client_image_url']) {
-                $this->deleteLocalMedia($review->client_image);
+                $this->uploadService->delete($review->client_image);
             }
 
             $data['client_image'] = $data['client_image_url'];
         }
 
         if ($request->hasFile('client_image')) {
-            $this->deleteLocalMedia($review->client_image);
-            $data['client_image'] = $request->file('client_image')->store('assets/img/testimonial');
+            $this->uploadService->delete($review->client_image);
+            $data['client_image'] = $this->uploadService->upload($request->file('client_image'), 'testimonials');
         }
 
         unset($data['client_image_url']);
@@ -111,29 +118,11 @@ class ReviewController extends Controller
     {
         $this->authorize('delete', $review);
 
-        $this->deleteLocalMedia($review->client_image);
+        $this->uploadService->delete($review->client_image);
 
         $review->delete();
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Review deleted successfully.');
-    }
-
-    private function deleteLocalMedia(?string $path): void
-    {
-        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
-            return;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, 8);
-        }
-
-        Storage::delete($path);
-    }
-
-    private function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

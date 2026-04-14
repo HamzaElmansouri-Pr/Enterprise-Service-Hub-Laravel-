@@ -6,13 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SettingsController extends Controller
 {
     use AuthorizesRequests;
+
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
 
     /**
      * Display the settings index page
@@ -51,7 +58,7 @@ class SettingsController extends Controller
 
         if (!empty($validated['image_url'])) {
             if ($user->image !== $validated['image_url']) {
-                $this->deleteLocalImage($user->image);
+                $this->uploadService->delete($user->image);
             }
 
             $validated['image'] = $validated['image_url'];
@@ -59,10 +66,8 @@ class SettingsController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            $this->deleteLocalImage($user->image);
-            
-            $path = $request->file('image')->store('uploads/profiles');
-            $validated['image'] = $path;
+            $this->uploadService->delete($user->image);
+            $validated['image'] = $this->uploadService->upload($request->file('image'), 'profiles');
         }
 
         unset($validated['image_url']);
@@ -115,29 +120,11 @@ class SettingsController extends Controller
     {
         $user = Auth::user();
         
-        $this->deleteLocalImage($user->image);
+        $this->uploadService->delete($user->image);
         
         $user->update(['image' => null]);
 
         return redirect()->route('admin.settings.edit-profile')
             ->with('success', 'Profile image deleted successfully!');
-    }
-
-    private function deleteLocalImage(?string $path): void
-    {
-        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
-            return;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, 8);
-        }
-
-        Storage::delete($path);
-    }
-
-    private function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

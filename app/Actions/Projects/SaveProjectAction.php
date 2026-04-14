@@ -3,11 +3,18 @@
 namespace App\Actions\Projects;
 
 use App\Models\Project;
-use Illuminate\Support\Facades\Storage;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Support\Str;
 
 class SaveProjectAction
 {
+    protected CloudinaryUploadService $uploadService;
+
+    public function __construct(CloudinaryUploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
+
     /**
      * Execute the action to save a project.
      * 
@@ -34,7 +41,7 @@ class SaveProjectAction
 
         if (!empty($data['image_url'])) {
             if ($project && ($project->image !== $data['image_url'])) {
-                $this->deleteLocalMedia($project->image);
+                $this->uploadService->delete($project->image);
             }
 
             $data['image'] = $data['image_url'];
@@ -42,7 +49,7 @@ class SaveProjectAction
 
         if (!empty($data['og_image_url'])) {
             if ($project && (($project->og_image ?? null) !== $data['og_image_url'])) {
-                $this->deleteLocalMedia($project->og_image ?? null);
+                $this->uploadService->delete($project->og_image ?? null);
             }
 
             $data['og_image'] = $data['og_image_url'];
@@ -51,20 +58,19 @@ class SaveProjectAction
         // 3. Handle Main Image
         if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
             if ($project) {
-                $this->deleteLocalMedia($project->image);
+                $this->uploadService->delete($project->image);
             }
 
-            $data['image'] = $this->processImage($data['image'], $data['title']);
+            $data['image'] = $this->uploadService->upload($data['image'], 'projects');
         }
 
         // 4. Handle OG Image
         if (isset($data['og_image']) && $data['og_image'] instanceof \Illuminate\Http\UploadedFile) {
             if ($project) {
-                $this->deleteLocalMedia($project->og_image ?? null);
+                $this->uploadService->delete($project->og_image ?? null);
             }
 
-            $path = $data['og_image']->store('seo/og');
-            $data['og_image'] = $path;
+            $data['og_image'] = $this->uploadService->upload($data['og_image'], 'seo/og');
         }
 
         unset($data['image_url'], $data['og_image_url']);
@@ -76,29 +82,5 @@ class SaveProjectAction
         }
 
         return Project::create($data);
-    }
-
-    protected function processImage($file, string $title): string
-    {
-        $path = $file->store('projects');
-        return $path;
-    }
-
-    protected function deleteLocalMedia(?string $path): void
-    {
-        if (empty($path) || $this->isExternalUrl($path) || str_starts_with($path, 'assets/')) {
-            return;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, 8);
-        }
-
-        Storage::delete($path);
-    }
-
-    protected function isExternalUrl(string $path): bool
-    {
-        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

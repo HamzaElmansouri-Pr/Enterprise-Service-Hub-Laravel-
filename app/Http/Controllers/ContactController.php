@@ -9,6 +9,7 @@ use App\Models\TcRequest;
 use App\Models\Service;
 use App\Services\CMSManager;
 use App\Http\Requests\TcRequestSubmitRequest;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -64,7 +65,8 @@ class ContactController extends Controller
 
         $path = null;
         if ($request->hasFile('attached_file')) {
-            $path = $request->file('attached_file')->store('tc-requests');
+            $uploadService = app(CloudinaryUploadService::class);
+            $path = $uploadService->upload($request->file('attached_file'), 'tc-requests');
         }
 
         TcRequest::create([

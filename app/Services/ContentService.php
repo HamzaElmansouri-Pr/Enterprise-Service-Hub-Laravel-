@@ -8,6 +8,7 @@ use App\Repositories\Interfaces\ContentRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
+use App\Services\CloudinaryUploadService;
 
 class ContentService
 {
@@ -46,8 +47,8 @@ class ContentService
 
             if ($request->hasFile($fileInputName)) {
                 $file = $request->file($fileInputName);
-                $path = $file->store('uploads/content');
-                $data[$fieldName] = $path;
+                $uploadService = app(CloudinaryUploadService::class);
+                $data[$fieldName] = $uploadService->upload($file, 'content');
             }
         }
         
