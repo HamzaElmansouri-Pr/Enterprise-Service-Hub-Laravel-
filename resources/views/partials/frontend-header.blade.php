@@ -1,7 +1,7 @@
     <!-- Navigation -->
     <nav class="sticky top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100/50 transition-all duration-300 py-3" 
          x-data="{ mobileOpen: false, scrolled: false }"
-         @scroll.window="scrolled = (window.pageYOffset > 20)"
+         @@scroll.window="scrolled = (window.pageYOffset > 20)"
          :class="{ 'py-2 shadow-md bg-white/95': scrolled, 'py-4': !scrolled }">
         
         <div class="container mx-auto px-4 md:px-6">
@@ -19,7 +19,9 @@
                             {{ substr($site_info['site_name'] ?? 'N', 0, 1) }}
                         </div>
                         <span class="text-2xl font-heading font-bold text-slate-900 tracking-tight">
-                            @php($siteName = $site_info['site_name'] ?? 'NovaAgency')
+                            @php
+                                $siteName = $site_info['site_name'] ?? 'NovaAgency';
+                            @endphp
                             @if($siteName === 'NovaAgency')
                                 Nova<span class="text-brand-500">Agency</span>
                             @else
@@ -57,7 +59,7 @@
                 </div>
 
                 <!-- Mobile Toggle -->
-                <button @click="mobileOpen = !mobileOpen" 
+                <button @@click="mobileOpen = !mobileOpen" 
                         class="md:hidden p-2 rounded-lg bg-slate-50 text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none">
                     <template x-if="!mobileOpen">
                         <i class="fa-solid fa-bars-staggered text-xl"></i>
@@ -77,7 +79,7 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
              x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
-             @click.away="mobileOpen = false"
+             @@click.away="mobileOpen = false"
              class="absolute top-full left-0 w-full bg-white shadow-2xl border-t border-slate-100 py-6 px-6 flex flex-col space-y-4 md:hidden rounded-b-2xl">
             @foreach($navLinks as $link)
                 <a href="{{ route($link['route']) }}" 
