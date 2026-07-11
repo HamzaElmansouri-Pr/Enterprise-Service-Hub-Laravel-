@@ -49,9 +49,6 @@ class BlogPolicy
      */
     public function delete(User $user, Blog $blog): bool
     {
-        // Only Admin can delete content to be safe, or allow Editor too?
-        // Let's allow Editor to delete content for now, or restriction: Admin only deletes.
-        // Usually Editors can delete posts.
         return $user->canAccessAdminPanel();
     }
 }

@@ -23,4 +23,11 @@ class ContentPolicy
     public function create(User $user): bool { return $this->manage($user); }
     public function update(User $user, $model): bool { return $this->manage($user); }
     public function delete(User $user, $model): bool { return $this->manage($user); }
+    /**
+     * Determine whether the user can delete section images.
+     */
+    public function deleteImage(User $user): bool
+    {
+        return $this->manage($user);
+    }
 }

@@ -34,6 +34,7 @@ class AdminUserTest extends TestCase
 
     public function test_admin_can_create_user()
     {
+        $this->withoutExceptionHandling();
         $userData = [
             'name' => 'New User',
             'email' => 'newuser@example.com',

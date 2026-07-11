@@ -1,36 +1,30 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WebsiteController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
-// Public website routes
-Route::get('/', [WebsiteController::class, 'home'])->name('home');
-Route::get('/about', [WebsiteController::class, 'about'])->name('about');
+// Redirect the root domain to the Admin Panel
+Route::get('/', function () {
+    return redirect()->route('admin.dashboard');
+})->name('home');
 
-Route::get('/services', [ServiceController::class, 'index'])->name('services');
-Route::get('/services/{service}', [ServiceController::class, 'show'])->name('services.show');
-
-Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
-Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-
-Route::get('/blog', [BlogController::class, 'index'])->name('blog');
-Route::get('/blog/{blog}', [BlogController::class, 'show'])->name('blog.show');
-
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-
-// Form submissions
-Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit')->middleware('throttle:form-submissions');
-Route::post('/tc-request', [ContactController::class, 'tcRequestSubmit'])->name('tc-request.submit')->middleware('throttle:form-submissions');
-
+// Dashboard (can be left for auth scaffolding, or point to admin)
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// SEO Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index']);
+
+// Language Switcher
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr', 'ar'])) {
+        session()->put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
+// Auth Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

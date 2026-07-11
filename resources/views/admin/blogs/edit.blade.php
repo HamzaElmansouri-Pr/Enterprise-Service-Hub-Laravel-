@@ -14,11 +14,7 @@
                     
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="mb-3">
-                                <label class="form-label">Title <span class="text-danger">*</span></label>
-                                <input type="text" name="title" class="form-control" value="{{ old('title', $blog->title) }}" required>
-                                @error('title') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                            </div>
+                            <x-admin.translatable-input name="title" label="Title" required="true" :value="$blog" />
 
                             <div class="mb-3">
                                 <label class="form-label">Slug</label>
@@ -26,17 +22,12 @@
                                 @error('slug') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Excerpt (Small Summary)</label>
-                                <textarea name="excerpt" class="form-control" rows="3">{{ old('excerpt', $blog->excerpt) }}</textarea>
-                                @error('excerpt') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                            </div>
+                            <x-admin.translatable-textarea name="excerpt" label="Excerpt (Small Summary)" rows="3" :value="$blog" />
 
                             <div class="mb-3">
-                                <label class="form-label">Content <span class="text-danger">*</span></label>
-                                <textarea name="content" class="form-control" rows="10" required>{{ old('content', $blog->content) }}</textarea>
-                                @error('content') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                                <x-admin.ai-generator target="[name='content']" context_target="[name='title[en]']" type="blog_body" label="Generate Blog Post" />
                             </div>
+                            <x-admin.translatable-textarea name="content" label="Content" required="true" rows="10" :richtext="true" :value="$blog" />
                         </div>
 
                         <div class="col-md-4">
@@ -62,13 +53,12 @@
                                 <div class="card bg-light border-0">
                                     <div class="card-body">
                                         <h6 class="mb-3">SEO & Social Metadata</h6>
+                                        <x-admin.seo-analyzer title_target="[name='title[en]']" content_target="[name='content[en]']" />
                                         <div class="mb-3">
-                                            <label class="form-label small">Meta Title</label>
-                                            <input type="text" name="meta_title" class="form-control form-control-sm" value="{{ old('meta_title', $blog->meta_title) }}">
+                                            <x-admin.translatable-input name="meta_title" label="Meta Title (SEO)" placeholder="Leave empty to use blog title" :value="$blog" />
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label small">Meta Description</label>
-                                            <textarea name="meta_description" class="form-control form-control-sm" rows="2">{{ old('meta_description', $blog->meta_description) }}</textarea>
+                                            <x-admin.translatable-textarea name="meta_description" label="Meta Description" placeholder="Brief summary for search engines" rows="3" :value="$blog" />
                                         </div>
                                         <div class="mb-0">
                                             <label class="form-label small">Social Image (OG)</label>
@@ -121,4 +111,6 @@
         </div>
     </div>
 </div>
+@push('scripts')
+@endpush
 @endsection

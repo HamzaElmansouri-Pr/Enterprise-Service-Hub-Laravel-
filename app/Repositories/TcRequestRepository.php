@@ -15,9 +15,4 @@ class TcRequestRepository extends BaseRepository implements TcRequestRepositoryI
     {
         parent::__construct($model);
     }
-    
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->model->with('service')->orderBy('created_at', 'desc')->paginate($perPage);
-    }
 }

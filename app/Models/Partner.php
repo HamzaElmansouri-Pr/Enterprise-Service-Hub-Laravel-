@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class Partner extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    protected $attributes = [
+        'is_active' => true,
+    ];
 
     protected $fillable = [
         'name',

@@ -12,11 +12,7 @@
                     @csrf
                     @method('PUT')
                     
-                    <div class="mb-3">
-                        <label class="form-label">Client Name <span class="text-danger">*</span></label>
-                        <input type="text" name="client_name" class="form-control" value="{{ old('client_name', $review->client_name) }}" required>
-                        @error('client_name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    </div>
+                    <x-admin.translatable-input name="client_name" label="Client Name" required="true" :value="$review" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -25,17 +21,14 @@
                             @error('client_company') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Position / Role</label>
-                            <input type="text" name="client_position" class="form-control" value="{{ old('client_position', $review->client_position) }}">
-                            @error('client_position') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            <x-admin.translatable-input name="client_position" label="Position / Role" :value="$review" />
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Review Text <span class="text-danger">*</span></label>
-                        <textarea name="review_text" class="form-control" rows="5" required>{{ old('review_text', $review->review_text) }}</textarea>
-                        @error('review_text') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <x-admin.ai-generator target="[name='review_text']" context_target="[name='client_name[en]']" type="testimonial" label="Generate Testimonial" />
                     </div>
+                    <x-admin.translatable-textarea name="review_text" label="Review Text" required="true" rows="5" :value="$review" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">

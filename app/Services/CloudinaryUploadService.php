@@ -34,16 +34,23 @@ class CloudinaryUploadService
         return 'storage/' . $path;
     }
 
-    /**
-     * Upload directly to Cloudinary and return the full secure URL.
-     */
     protected function uploadToCloudinary(UploadedFile $file, string $folder): string
+    {
+        return $this->uploadFileFromPath($file->getRealPath(), $folder);
+    }
+
+    /**
+     * Upload directly to Cloudinary from an absolute path and return the full secure URL.
+     */
+    public function uploadFileFromPath(string $absolutePath, string $folder): string
     {
         $cloudinary = app(\Cloudinary\Cloudinary::class);
 
-        $result = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+        $result = $cloudinary->uploadApi()->upload($absolutePath, [
             'folder' => $folder,
             'resource_type' => 'auto',
+            'format' => 'auto',
+            'quality' => 'auto',
         ]);
 
         return $result['secure_url'];

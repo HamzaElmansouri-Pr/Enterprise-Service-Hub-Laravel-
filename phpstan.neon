@@ -1,0 +1,19 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+        - routes/
+        - database/
+
+    # Level 5 is requested
+    level: 5
+
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\).#'
+
+    excludePaths:
+        - vendor/
+        - storage/

@@ -18,7 +18,7 @@ class ReviewFactory extends Factory
     {
         return [
             'client_name' => fake()->name(),
-            'client_position' => fake()->jobTitle(),
+            'client_position' => fake()->randomElement(['CEO', 'CTO', 'IT Director', 'Project Manager', 'Founder', 'Operations Manager']),
             'client_company' => fake()->company(),
             'client_image' => null, // Placeholder or null
             'review_text' => fake()->paragraph(),

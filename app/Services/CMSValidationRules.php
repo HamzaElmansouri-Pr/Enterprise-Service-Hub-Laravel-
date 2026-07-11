@@ -1,0 +1,252 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+class CMSValidationRules
+{
+    /**
+     * Administration: Get validation rules for a section type.
+     */
+    public function getRules(string $type): array
+    {
+        if (str_contains($type, 'page-header')) {
+            $type = 'page-header';
+        }
+
+        $rules = [
+            'home-hero' => [
+                'hero_title' => 'required|array',
+                'hero_title.en' => 'required|string|max:255',
+                'hero_subtitle' => 'required|array',
+                'hero_subtitle.en' => 'required|string|max:500',
+                'hero_button_text' => 'required|array',
+                'hero_button_text.en' => 'required|string|max:50',
+                'hero_image' => 'nullable|array',
+                'hero_image.en' => 'nullable|string',
+                'hero_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ],
+            'home-features' => [
+                'features_title' => 'required|array',
+                'features_title.en' => 'required|string|max:255',
+                'features_subtitle' => 'required|array',
+                'features_subtitle.en' => 'required|string|max:500',
+                'features' => 'required|array|min:1',
+                'features.*.title' => 'required|array',
+                'features.*.title.en' => 'required|string|max:255',
+                'features.*.description' => 'required|array',
+                'features.*.description.en' => 'required|string|max:500',
+            ],
+            'about-main' => [
+                'about_title' => 'required|array',
+                'about_title.en' => 'required|string|max:255',
+                'about_subtitle' => 'required|array',
+                'about_subtitle.en' => 'required|string|max:255',
+                'about_description' => 'required|array',
+                'about_description.en' => 'required|string|max:2000',
+                'about_image' => 'nullable|array',
+                'about_image.en' => 'nullable|string',
+                'about_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'header_image' => 'nullable|array',
+                'header_image.en' => 'nullable|string',
+                'header_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'about_content' => 'nullable|array',
+                'about_content.en' => 'nullable|string',
+                'features' => 'nullable|array',
+                'features.*.title' => 'nullable|array',
+                'features.*.title.en' => 'nullable|string|max:255',
+                'features.*.description' => 'nullable|array',
+                'features.*.description.en' => 'nullable|string|max:500',
+            ],
+            'home-about' => [
+                'about_title' => 'required|array',
+                'about_title.en' => 'required|string|max:255',
+                'about_subtitle' => 'required|array',
+                'about_subtitle.en' => 'required|string|max:255',
+                'about_description' => 'required|array',
+                'about_description.en' => 'required|string|max:2000',
+                'about_image' => 'nullable|array',
+                'about_image.en' => 'nullable|string',
+                'about_image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'about_content' => 'nullable|array',
+                'about_content.en' => 'nullable|string',
+                'features' => 'nullable|array',
+                'features.*.title' => 'nullable|array',
+                'features.*.title.en' => 'nullable|string|max:255',
+                'features.*.description' => 'nullable|array',
+                'features.*.description.en' => 'nullable|string|max:500',
+            ],
+            'contact-info' => [
+                'contact_title' => 'required|array',
+                'contact_title.en' => 'required|string|max:255',
+                'contact_description' => 'required|array',
+                'contact_description.en' => 'required|string|max:500',
+                'contact_phone' => 'required|array',
+                'contact_phone.en' => 'required|string|max:50',
+                'contact_email' => 'required|email|max:255',
+                'contact_address' => 'required|array',
+                'contact_address.en' => 'required|string|max:500',
+                'contact_logo' => 'nullable|array',
+                'contact_logo.en' => 'nullable|string|max:255',
+                'contact_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ],
+            'home-partners' => [
+                'partners_title' => 'nullable|array',
+                'partners_title.en' => 'nullable|string|max:255',
+                'partners_subtitle' => 'nullable|array',
+                'partners_subtitle.en' => 'nullable|string|max:500',
+            ],
+            'page-header' => [
+                'title' => 'required|array',
+                'title.en' => 'required|string|max:255',
+                'breadcrumb_title' => 'required|array',
+                'breadcrumb_title.en' => 'required|string|max:500',
+                'image' => 'nullable|array',
+                'image.en' => 'nullable|string',
+                'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ],
+            'about-stats' => [
+                'stats_title' => 'nullable|array',
+                'stats_title.en' => 'nullable|string|max:255',
+                'stats_subtitle' => 'nullable|array',
+                'stats_subtitle.en' => 'nullable|string|max:500',
+                'stats' => 'nullable|array',
+                'stats.*.icon' => 'nullable|string|max:100',
+                'stats.*.number' => 'nullable|array',
+                'stats.*.number.en' => 'nullable|string|max:50',
+                'stats.*.suffix' => 'nullable|string|max:20',
+                'stats.*.label' => 'nullable|array',
+                'stats.*.label.en' => 'nullable|string|max:255',
+            ],
+            'about-values' => [
+                'values_title' => 'nullable|array',
+                'values_title.en' => 'nullable|string|max:255',
+                'values_subtitle' => 'nullable|array',
+                'values_subtitle.en' => 'nullable|string|max:500',
+                'values' => 'nullable|array',
+                'values.*.icon' => 'nullable|string|max:100',
+                'values.*.title' => 'nullable|array',
+                'values.*.title.en' => 'nullable|string|max:255',
+                'values.*.description' => 'nullable|array',
+                'values.*.description.en' => 'nullable|string|max:1000',
+            ],
+            'about-history' => [
+                'history_title' => 'nullable|array',
+                'history_title.en' => 'nullable|string|max:255',
+                'history_subtitle' => 'nullable|array',
+                'history_subtitle.en' => 'nullable|string|max:500',
+                'milestones' => 'nullable|array',
+                'milestones.*.year' => 'nullable|array',
+                'milestones.*.year.en' => 'nullable|string|max:10',
+                'milestones.*.title' => 'nullable|array',
+                'milestones.*.title.en' => 'nullable|string|max:255',
+                'milestones.*.description' => 'nullable|array',
+                'milestones.*.description.en' => 'nullable|string|max:1000',
+            ],
+            'about-team' => [
+                'team_title' => 'nullable|array',
+                'team_title.en' => 'nullable|string|max:255',
+                'team_subtitle' => 'nullable|array',
+                'team_subtitle.en' => 'nullable|string|max:500',
+                'members' => 'nullable|array',
+                'members.*.name' => 'nullable|array',
+                'members.*.name.en' => 'nullable|string|max:255',
+                'members.*.position' => 'nullable|array',
+                'members.*.position.en' => 'nullable|string|max:255',
+                'members.*.image' => 'nullable|array',
+                'members.*.image.en' => 'nullable|string|max:500',
+                'members.*.image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'members.*.facebook' => 'nullable|array',
+                'members.*.facebook.en' => 'nullable|string|max:255',
+                'members.*.twitter' => 'nullable|array',
+                'members.*.twitter.en' => 'nullable|string|max:255',
+                'members.*.linkedin' => 'nullable|array',
+                'members.*.linkedin.en' => 'nullable|string|max:255',
+            ],
+            'services-list' => [
+                'title' => 'required|array',
+                'title.en' => 'required|string|max:255',
+                'subtitle' => 'required|array',
+                'subtitle.en' => 'required|string|max:500',
+                'featured_services' => 'nullable|array',
+                'featured_services.*.id' => 'nullable|integer|exists:services,id',
+                'featured_services.*.order' => 'nullable|integer|min:0',
+            ],
+            'projects-list' => [
+                'title' => 'required|array',
+                'title.en' => 'required|string|max:255',
+                'subtitle' => 'nullable|array',
+                'subtitle.en' => 'nullable|string|max:500',
+                'featured_projects' => 'nullable|array',
+                'featured_projects.*.id' => 'nullable|integer|exists:projects,id',
+                'featured_projects.*.order' => 'nullable|integer|min:0',
+            ],
+            'reviews-list' => [
+                'title' => 'required|array',
+                'title.en' => 'required|string|max:255',
+                'subtitle' => 'nullable|array',
+                'subtitle.en' => 'nullable|string|max:500',
+            ],
+            'blog-list' => [
+                'title' => 'required|array',
+                'title.en' => 'required|string|max:255',
+                'subtitle' => 'nullable|array',
+                'subtitle.en' => 'nullable|string|max:500',
+            ],
+            'cta-simple' => [
+                'title' => 'required|array',
+                'title.en' => 'required|string|max:255',
+                'subtitle' => 'nullable|array',
+                'subtitle.en' => 'nullable|string|max:500',
+                'description' => 'required|array',
+                'description.en' => 'required|string|max:1000',
+                'button_text' => 'required|array',
+                'button_text.en' => 'required|string|max:50',
+                'button_url' => 'nullable|array',
+                'button_url.en' => 'nullable|string|max:255',
+            ],
+            'site-info' => [
+                'site_name' => 'required|array',
+                'site_name.en' => 'required|string|max:255',
+                'site_description' => 'required|array',
+                'site_description.en' => 'required|string|max:1000',
+                'site_keywords' => 'nullable|array',
+                'site_keywords.en' => 'nullable|string|max:500',
+                'site_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'site_favicon_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,ico|max:1024',
+                'og_image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+                'twitter_handle' => 'nullable|array',
+                'twitter_handle.en' => 'nullable|string|max:255',
+                'json_ld_organization' => 'nullable|array',
+                'json_ld_organization.en' => 'nullable|string|max:5000',
+            ],
+        ];
+
+        return $rules[$type] ?? [];
+    }
+
+    public function getImageFields(string $type): array
+    {
+        if (str_contains($type, 'page-header')) {
+            $type = 'page-header';
+        }
+
+        $map = [
+            'home-hero' => ['hero_image' => 'hero_image_file'],
+            'about-main' => [
+                'about_image' => 'about_image_file',
+                'header_image' => 'header_image_file'
+            ],
+            'home-about' => ['about_image' => 'about_image_file'],
+            'contact-info' => ['contact_logo' => 'contact_logo_file'],
+            'page-header' => ['image' => 'image_file'],
+            'site-info' => [
+                'site_logo' => 'site_logo_file',
+                'site_favicon' => 'site_favicon_file',
+                'og_image' => 'og_image_file',
+            ],
+        ];
+        return $map[$type] ?? [];
+    }
+}

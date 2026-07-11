@@ -33,7 +33,7 @@
                     <tr>
                         <td>
                             @if($project->image)
-                                <img src="{{ asset($project->image) }}" alt="img" 
+                                <img src="{{ resolve_image_url($project->image, ['w' => 100, 'h' => 100, 'c' => 'fill']) }}" alt="img" 
                                      class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                             @else
                                 <div class="d-flex align-items-center justify-content-center bg-light rounded" 

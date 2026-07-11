@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Services\CloudinaryUploadService;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdateAdminPasswordRequest;
 
 class SettingsController extends Controller
 {
@@ -45,16 +47,11 @@ class SettingsController extends Controller
     /**
      * Update the user profile
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(UpdateProfileRequest $request)
     {
         $user = Auth::user();
         
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'image_url' => 'nullable|url|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if (!empty($validated['image_url'])) {
             if ($user->image !== $validated['image_url']) {
@@ -89,14 +86,11 @@ class SettingsController extends Controller
     /**
      * Update the user password
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(UpdateAdminPasswordRequest $request)
     {
         $user = Auth::user();
         
-        $validated = $request->validate([
-            'current_password' => 'required',
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
+        $validated = $request->validated();
 
         // Check current password
         if (!Hash::check($validated['current_password'], $user->password)) {
@@ -121,10 +115,57 @@ class SettingsController extends Controller
         $user = Auth::user();
         
         $this->uploadService->delete($user->image);
-        
-        $user->update(['image' => null]);
-
         return redirect()->route('admin.settings.edit-profile')
             ->with('success', 'Profile image deleted successfully!');
+    }
+
+    public function twoFactor()
+    {
+        return view('admin.settings.2fa');
+    }
+
+    /**
+     * Update the user's theme preference via AJAX.
+     */
+    public function updateTheme(Request $request)
+    {
+        $validated = $request->validate([
+            'theme' => 'required|in:light,dark,system'
+        ]);
+
+        $user = Auth::user();
+        $user->theme_preference = $validated['theme'];
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Update user preferences (like saved views) via AJAX.
+     */
+    public function updatePreferences(Request $request)
+    {
+        $validated = $request->validate([
+            'key' => 'required|string|max:100',
+            'value' => 'nullable' // can be array, string, or null to delete
+        ]);
+
+        $user = Auth::user();
+        $prefs = $user->preferences ?? [];
+
+        if (is_null($validated['value'])) {
+            unset($prefs[$validated['key']]);
+        } else {
+            $prefs[$validated['key']] = $validated['value'];
+        }
+
+        $user->preferences = $prefs;
+        $user->save();
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'preferences' => $prefs]);
+        }
+
+        return redirect()->back()->with('success', 'View deleted successfully.');
     }
 }

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\DTOs\CreateUserData;
+use App\DTOs\UpdateUserData;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class UserService
 {
@@ -27,36 +28,33 @@ class UserService
         return $this->userRepository->find($id);
     }
 
-    public function createUser(array $data)
+    public function createUser(CreateUserData $data)
     {
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        }
-        $data['is_active'] = isset($data['is_active']) && $data['is_active'];
+        $attributes = $data->toArray();
+        $attributes['password'] = Hash::make($attributes['password']);
 
-        return $this->userRepository->create($data);
+        return $this->userRepository->create($attributes);
     }
 
-    public function updateUser(int $id, array $data): bool
+    public function updateUser(int $id, UpdateUserData $data): bool
     {
-        if (!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
+        $attributes = $data->toArray();
+
+        if (!empty($attributes['password'])) {
+            $attributes['password'] = Hash::make($attributes['password']);
         } else {
-             unset($data['password']);
+            unset($attributes['password']);
         }
-        
+
         // Check if email changed to reset verification
-        if (isset($data['email'])) {
+        if (isset($attributes['email'])) {
             $user = $this->userRepository->find($id);
-            if ($user && $user->email !== $data['email']) {
-                $data['email_verified_at'] = null;
+            if ($user && $user->email !== $attributes['email']) {
+                $attributes['email_verified_at'] = null;
             }
         }
-        
-        // Profile update only passes name/email.
-        // Sensitive fields like role/is_active are ignored here because they are not fillable.
-        
-        return $this->userRepository->update($id, $data);
+
+        return $this->userRepository->update($id, $attributes);
     }
 
     /**
@@ -73,26 +71,13 @@ class UserService
     }
 
     /**
-     * Delete user with self-delete protection.
+     * Delete a user.
+     *
+     * This method delegates to the repository. Any permission checks (e.g., preventing an admin
+     * from deleting their own account) should be performed in the controller layer.
      */
     public function deleteUser(int $id): bool
     {
-        // Check if self-delete logic needed? 
-        // Admin shouldn't delete self via admin panel (handled in controller usually, or here).
-        // Profile self-delete is fine.
-        // I put a check "You cannot delete your own account" in previous version.
-        // If I call this for self-delete (ProfileController), it will THROW.
-        // So I need to allow self delete if it comes from ProfileController?
-        // Or separate methods: `adminDeleteUser` vs `deleteUser`.
-        // Or remove the check and let Controller handle permission/validation.
-        
-        // I'll remove the check here for flexibility, or check a flag.
-        // Actually, preventing accidental admin self-delete is good UI.
-        // But profile destruction is valid self-delete.
-        // I'll leave the check but compare ID with Auth::id(). 
-        // If I want to allow self-delete, I should have a separate method or parameter.
-        // Let's remove the check here and enforce it in AdminController.
-        
         return $this->userRepository->delete($id);
     }
 

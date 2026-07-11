@@ -28,6 +28,11 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->find($id);
     }
 
+    public function findOrFail(int $id): Model
+    {
+        return $this->model->findOrFail($id);
+    }
+
     public function create(array $data): Model
     {
         return $this->model->create($data);
@@ -51,8 +56,31 @@ abstract class BaseRepository implements RepositoryInterface
         return $record->delete();
     }
 
-    public function paginate(int $perPage = 10): LengthAwarePaginator
+    public function paginate(int $perPage = 10, array $with = [], array $orderBy = ['created_at' => 'desc']): LengthAwarePaginator
     {
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+        $query = $this->model->newQuery();
+
+        if (!empty($with)) {
+            $query->with($with);
+        }
+
+        foreach ($orderBy as $column => $direction) {
+            $query->orderBy($column, $direction);
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    public function getActive(?int $limit = null): Collection
+    {
+        $query = in_array('is_active', $this->model->getFillable()) 
+            ? $this->model->where('is_active', true) 
+            : $this->model->newQuery();
+            
+        if ($limit !== null) {
+            $query->take($limit);
+        }
+        
+        return $query->get();
     }
 }

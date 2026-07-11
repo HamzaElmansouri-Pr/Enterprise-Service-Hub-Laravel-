@@ -31,10 +31,13 @@ class PartnerSeeder extends Seeder
         }
 
         // Set default section content
-        $section = \App\Models\Section::firstOrCreate(['type' => 'home-partners'], [
-            'name' => 'Partners Marquee',
-            'is_active' => true,
-        ]);
+        $homePage = \App\Models\Page::where('slug', 'home')->first();
+        if ($homePage) {
+            $section = \App\Models\Section::firstOrCreate(
+                ['type' => 'home-partners', 'page_id' => $homePage->id], 
+                ['name' => 'Partners Marquee', 'is_active' => true]
+            );
+
 
         $section->contentBlocks()->updateOrCreate(
             ['key' => 'partners_title'],
@@ -44,5 +47,6 @@ class PartnerSeeder extends Seeder
             ['key' => 'partners_subtitle'],
             ['content' => 'Collaborating with industry leaders to deliver excellence.']
         );
+        }
     }
 }

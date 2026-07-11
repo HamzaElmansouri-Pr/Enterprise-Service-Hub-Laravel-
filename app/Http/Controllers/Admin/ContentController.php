@@ -8,6 +8,7 @@ use App\Services\CMSManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\UpdateContentRequest;
 
 class ContentController extends Controller
 {
@@ -22,6 +23,23 @@ class ContentController extends Controller
     {
         $sections = \App\Models\Section::all()->groupBy('type');
         return view('admin.content.index', compact('sections'));
+    }
+
+    public function toggleActive(string $type)
+    {
+        $section = Section::where('type', $type)->firstOrFail();
+        $section->is_active = !$section->is_active;
+        $section->save();
+
+        if ($type === 'site-info') {
+            cache()->forget('site_info');
+        }
+
+        return response()->json([
+            'success' => true,
+            'is_active' => $section->is_active,
+            'message' => 'Section status updated.'
+        ]);
     }
 
     public function edit(string $type)
@@ -59,15 +77,9 @@ class ContentController extends Controller
         return view("admin.content.edit", $data);
     }
 
-    public function update(Request $request, string $type)
+    public function update(UpdateContentRequest $request, string $type)
     {
-        $rules = $this->cmsManager->getValidationRules($type);
-        
-        if ($request->has('is_active_toggle')) {
-            $rules['is_active'] = 'nullable|boolean';
-        }
-        
-        $validatedData = $request->validate($rules);
+        $validatedData = $request->validated();
         $section = $this->cmsManager->getSection($type);
 
         $this->cmsManager->updateSection($section, $validatedData, $request);
@@ -110,5 +122,22 @@ class ContentController extends Controller
             'item' => $updatedItem,
             'image_url' => isset($updatedItem['image']) ? asset($updatedItem['image']) : null
         ]);
+    }
+
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'order' => 'required|array',
+            'order.*.type' => 'required|string',
+            'order.*.order' => 'required|integer',
+        ]);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            foreach ($request->input('order') as $item) {
+                Section::where('type', $item['type'])->update(['order_index' => $item['order']]);
+            }
+        });
+
+        return response()->json(['success' => true, 'message' => 'Sections reordered successfully.']);
     }
 }

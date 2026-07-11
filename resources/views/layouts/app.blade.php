@@ -22,43 +22,63 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet">
         
         <!-- Icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            brand: {
-                                50: '#f0f9ff',
-                                100: '#e0f2fe',
-                                200: '#bae6fd',
-                                300: '#7dd3fc',
-                                400: '#38bdf8',
-                                500: '#0ea5e9',
-                                600: '#0284c7',
-                                700: '#0369a1',
-                                800: '#075985',
-                                900: '#0c4a6e',
-                            },
-                            dark: {
-                                900: '#0f172a',
-                            }
-                        },
-                        fontFamily: {
-                            sans: ['Inter', 'sans-serif'],
-                            heading: ['Space Grotesk', 'sans-serif'],
-                        }
-                    }
-                }
+
+        <style>
+            [x-cloak] { display: none !important; }
+            .glass-header {
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             }
-        </script>
+            .nav-link-elite {
+                position: relative;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 600;
+            }
+            .nav-link-elite::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: -2px;
+                left: 50%;
+                background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: translateX(-50%);
+            }
+            .nav-link-elite:hover::after {
+                width: 100%;
+            }
+            .shimmer-btn {
+                position: relative;
+                overflow: hidden;
+            }
+            .shimmer-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: 0.5s;
+            }
+            .shimmer-btn:hover::before {
+                left: 100%;
+            }
+        </style>
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         
         <style>

@@ -66,11 +66,49 @@
                                     </p>
                                     @endif
                                     <p><strong>Status:</strong> 
-                                        <span class="badge {{ $contact->is_read ? 'bg-success' : 'bg-warning' }}">
-                                            {{ $contact->is_read ? 'Read' : 'Unread' }}
-                                        </span>
+                                        @if($contact->replied_at)
+                                            <span class="badge bg-success">Replied</span>
+                                        @elseif($contact->is_read)
+                                            <span class="badge bg-info">Read</span>
+                                        @else
+                                            <span class="badge bg-warning">Unread</span>
+                                        @endif
                                     </p>
                                     <p><strong>Received:</strong> {{ $contact->created_at->format('M d, Y H:i') }}</p>
+                                    @if($contact->replied_at)
+                                    <p><strong>Replied:</strong> {{ $contact->replied_at->format('M d, Y H:i') }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header border-bottom">
+                                    <h5 class="mb-0">Reply to Inquiry</h5>
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" id="inquiry_context" value="{{ 'Contact Name: ' . $contact->name . '. Inquiry: ' . $contact->message }}">
+                                    
+                                    <x-admin.ai-generator 
+                                        target="[name='reply_message']" 
+                                        context_target="#inquiry_context" 
+                                        type="email_reply" 
+                                        label="Draft Reply with AI" 
+                                    />
+
+                                    <form action="{{ route('admin.contacts.reply', $contact) }}" method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="reply_message" class="form-label">Message Content</label>
+                                            <textarea name="reply_message" id="reply_message" rows="8" class="form-control" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane me-1"></i> Send Reply
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

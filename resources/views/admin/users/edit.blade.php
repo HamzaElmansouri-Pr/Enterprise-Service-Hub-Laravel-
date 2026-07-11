@@ -56,11 +56,15 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="role" name="role" required>
+                                    <select class="form-control" id="role" name="role" {{ auth()->user()->isAdmin() ? 'required' : 'disabled' }}>
                                         <option value="">Select Role</option>
                                         <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                        <option value="editor" {{ old('role', $user->role) == 'editor' ? 'selected' : '' }}>Editor</option>
                                         <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>User</option>
                                     </select>
+                                    @if(!auth()->user()->isAdmin())
+                                        <input type="hidden" name="role" value="{{ $user->role }}">
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-md-6">

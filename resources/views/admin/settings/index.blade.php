@@ -108,6 +108,10 @@
                         <i class="fas fa-key me-2"></i>
                         Change Password
                     </a>
+                    <a href="{{ route('admin.settings.2fa') }}" class="btn btn-outline-info">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Two-Factor Authentication
+                    </a>
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-tachometer-alt me-2"></i>
                         Back to Dashboard

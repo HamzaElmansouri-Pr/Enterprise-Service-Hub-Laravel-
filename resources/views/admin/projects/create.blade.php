@@ -11,11 +11,7 @@
                 <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
-                    <div class="mb-3">
-                        <label class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
-                        @error('title') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    </div>
+                    <x-admin.translatable-input name="title" label="Title" required="true" />
 
                     <div class="mb-3">
                         <label class="form-label">Slug (Optional)</label>
@@ -37,17 +33,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Description <span class="text-danger">*</span></label>
-                        <textarea name="description" class="form-control" rows="8" required>{{ old('description') }}</textarea>
-                        @error('description') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <x-admin.ai-generator target="[name='description']" context_target="[name='title[en]']" type="case_study" label="Generate Case Study / Description" />
                     </div>
+                    <x-admin.translatable-textarea name="description" label="Description" required="true" rows="8" :richtext="true" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Project Image</label>
                             <input type="file" name="image" class="form-control" accept="image/*">
                             @error('image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                            <input type="url" name="image_url" class="form-control mt-2" value="{{ old('image_url') }}" placeholder="Or paste image URL (https://...)">
+                            <input type="text" name="image_url" class="form-control mt-2" value="{{ old('image_url') }}" placeholder="Or paste image URL (https://...)">
                             @error('image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">

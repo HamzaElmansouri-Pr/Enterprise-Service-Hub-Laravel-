@@ -1,0 +1,110 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ServiceResource;
+use App\Models\Service;
+use App\Repositories\Interfaces\ServiceRepositoryInterface;
+use App\Services\CMSManager;
+use App\Services\JsonLdService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
+class ServiceController extends Controller
+{
+    protected CMSManager $cmsManager;
+    protected ServiceRepositoryInterface $serviceRepository;
+    protected JsonLdService $jsonLd;
+
+    public function __construct(CMSManager $cmsManager, ServiceRepositoryInterface $serviceRepository, JsonLdService $jsonLd)
+    {
+        $this->cmsManager = $cmsManager;
+        $this->serviceRepository = $serviceRepository;
+        $this->jsonLd = $jsonLd;
+    }
+
+    /**
+     * Get all active services.
+     */
+    public function index(): JsonResponse
+    {
+        $pageNumber = request()->get('page', 1);
+        $perPage = request()->get('per_page', 12);
+        
+        // Extract filters
+        $search = request()->get('search');
+        $sort = request()->get('sort', 'order_index'); // order_index, created_at
+        $direction = request()->get('direction', 'asc');
+        // By default API only returns active, but allow fetching all if explicitly requested (and perhaps check admin token in future)
+        $isActive = request()->get('is_active', true);
+
+        // Build dynamic cache key
+        $cacheKey = "api_services_index_p{$pageNumber}_pp{$perPage}_s{$search}_sort{$sort}_{$direction}_act{$isActive}";
+
+        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($perPage, $search, $sort, $direction, $isActive) {
+            $services = $this->serviceRepository->getFilteredActive(
+                $perPage,
+                $search,
+                $sort,
+                $direction,
+                $isActive
+            );
+
+            $page = $this->cmsManager->resolvePage('services', [
+                'title' => __('cms.services.title'),
+                'breadcrumb_title' => __('cms.services.breadcrumb_title'),
+                'image' => __('cms.services.image'),
+            ], true);
+
+            return response()->json([
+                'services' => ServiceResource::collection($services),
+                'pagination' => [
+                    'current_page' => $services->currentPage(),
+                    'last_page' => $services->lastPage(),
+                    'per_page' => $services->perPage(),
+                    'total' => $services->total(),
+                ],
+                'page' => [
+                    'title' => $page->title ?? __('cms.services.title'),
+                    'breadcrumb_title' => $page->breadcrumb_title ?? __('cms.services.breadcrumb_title'),
+                    'image' => $page->image ?? null,
+                    'meta_title' => $page->model->meta_title ?? null,
+                    'meta_description' => $page->model->meta_description ?? null,
+                ],
+                'jsonLd' => [
+                    $this->jsonLd->serviceList($services),
+                    $this->jsonLd->breadcrumb([
+                        'Home' => config('app.frontend_url', config('app.url')),
+                        'Services' => config('app.frontend_url', config('app.url')) . '/services',
+                    ]),
+                ],
+            ]);
+        });
+    }
+
+    /**
+     * Get a single service by slug.
+     */
+    public function show(string $slug): JsonResponse
+    {
+        $service = $this->serviceRepository->findBySlug($slug);
+        $allServices = $this->serviceRepository->getActive(20);
+
+        $frontendUrl = config('app.frontend_url', config('app.url'));
+
+        return response()->json([
+            'service' => new ServiceResource($service),
+            'all_services' => ServiceResource::collection($allServices),
+            'jsonLd' => [
+                $this->jsonLd->service($service),
+                $this->jsonLd->breadcrumb([
+                    'Home' => $frontendUrl,
+                    'Services' => $frontendUrl . '/services',
+                    $service->title => $frontendUrl . '/services/' . $service->slug,
+                ]),
+            ],
+        ]);
+    }
+}

@@ -22,14 +22,25 @@ class UpdateSliderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'button_text' => 'nullable|string|max:100',
-            'button_url' => 'nullable|url|max:255',
+            'title' => 'required|array',
+            'title.en' => 'required|string|max:255',
+            'subtitle' => 'nullable|array',
+            'description' => 'nullable|array',
+            'badge_text' => 'nullable|array',
+            'button_text' => 'nullable|array',
+            'button_url' => 'nullable|string|max:255',
+            'secondary_button_text' => 'nullable|array',
+            'secondary_button_url' => 'nullable|string|max:255',
+            'alignment' => 'required|in:left,center,right',
+            'overlay_opacity' => 'required|in:light,medium,dark',
+            'text_theme' => 'required|in:light,dark',
+            'video_url' => 'nullable|url|max:500',
+            'title_color' => 'nullable|string|max:7',
+            'subtitle_color' => 'nullable|string|max:7',
+            'description_color' => 'nullable|string|max:7',
             // PHP upload_max_filesize is 2MB, so we limit validation to match
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image_url' => 'nullable|url|max:2048',
+            'image_url' => 'nullable|string|max:2048',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ];

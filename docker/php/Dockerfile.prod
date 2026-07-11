@@ -1,0 +1,52 @@
+# Stage 1: Build JS/CSS
+FROM node:20 as build-frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Stage 2: Composer
+FROM composer:latest as build-backend
+WORKDIR /app
+COPY database/ database/
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+COPY . .
+RUN composer dump-autoload --optimize
+
+# Stage 3: PHP-FPM Production
+FROM php:8.3-fpm
+
+# Install dependencies & PHP extensions
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip opcache
+
+# Copy custom php.ini configuration (should enable opcache)
+COPY docker/php/prod.ini /usr/local/etc/php/conf.d/prod.ini
+
+WORKDIR /var/www
+
+# Copy codebase from builder
+COPY --from=build-backend /app /var/www
+
+# Copy compiled frontend assets
+# Note: checking if public/build exists, otherwise just ignore via wildcard
+COPY --from=build-frontend /app/public/build* /var/www/public/build/
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Run Laravel Optimization commands
+RUN php artisan optimize:clear \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache

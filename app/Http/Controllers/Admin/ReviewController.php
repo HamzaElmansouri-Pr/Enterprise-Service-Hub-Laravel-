@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
 use App\Http\Requests\Admin\StoreReviewRequest;
 use App\Http\Requests\Admin\UpdateReviewRequest;
 use App\Services\CloudinaryUploadService;
@@ -14,10 +15,12 @@ class ReviewController extends Controller
     use AuthorizesRequests;
 
     protected CloudinaryUploadService $uploadService;
+    protected ReviewRepositoryInterface $reviewRepository;
 
-    public function __construct(CloudinaryUploadService $uploadService)
+    public function __construct(CloudinaryUploadService $uploadService, ReviewRepositoryInterface $reviewRepository)
     {
         $this->uploadService = $uploadService;
+        $this->reviewRepository = $reviewRepository;
     }
 
     /**
@@ -25,7 +28,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        $reviews = Review::orderBy('order_index')->paginate(10);
+        $reviews = $this->reviewRepository->paginate(10, [], ['order_index' => 'asc']);
         return view('admin.reviews.index', compact('reviews'));
     }
 
@@ -58,7 +61,11 @@ class ReviewController extends Controller
 
         unset($data['client_image_url']);
 
-        Review::create($data);
+        if (isset($data['review_text'])) {
+            $data['review_text'] = is_array($data['review_text']) ? array_map('purify_html', $data['review_text']) : purify_html($data['review_text']);
+        }
+
+        $this->reviewRepository->create($data);
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Review created successfully.');
@@ -105,7 +112,11 @@ class ReviewController extends Controller
 
         unset($data['client_image_url']);
 
-        $review->update($data);
+        if (isset($data['review_text'])) {
+            $data['review_text'] = is_array($data['review_text']) ? array_map('purify_html', $data['review_text']) : purify_html($data['review_text']);
+        }
+
+        $this->reviewRepository->update($review->id, $data);
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Review updated successfully.');
@@ -116,11 +127,9 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        $this->authorize('delete', $review);
-
         $this->uploadService->delete($review->client_image);
 
-        $review->delete();
+        $this->reviewRepository->delete($review->id);
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Review deleted successfully.');

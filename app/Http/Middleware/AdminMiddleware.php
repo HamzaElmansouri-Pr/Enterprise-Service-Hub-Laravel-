@@ -23,6 +23,13 @@ class AdminMiddleware
 
         // Check if user has access to admin panel
         $user = Auth::user();
+
+        // Check if user account is deactivated
+        if (!$user->is_active) {
+            Auth::logout();
+            abort(403, 'Your account has been deactivated. Please contact an administrator.');
+        }
+
         if (method_exists($user, 'canAccessAdminPanel') && !$user->canAccessAdminPanel()) {
              abort(403, 'Unauthorized access to admin area.');
         } elseif (!method_exists($user, 'canAccessAdminPanel')) {

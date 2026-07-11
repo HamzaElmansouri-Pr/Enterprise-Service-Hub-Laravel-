@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Http\Requests\Admin\StoreProjectRequest;
 use App\Http\Requests\Admin\UpdateProjectRequest;
 use Illuminate\Support\Facades\Storage;
@@ -14,12 +15,19 @@ class ProjectController extends Controller
 {
     use AuthorizesRequests;
 
+    protected ProjectRepositoryInterface $projectRepository;
+
+    public function __construct(ProjectRepositoryInterface $projectRepository)
+    {
+        $this->projectRepository = $projectRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $projects = Project::orderBy('order_index')->paginate(10);
+        $projects = $this->projectRepository->paginate(10, [], ['order_index' => 'asc']);
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -36,7 +44,11 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request, \App\Actions\Projects\SaveProjectAction $saveProjectAction)
     {
-        $saveProjectAction->execute($request->validated());
+        $project = $saveProjectAction->execute($request->validated());
+
+        if (empty($request->validated()['meta_description'] ?? null)) {
+            \App\Jobs\GenerateSeoMetaJob::dispatch($project);
+        }
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project created successfully.');
@@ -65,6 +77,10 @@ class ProjectController extends Controller
     {
         $saveProjectAction->execute($request->validated(), $project);
 
+        if (empty($request->validated()['meta_description'] ?? null)) {
+            \App\Jobs\GenerateSeoMetaJob::dispatch($project->refresh());
+        }
+
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project updated successfully.');
     }
@@ -74,8 +90,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        $this->authorize('delete', $project);
-        $project->delete();
+        $this->projectRepository->delete($project->id);
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project deleted successfully.');

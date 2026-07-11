@@ -3,10 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Page extends Model
 {
+    use LogsActivity;
+
+    protected $attributes = [
+        'is_active' => true,
+    ];
+
     protected $fillable = [
         'title',
         'slug',

@@ -12,11 +12,7 @@
                     @csrf
                     @method('PUT')
                     
-                    <div class="mb-3">
-                        <label class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" value="{{ old('title', $project->title) }}" required>
-                        @error('title') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    </div>
+                    <x-admin.translatable-input name="title" label="Title" required="true" :value="$project" />
 
                     <div class="mb-3">
                         <label class="form-label">Slug (Optional)</label>
@@ -38,10 +34,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Description <span class="text-danger">*</span></label>
-                        <textarea name="description" class="form-control" rows="8" required>{{ old('description', $project->description) }}</textarea>
-                        @error('description') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <x-admin.ai-generator target="[name='description']" context_target="[name='title[en]']" type="case_study" label="Generate Case Study / Description" />
                     </div>
+                    <x-admin.translatable-textarea name="description" label="Description" required="true" rows="8" :richtext="true" :value="$project" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -52,7 +47,7 @@
                                 </div>
                             @endif
                             <input type="file" name="image" class="form-control" accept="image/*">
-                            <input type="url" name="image_url" class="form-control mt-2"
+                            <input type="text" name="image_url" class="form-control mt-2"
                                    value="{{ old('image_url', (str_starts_with($project->image ?? '', 'http://') || str_starts_with($project->image ?? '', 'https://')) ? $project->image : '') }}"
                                    placeholder="Or paste image URL (https://...)">
                             @error('image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
@@ -85,14 +80,11 @@
                             <h5 class="mb-0">SEO & Social Metadata</h5>
                         </div>
                         <div class="card-body ps-0 pe-0">
-                            <div class="mb-3">
-                                <label class="form-label">Meta Title (SEO)</label>
-                                <input type="text" name="meta_title" class="form-control" value="{{ old('meta_title', $project->meta_title) }}" placeholder="Leave empty to use project title">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Meta Description</label>
-                                <textarea name="meta_description" class="form-control" rows="3" placeholder="Brief summary for search engines">{{ old('meta_description', $project->meta_description) }}</textarea>
-                            </div>
+                            <h6 class="fw-bold mb-3">SEO & Social Meta</h6>
+                            <x-admin.seo-analyzer title_target="[name='title[en]']" content_target="[name='description[en]']" />
+                            <x-admin.translatable-input name="meta_title" label="Meta Title (SEO)" placeholder="Leave empty to use project title" :value="$project" />
+                            
+                            <x-admin.translatable-textarea name="meta_description" label="Meta Description" placeholder="Brief summary for search engines" rows="3" :value="$project" />
                             <div class="mb-3">
                                 <label class="form-label">Social Share Image (OG Image)</label>
                                 @if($project->og_image)
@@ -101,7 +93,7 @@
                                     </div>
                                 @endif
                                 <input type="file" name="og_image" class="form-control" accept="image/*">
-                                <input type="url" name="og_image_url" class="form-control mt-2"
+                                <input type="text" name="og_image_url" class="form-control mt-2"
                                        value="{{ old('og_image_url', (str_starts_with($project->og_image ?? '', 'http://') || str_starts_with($project->og_image ?? '', 'https://')) ? $project->og_image : '') }}"
                                        placeholder="Or paste OG image URL (https://...)">
                                 <div class="form-text">Recommended size: 1200x630px. If empty, the project image will be used.</div>

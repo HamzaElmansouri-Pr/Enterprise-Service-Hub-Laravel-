@@ -27,8 +27,13 @@ _ide_helper_models.php
 .phpstorm.meta.php
 
 /database/database.sqlite-journal
+/database/database.sqlite
 /tmp/
 test_results.txt
 fix_admin_properly.php
 .env.*
 !.env.example
+
+# Local Reports
+*_report.md
+ESH_Implementation_Plan.docx

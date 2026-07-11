@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
+use App\Repositories\Interfaces\PartnerRepositoryInterface;
 use App\Http\Requests\Admin\StorePartnerRequest;
 use App\Http\Requests\Admin\UpdatePartnerRequest;
 use App\Services\CloudinaryUploadService;
@@ -15,15 +16,17 @@ class PartnerController extends Controller
     use AuthorizesRequests;
 
     protected CloudinaryUploadService $uploadService;
+    protected PartnerRepositoryInterface $partnerRepository;
 
-    public function __construct(CloudinaryUploadService $uploadService)
+    public function __construct(CloudinaryUploadService $uploadService, PartnerRepositoryInterface $partnerRepository)
     {
         $this->uploadService = $uploadService;
+        $this->partnerRepository = $partnerRepository;
     }
 
     public function index()
     {
-        $partners = Partner::orderBy('order_index')->paginate(10);
+        $partners = $this->partnerRepository->paginate(10, [], ['order_index' => 'asc']);
         return view('admin.partners.index', compact('partners'));
     }
 
@@ -46,7 +49,7 @@ class PartnerController extends Controller
 
         unset($data['logo_url']);
 
-        Partner::create($data);
+        $this->partnerRepository->create($data);
 
         return redirect()->route('admin.partners.index')
             ->with('success', 'Partner created successfully.');
@@ -76,7 +79,7 @@ class PartnerController extends Controller
 
         unset($data['logo_url']);
 
-        $partner->update($data);
+        $this->partnerRepository->update($partner->id, $data);
 
         return redirect()->route('admin.partners.index')
             ->with('success', 'Partner updated successfully.');
@@ -84,11 +87,9 @@ class PartnerController extends Controller
 
     public function destroy(Partner $partner)
     {
-        $this->authorize('delete', $partner);
-
         $this->uploadService->delete($partner->logo);
 
-        $partner->delete();
+        $this->partnerRepository->delete($partner->id);
 
         return redirect()->route('admin.partners.index')
             ->with('success', 'Partner deleted successfully.');

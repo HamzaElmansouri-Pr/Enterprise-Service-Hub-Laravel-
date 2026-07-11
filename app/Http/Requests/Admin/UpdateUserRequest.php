@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
             $userId = $userId->id;
         }
 
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
@@ -38,8 +38,13 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users')->ignore($userId),
             ],
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|string|in:admin,editor,user',
             'is_active' => 'boolean',
         ];
+
+        if ($this->user()->isAdmin()) {
+            $rules['role'] = 'required|string|in:admin,editor,user';
+        }
+
+        return $rules;
     }
 }

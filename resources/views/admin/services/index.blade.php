@@ -32,7 +32,7 @@
                     <tr>
                         <td>
                             @if($service->image)
-                                <img src="{{ asset($service->image) }}" alt="img" 
+                                <img src="{{ resolve_image_url($service->image, ['w' => 100, 'h' => 100, 'c' => 'fill']) }}" alt="img" 
                                      class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                             @elseif($service->icon)
                                 <div class="d-flex align-items-center justify-content-center bg-light rounded" 

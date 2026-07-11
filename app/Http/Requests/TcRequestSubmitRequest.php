@@ -25,6 +25,8 @@ class TcRequestSubmitRequest extends FormRequest
             'email' => 'required|email|max:255',
             'service_id' => 'nullable|exists:services,id',
             'description' => 'required|string|max:5000',
+            'budget_range' => 'nullable|string|max:255',
+            'timeline' => 'nullable|string|max:255',
             'attached_file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:10240', // 10MB max
         ];
     }

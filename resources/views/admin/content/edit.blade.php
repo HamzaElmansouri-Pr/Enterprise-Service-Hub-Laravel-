@@ -22,6 +22,23 @@
                 </h5>
             </div>
             <div class="card-body">
+                @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Upload/Update Failed</h6>
+                            <ul class="mb-0 small">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                @endif
+                
                 <form action="{{ route('admin.content.update', $contentType) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -37,22 +54,14 @@
                         <small class="text-muted">Turn off to hide this entire section from the frontend.</small>
                     </div>
                     @if($contentType === 'home-hero')
-                        <div class="mb-4">
-                            <label for="hero_title" class="form-label">Hero Title</label>
-                            <input type="text" class="form-control" id="hero_title" name="hero_title" 
-                                   value="{{ $content['hero_title'] ?? 'The complete CRM solution built for your success' }}">
-                        </div>
+                        <x-admin.translatable-input name="hero_title" label="Hero Title" :value="$content['hero_title'] ?? null" placeholder="The complete CRM solution built for your success" />
                         
-                        <div class="mb-4">
-                            <label for="hero_subtitle" class="form-label">Hero Subtitle</label>
-                            <textarea class="form-control" id="hero_subtitle" name="hero_subtitle" rows="3">{{ $content['hero_subtitle'] ?? 'All your customer data, tools, and insights in one unified platform.' }}</textarea>
+                        <div class="mb-3 mt-3">
+                            <x-admin.ai-generator target="[name='hero_subtitle']" context_target="[name='hero_title[en]']" type="hero_copy" label="Generate Subtitle" />
                         </div>
+                        <x-admin.translatable-textarea name="hero_subtitle" label="Hero Subtitle" rows="3" :value="$content['hero_subtitle'] ?? null" placeholder="All your customer data, tools, and insights in one unified platform." />
                         
-                        <div class="mb-4">
-                            <label for="hero_button_text" class="form-label">Button Text</label>
-                            <input type="text" class="form-control" id="hero_button_text" name="hero_button_text" 
-                                   value="{{ $content['hero_button_text'] ?? 'try for free' }}">
-                        </div>
+                        <x-admin.translatable-input name="hero_button_text" label="Button Text" :value="$content['hero_button_text'] ?? null" placeholder="try for free" />
                         
                         <div class="mb-4">
                             <label for="hero_image_file" class="form-label">Hero Image</label>
@@ -71,16 +80,9 @@
                         </div>
                         
                     @elseif($contentType === 'home-features')
-                        <div class="mb-4">
-                            <label for="features_title" class="form-label">Features Section Title</label>
-                            <input type="text" class="form-control" id="features_title" name="features_title" 
-                                   value="{{ $content['features_title'] ?? 'Nova Agency key benefits' }}">
-                        </div>
+                        <x-admin.translatable-input name="features_title" label="Features Section Title" :value="$content['features_title'] ?? null" placeholder="Nova Agency key benefits" />
                         
-                        <div class="mb-4">
-                            <label for="features_subtitle" class="form-label">Features Subtitle</label>
-                            <textarea class="form-control" id="features_subtitle" name="features_subtitle" rows="2">{{ $content['features_subtitle'] ?? 'Flexible experiences that scale with your growth and deliver faster time to value' }}</textarea>
-                        </div>
+                        <x-admin.translatable-textarea name="features_subtitle" label="Features Subtitle" rows="2" :value="$content['features_subtitle'] ?? null" placeholder="Flexible experiences that scale with your growth and deliver faster time to value" />
                         
                         <div class="mb-4">
                             <label class="form-label">Features List</label>
@@ -120,42 +122,54 @@
                         </div>
                         
                     @elseif($contentType === 'about-main' || $contentType === 'home-about')
-                        <div class="mb-4">
-                            <label for="about_title" class="form-label">About Title</label>
-                            <input type="text" class="form-control" id="about_title" name="about_title" 
-                                   value="{{ $content['about_title'] ?? 'Deliver unforgettable customer experiences' }}">
-                        </div>
+                        <x-admin.translatable-input name="about_title" label="About Title" :value="$content['about_title'] ?? null" placeholder="Deliver unforgettable customer experiences" />
                         
-                        <div class="mb-4">
-                            <label for="about_subtitle" class="form-label">About Subtitle</label>
-                            <input type="text" class="form-control" id="about_subtitle" name="about_subtitle" 
-                                   value="{{ $content['about_subtitle'] ?? 'Why Nova Agency crm' }}">
-                        </div>
+                        <x-admin.translatable-input name="about_subtitle" label="About Subtitle" :value="$content['about_subtitle'] ?? null" placeholder="Why Nova Agency crm" />
                         
+                        <div class="mb-3 mt-3">
+                            <x-admin.ai-generator target="#about_description" context_target="[name='about_title[en]']" type="section_writer" label="Generate Short Description" />
+                        </div>
                         <div class="mb-4">
                             <label for="about_description" class="form-label">About Description</label>
                             <textarea class="form-control" id="about_description" name="about_description" rows="4">{{ $content['about_description'] ?? 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.' }}</textarea>
                         </div>
                         
+                        <div class="mb-4 p-3 bg-light rounded border border-primary border-opacity-25">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-heading me-1 text-primary"></i> Page Header Banner</h6>
+                            <label class="form-label">Banner Image (Top of Page)</label>
+                            <input type="file" class="form-control" name="header_image_file" accept="image/*">
+                            @if(!empty($content['header_image']))
+                            <div class="mt-2 text-start">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img src="{{ resolve_image_url($content['header_image']) }}" alt="Header banner" style="max-height:100px;" class="img-thumbnail">
+                                    <button type="submit" form="delete-header-image" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this header image?')">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block">Current header image</small>
+                            </div>
+                            @endif
+                        </div>
+
                         <div class="mb-4">
-                            <label class="form-label">About Image</label>
+                            <label class="form-label">About Section Image</label>
                             <input type="file" class="form-control" name="about_image_file" accept="image/*">
                             @if(!empty($content['about_image']))
                             <div class="mt-2 text-start">
                                 <div class="d-flex align-items-center gap-3 mb-2">
                                     <img src="{{ resolve_image_url($content['about_image']) }}" alt="About image" style="max-height:100px;" class="img-thumbnail">
-                                    <button type="submit" form="delete-about-image" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                    <button type="submit" form="delete-about-image" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this about image?')">
                                         <i class="fas fa-trash me-1"></i> Delete
                                     </button>
                                 </div>
-                                <small class="text-muted d-block">Current image</small>
+                                <small class="text-muted d-block">Current section image</small>
                             </div>
                             @endif
                         </div>
-                        <div class="mb-4">
-                            <label for="about_content" class="form-label">About HTML Content (optional)</label>
-                            <textarea class="form-control" id="about_content" name="about_content" rows="6">{{ $content['about_content'] ?? '' }}</textarea>
+                        <div class="mb-3 mt-3">
+                            <x-admin.ai-generator target="[name='about_content']" context_target="[name='about_title[en]']" type="section_writer" label="Generate Detailed Content" />
                         </div>
+                        <x-admin.translatable-textarea name="about_content" label="About HTML Content (optional)" rows="6" :richtext="true" :value="$content['about_content'] ?? null" />
 
                         <div class="mb-4">
                             <label class="form-label">Feature Highlights</label>
@@ -190,16 +204,12 @@
                         </div>
                         
                     @elseif($contentType === 'contact-info')
-                        <div class="mb-4">
-                            <label for="contact_title" class="form-label">Contact Page Title</label>
-                            <input type="text" class="form-control" id="contact_title" name="contact_title" 
-                                   value="{{ $content['contact_title'] ?? 'Ready to get started?' }}">
-                        </div>
+                        <x-admin.translatable-input name="contact_title" label="Contact Page Title" :value="$content['contact_title'] ?? null" placeholder="Ready to get started?" />
                         
-                        <div class="mb-4">
-                            <label for="contact_description" class="form-label">Contact Description</label>
-                            <textarea class="form-control" id="contact_description" name="contact_description" rows="3">{{ $content['contact_description'] ?? 'Contact us today to learn more about how Nova Agency can help your business grow.' }}</textarea>
+                        <div class="mb-3 mt-3">
+                            <x-admin.ai-generator target="[name='contact_description']" context_target="[name='contact_title[en]']" type="section_writer" label="Generate Contact Info" />
                         </div>
+                        <x-admin.translatable-textarea name="contact_description" label="Contact Description" rows="3" :value="$content['contact_description'] ?? null" placeholder="Contact us today to learn more about how Nova Agency can help your business grow." />
                         
                         <div class="row">
                             <div class="col-md-6">
@@ -218,10 +228,7 @@
                             </div>
                         </div>
                         
-                        <div class="mb-4">
-                            <label for="contact_address" class="form-label">Address</label>
-                            <textarea class="form-control" id="contact_address" name="contact_address" rows="2">{{ $content['contact_address'] ?? '123 Business Street\nCity, State 12345' }}</textarea>
-                        </div>
+                        <x-admin.translatable-textarea name="contact_address" label="Address" rows="2" :value="$content['contact_address'] ?? null" placeholder="123 Business Street\\nCity, State 12345" />
                         
                         <div class="mb-4">
                             <label for="contact_logo_file" class="form-label">Contact Logo</label>
@@ -240,22 +247,14 @@
                         </div>
                         
                     @elseif($contentType === 'site-info')
-                        <div class="mb-4">
-                            <label for="site_name" class="form-label">Site Name</label>
-                            <input type="text" class="form-control" id="site_name" name="site_name" 
-                                   value="{{ $content['site_name'] ?? 'Nova Agency' }}">
-                        </div>
+                        <x-admin.translatable-input name="site_name" label="Site Name" :value="$content['site_name'] ?? null" placeholder="Nova Agency" />
                         
-                        <div class="mb-4">
-                            <label for="site_description" class="form-label">Site Description</label>
-                            <textarea class="form-control" id="site_description" name="site_description" rows="3">{{ $content['site_description'] ?? 'SupremeIT provides cutting-edge technology solutions to help businesses grow and succeed in the digital world.' }}</textarea>
+                        <div class="mb-3 mt-3">
+                            <x-admin.ai-generator target="[name='site_description']" context_target="[name='site_name[en]']" type="section_writer" label="Generate Site Description" />
                         </div>
+                        <x-admin.translatable-textarea name="site_description" label="Site Description" rows="3" :value="$content['site_description'] ?? null" placeholder="SupremeIT provides cutting-edge technology solutions to help businesses grow and succeed in the digital world." />
                         
-                        <div class="mb-4">
-                            <label for="site_keywords" class="form-label">SEO Keywords</label>
-                            <input type="text" class="form-control" id="site_keywords" name="site_keywords" 
-                                   value="{{ $content['site_keywords'] ?? 'CRM, business solutions, technology' }}">
-                        </div>
+                        <x-admin.translatable-input name="site_keywords" label="SEO Keywords" :value="$content['site_keywords'] ?? null" placeholder="CRM, business solutions, technology" />
                         
                         <div class="row">
                             <div class="col-md-6">
@@ -293,6 +292,30 @@
                                 </div>
                             </div>
                         </div>
+
+                        <hr class="my-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-share-alt text-primary me-2"></i>Social Sharing & SEO</h5>
+
+                        <x-admin.translatable-input name="twitter_handle" label="Twitter Handle" :value="$content['twitter_handle'] ?? null" placeholder="@novaagency" />
+                        
+                        <x-admin.translatable-textarea name="json_ld_organization" label="JSON-LD Structured Data (Organization)" rows="5" :value="$content['json_ld_organization'] ?? null" placeholder='{ "@context": "https://schema.org", "@type": "Organization", ... }' />
+                        <small class="text-muted d-block mb-3">Optional. Advanced SEO JSON script injected into the page head.</small>
+
+                        <div class="mb-4">
+                            <label for="og_image_file" class="form-label">Default Social Share Image (OG:Image)</label>
+                            <input type="file" class="form-control" id="og_image_file" name="og_image_file" accept="image/*">
+                            @if(!empty($content['og_image']))
+                            <div class="mt-2 text-start">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img src="{{ resolve_image_url($content['og_image']) }}" alt="OG Image" style="max-height:100px;" class="img-thumbnail">
+                                    <button type="submit" form="delete-og-image" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this image?')">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block">Current social share image (1200x630px recommended)</small>
+                            </div>
+                            @endif
+                        </div>
                         
                     @elseif($contentType === 'home-partners')
                         <div class="mb-4">
@@ -300,10 +323,7 @@
                             <input type="text" class="form-control" id="partners_title" name="partners_title" 
                                    value="{{ $content['partners_title'] ?? '' }}">
                         </div>
-                        <div class="mb-4">
-                            <label for="partners_subtitle" class="form-label">Partners Subtitle (Optional)</label>
-                            <textarea class="form-control" id="partners_subtitle" name="partners_subtitle" rows="2">{{ $content['partners_subtitle'] ?? '' }}</textarea>
-                        </div>
+                        <x-admin.translatable-textarea name="partners_subtitle" label="Partners Subtitle (Optional)" rows="2" :value="$content['partners_subtitle'] ?? null" />
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             Manage specific partner logos in the <a href="{{ route('admin.partners.index') }}" class="fw-bold">Partners Management</a> section.
@@ -582,16 +602,9 @@
                         </div>
 
                     @elseif($contentType === 'services-list')
-                        <div class="mb-4">
-                            <label for="title" class="form-label">Services Section Title</label>
-                            <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ $content['title'] ?? 'Our Awesome Services' }}">
-                        </div>
+                        <x-admin.translatable-input name="title" label="Services Section Title" :value="$content['title'] ?? null" placeholder="Our Awesome Services" />
                         
-                        <div class="mb-4">
-                            <label for="subtitle" class="form-label">Services Subtitle</label>
-                            <textarea class="form-control" id="subtitle" name="subtitle" rows="2">{{ $content['subtitle'] ?? 'What We Do' }}</textarea>
-                        </div>
+                        <x-admin.translatable-textarea name="subtitle" label="Services Subtitle" rows="2" :value="$content['subtitle'] ?? null" placeholder="What We Do" />
 
                         <div class="mb-4">
                             <label class="form-label fw-bold d-block mb-3">
@@ -638,10 +651,7 @@
                                    value="{{ $content['title'] ?? '' }}">
                         </div>
 
-                        <div class="mb-4">
-                            <label for="subtitle" class="form-label">Section Subtitle</label>
-                            <textarea class="form-control" id="subtitle" name="subtitle" rows="2">{{ $content['subtitle'] ?? '' }}</textarea>
-                        </div>
+                        <x-admin.translatable-textarea name="subtitle" label="Section Subtitle" rows="2" :value="$content['subtitle'] ?? null" />
 
                         <div class="mb-4">
                             <label class="form-label d-block mb-3">Select Projects to Feature</label>
@@ -680,54 +690,27 @@
                         </div>
 
                     @elseif($contentType === 'reviews-list')
-                        <div class="mb-4">
-                            <label for="title" class="form-label">Reviews Section Title</label>
-                            <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ $content['title'] ?? 'What our clients say' }}">
-                        </div>
-                        <div class="mb-4">
-                            <label for="subtitle" class="form-label">Reviews Subtitle</label>
-                            <input type="text" class="form-control" id="subtitle" name="subtitle" 
-                                   value="{{ $content['subtitle'] ?? 'Testimonials' }}">
-                        </div>
+                        <x-admin.translatable-input name="title" label="Reviews Section Title" :value="$content['title'] ?? null" placeholder="What our clients say" />
+                        <x-admin.translatable-input name="subtitle" label="Reviews Subtitle" :value="$content['subtitle'] ?? null" placeholder="Testimonials" />
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             Manage specific customer reviews in the <a href="{{ route('admin.reviews.index') }}" class="fw-bold">Reviews Management</a> section.
                         </div>
 
                     @elseif($contentType === 'blog-list')
-                        <div class="mb-4">
-                            <label for="title" class="form-label">Blog Section Title</label>
-                            <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ $content['title'] ?? 'Direct from the Blog' }}">
-                        </div>
-                        <div class="mb-4">
-                            <label for="subtitle" class="form-label">Blog Subtitle</label>
-                            <input type="text" class="form-control" id="subtitle" name="subtitle" 
-                                   value="{{ $content['subtitle'] ?? 'Latest News' }}">
-                        </div>
+                        <x-admin.translatable-input name="title" label="Blog Section Title" :value="$content['title'] ?? null" placeholder="Direct from the Blog" />
+                        <x-admin.translatable-input name="subtitle" label="Blog Subtitle" :value="$content['subtitle'] ?? null" placeholder="Latest News" />
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             The blog section automatically displays your latest published posts from the <a href="{{ route('admin.blogs.index') }}" class="fw-bold">Blog Management</a>.
                         </div>
 
                     @elseif($contentType === 'cta-simple')
-                        <div class="mb-4">
-                            <label for="title" class="form-label">CTA Title</label>
-                            <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ $content['title'] ?? 'Ready to Transform Your Business?' }}">
-                        </div>
-                        <div class="mb-4">
-                            <label for="description" class="form-label">CTA Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="3">{{ $content['description'] ?? "Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions." }}</textarea>
-                        </div>
+                        <x-admin.translatable-input name="title" label="CTA Title" :value="$content['title'] ?? null" placeholder="Ready to Transform Your Business?" />
+                        <x-admin.translatable-textarea name="description" label="CTA Description" rows="3" :value="$content['description'] ?? null" placeholder="Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions." />
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="mb-4">
-                                    <label for="button_text" class="form-label">Button Text</label>
-                                    <input type="text" class="form-control" id="button_text" name="button_text" 
-                                           value="{{ $content['button_text'] ?? 'Get a Free Quote' }}">
-                                </div>
+                                <x-admin.translatable-input name="button_text" label="Button Text" :value="$content['button_text'] ?? null" placeholder="Get a Free Quote" />
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-4">
@@ -775,6 +758,36 @@
                             Save Changes
                         </button>
                     </div>
+                </form>
+
+                {{-- Hidden Deletion Forms --}}
+                <form id="delete-header-image" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'header_image']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <form id="delete-about-image" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'about_image']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <form id="delete-hero-image" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'hero_image']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <form id="delete-site-logo" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'site_logo']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <form id="delete-site-favicon" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'site_favicon']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <form id="delete-og-image" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'og_image']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <form id="delete-contact-logo" action="{{ route('admin.content.destroy-image', ['type' => $contentType, 'key' => 'contact_logo']) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
                 </form>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Repositories\Interfaces\BlogRepositoryInterface;
 use App\Http\Requests\Admin\StoreBlogRequest;
 use App\Http\Requests\Admin\UpdateBlogRequest;
 use App\Services\CloudinaryUploadService;
@@ -16,19 +17,101 @@ class BlogController extends Controller
     use AuthorizesRequests;
 
     protected CloudinaryUploadService $uploadService;
+    protected BlogRepositoryInterface $blogRepository;
 
-    public function __construct(CloudinaryUploadService $uploadService)
+    public function __construct(CloudinaryUploadService $uploadService, BlogRepositoryInterface $blogRepository)
     {
         $this->uploadService = $uploadService;
+        $this->blogRepository = $blogRepository;
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $blogs = Blog::with('author')->latest()->paginate(10);
+        $query = Blog::with('author');
+
+        // Apply filters
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title->en', 'like', "%{$search}%")
+                  ->orWhere('title->ar', 'like', "%{$search}%")
+                  ->orWhere('title->fr', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'published') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'draft') {
+                $query->where('is_active', false);
+            }
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $blogs = $query->orderBy('created_at', 'desc')->paginate(10);
+        
         return view('admin.blogs.index', compact('blogs'));
+    }
+
+    /**
+     * Inline update a specific field via AJAX.
+     */
+    public function inlineUpdate(\Illuminate\Http\Request $request, Blog $blog)
+    {
+        $validated = $request->validate([
+            'is_active' => 'sometimes|boolean',
+            'is_featured' => 'sometimes|boolean',
+        ]);
+
+        $blog->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Blog updated successfully',
+        ]);
+    }
+
+    /**
+     * Perform bulk actions on selected blogs.
+     */
+    public function bulkAction(\Illuminate\Http\Request $request)
+    {
+        $validated = $request->validate([
+            'action' => 'required|in:delete,publish,draft',
+            'ids' => 'required|json'
+        ]);
+
+        $ids = json_decode($validated['ids'], true);
+        if (!is_array($ids) || empty($ids)) {
+            return back()->with('error', 'No items selected.');
+        }
+
+        switch ($validated['action']) {
+            case 'delete':
+                Blog::whereIn('id', $ids)->delete();
+                $message = 'Selected blogs moved to trash.';
+                break;
+            case 'publish':
+                Blog::whereIn('id', $ids)->update(['is_active' => true]);
+                $message = 'Selected blogs published.';
+                break;
+            case 'draft':
+                Blog::whereIn('id', $ids)->update(['is_active' => false]);
+                $message = 'Selected blogs moved to draft.';
+                break;
+        }
+
+        return back()->with('success', $message);
     }
 
     /**
@@ -47,7 +130,9 @@ class BlogController extends Controller
         $data = $request->validated();
         
         $data['author_id'] = Auth::id();
-        $data['slug'] = $request->filled('slug') ? Str::slug($request->input('slug')) : Str::slug($request->input('title'));
+        $titleInput = $request->input('title');
+        $titleForSlug = is_array($titleInput) ? ($titleInput['en'] ?? reset($titleInput)) : $titleInput;
+        $data['slug'] = $request->filled('slug') ? Str::slug($request->input('slug')) : Str::slug($titleForSlug);
         $data['is_active'] = $request->has('is_published') || $request->has('is_active');
         
         // Handle publishing date
@@ -73,8 +158,18 @@ class BlogController extends Controller
 
         unset($data['featured_image_url'], $data['og_image_url']);
 
-        $data['title'] = purify_html($data['title']);
-        Blog::create($data);
+        if (isset($data['title'])) {
+            $data['title'] = is_array($data['title']) ? array_map('purify_html', $data['title']) : purify_html($data['title']);
+        }
+        if (isset($data['content'])) {
+            $data['content'] = is_array($data['content']) ? array_map('purify_html', $data['content']) : purify_html($data['content']);
+        }
+        
+        $blog = $this->blogRepository->create($data);
+
+        if (empty($data['meta_description'])) {
+            \App\Jobs\GenerateSeoMetaJob::dispatch($blog);
+        }
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post created successfully!');
@@ -103,7 +198,9 @@ class BlogController extends Controller
     {
         $data = $request->validated();
         
-        $data['slug'] = $request->filled('slug') ? Str::slug($request->input('slug')) : Str::slug($request->input('title'));
+        $titleInput = $request->input('title');
+        $titleForSlug = is_array($titleInput) ? ($titleInput['en'] ?? reset($titleInput)) : $titleInput;
+        $data['slug'] = $request->filled('slug') ? Str::slug($request->input('slug')) : Str::slug($titleForSlug);
         $data['is_active'] = $request->has('is_published') || $request->has('is_active');
 
         if (!empty($data['featured_image_url'])) {
@@ -135,10 +232,18 @@ class BlogController extends Controller
 
         unset($data['featured_image_url'], $data['og_image_url']);
 
-        $data['title'] = purify_html($data['title']);
-        $data['content'] = purify_html($data['content'] ?? '');
+        if (isset($data['title'])) {
+            $data['title'] = is_array($data['title']) ? array_map('purify_html', $data['title']) : purify_html($data['title']);
+        }
+        if (isset($data['content'])) {
+            $data['content'] = is_array($data['content']) ? array_map('purify_html', $data['content']) : purify_html($data['content']);
+        }
 
-        $blog->update($data);
+        $this->blogRepository->update($blog->id, $data);
+
+        if (empty($data['meta_description'])) {
+            \App\Jobs\GenerateSeoMetaJob::dispatch($blog->refresh());
+        }
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post updated successfully!');
@@ -149,12 +254,10 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        $this->authorize('delete', $blog);
-
         $this->uploadService->delete($blog->image);
         $this->uploadService->delete($blog->og_image ?? null);
 
-        $blog->delete();
+        $this->blogRepository->delete($blog->id);
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post deleted successfully!');

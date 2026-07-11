@@ -24,6 +24,6 @@ class ContactPolicy
 
     public function delete(User $user, Contact $contact): bool
     {
-        return $user->isAdmin(); // Only Admin deletes contacts? Or allow editor. Let's say Admin.
+        return $user->isAdmin();
     }
 }

@@ -12,8 +12,17 @@ interface RepositoryInterface
 {
     public function all(): Collection;
     public function find(int $id): ?Model;
+    public function findOrFail(int $id): Model;
     public function create(array $data): Model;
     public function update(int $id, array $data): bool;
     public function delete(int $id): bool;
-    public function paginate(int $perPage = 10): LengthAwarePaginator;
+    public function paginate(int $perPage = 10, array $with = [], array $orderBy = ['created_at' => 'desc']): LengthAwarePaginator;
+
+    /**
+     * Get all active records.
+     *
+     * @param int|null $limit
+     * @return Collection
+     */
+    public function getActive(?int $limit = null): Collection;
 }

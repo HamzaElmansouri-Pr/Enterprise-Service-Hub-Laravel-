@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
             $table->integer('order_index')->default(0);
             $table->timestamps();
         });

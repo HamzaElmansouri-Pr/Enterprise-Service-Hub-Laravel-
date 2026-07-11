@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Repositories\Interfaces\ServiceRepositoryInterface;
 use App\Http\Requests\Admin\StoreServiceRequest;
 use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Services\CloudinaryUploadService;
@@ -15,10 +16,12 @@ class ServiceController extends Controller
     use AuthorizesRequests;
 
     protected CloudinaryUploadService $uploadService;
+    protected ServiceRepositoryInterface $serviceRepository;
 
-    public function __construct(CloudinaryUploadService $uploadService)
+    public function __construct(CloudinaryUploadService $uploadService, ServiceRepositoryInterface $serviceRepository)
     {
         $this->uploadService = $uploadService;
+        $this->serviceRepository = $serviceRepository;
     }
 
     /**
@@ -26,7 +29,8 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::orderBy('order_index')->paginate(10);
+        $this->authorize('viewAny', Service::class);
+        $services = $this->serviceRepository->paginate(10, [], ['order_index' => 'asc']);
         return view('admin.services.index', compact('services'));
     }
 
@@ -35,6 +39,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Service::class);
         return view('admin.services.create');
     }
 
@@ -43,11 +48,13 @@ class ServiceController extends Controller
      */
     public function store(StoreServiceRequest $request)
     {
+        $this->authorize('create', Service::class);
         $data = $request->validated();
         
         // Auto-generate slug if not provided
         if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+            $titleForSlug = is_array($data['title']) ? ($data['title']['en'] ?? reset($data['title'])) : $data['title'];
+            $data['slug'] = Str::slug($titleForSlug);
         }
 
         if (!empty($data['image_url'])) {
@@ -62,8 +69,12 @@ class ServiceController extends Controller
             $data['image'] = $this->uploadService->upload($request->file('image'), 'services');
         }
 
-        $data['description'] = purify_html($data['description'] ?? '');
-        $data['subtitle'] = purify_html($data['subtitle'] ?? '');
+        if (isset($data['description']) && is_array($data['description'])) {
+            $data['description'] = array_map('purify_html', $data['description']);
+        }
+        if (isset($data['subtitle']) && is_array($data['subtitle'])) {
+            $data['subtitle'] = array_map('purify_html', $data['subtitle']);
+        }
 
         if ($request->hasFile('icon')) {
              $data['icon'] = $this->uploadService->upload($request->file('icon'), 'services/icons');
@@ -72,9 +83,13 @@ class ServiceController extends Controller
              $data['icon'] = 'flaticon-settings';
         }
 
-           unset($data['image_url'], $data['og_image_url']);
+        unset($data['image_url'], $data['og_image_url']);
 
-        Service::create($data);
+        $serviceModel = $this->serviceRepository->create($data);
+
+        if (empty($data['meta_description'])) {
+            \App\Jobs\GenerateSeoMetaJob::dispatch($serviceModel);
+        }
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service created successfully.');
@@ -85,6 +100,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
+        $this->authorize('view', $service);
         return view('admin.services.show', compact('service'));
     }
 
@@ -93,6 +109,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
+        $this->authorize('update', $service);
         return view('admin.services.edit', compact('service'));
     }
 
@@ -101,10 +118,12 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
+        $this->authorize('update', $service);
         $data = $request->validated();
         
         if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+            $titleForSlug = is_array($data['title']) ? ($data['title']['en'] ?? reset($data['title'])) : $data['title'];
+            $data['slug'] = Str::slug($titleForSlug);
         }
 
         if (!empty($data['image_url'])) {
@@ -134,8 +153,12 @@ class ServiceController extends Controller
             $data['og_image'] = $this->uploadService->upload($request->file('og_image'), 'seo/og');
         }
 
-        $data['description'] = purify_html($data['description'] ?? '');
-        $data['subtitle'] = purify_html($data['subtitle'] ?? '');
+        if (isset($data['description']) && is_array($data['description'])) {
+            $data['description'] = array_map('purify_html', $data['description']);
+        }
+        if (isset($data['subtitle']) && is_array($data['subtitle'])) {
+            $data['subtitle'] = array_map('purify_html', $data['subtitle']);
+        }
 
         if ($request->hasFile('icon')) {
             $data['icon'] = $this->uploadService->upload($request->file('icon'), 'services/icons');
@@ -143,7 +166,11 @@ class ServiceController extends Controller
 
         unset($data['image_url'], $data['og_image_url']);
 
-        $service->update($data);
+        $this->serviceRepository->update($service->id, $data);
+
+        if (empty($data['meta_description'])) {
+            \App\Jobs\GenerateSeoMetaJob::dispatch($service->refresh());
+        }
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service updated successfully.');
@@ -155,7 +182,7 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         $this->authorize('delete', $service);
-        $service->delete();
+        $this->serviceRepository->delete($service->id);
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');

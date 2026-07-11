@@ -26,16 +26,17 @@ class SaveProjectAction
     {
         // 1. Handle Slug
         if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
+            $titleForSlug = is_array($data['title']) ? ($data['title']['en'] ?? reset($data['title'])) : $data['title'];
+            $data['slug'] = Str::slug($titleForSlug);
         }
 
         // 2. Handle HTML Purification
         if (function_exists('purify_html')) {
             if (isset($data['title'])) {
-                $data['title'] = purify_html($data['title']);
+                $data['title'] = is_array($data['title']) ? array_map('purify_html', $data['title']) : purify_html($data['title']);
             }
             if (isset($data['description'])) {
-                $data['description'] = purify_html($data['description']);
+                $data['description'] = is_array($data['description']) ? array_map('purify_html', $data['description']) : purify_html($data['description']);
             }
         }
 

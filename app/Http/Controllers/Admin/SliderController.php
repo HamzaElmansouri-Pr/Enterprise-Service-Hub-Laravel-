@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
+use App\Repositories\Interfaces\SliderRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\Admin\StoreSliderRequest;
@@ -15,28 +16,27 @@ class SliderController extends Controller
     use AuthorizesRequests;
 
     protected CloudinaryUploadService $uploadService;
+    protected SliderRepositoryInterface $sliderRepository;
 
-    public function __construct(CloudinaryUploadService $uploadService)
+    public function __construct(CloudinaryUploadService $uploadService, SliderRepositoryInterface $sliderRepository)
     {
         $this->uploadService = $uploadService;
+        $this->sliderRepository = $sliderRepository;
     }
 
     public function index()
     {
-        // $this->authorize('viewAny', Slider::class);
-        $sliders = Slider::latest()->paginate(10);
+        $sliders = $this->sliderRepository->paginate(10);
         return view('admin.sliders.index', compact('sliders'));
     }
 
     public function create()
     {
-        // $this->authorize('create', Slider::class);
         return view('admin.sliders.create');
     }
 
     public function store(StoreSliderRequest $request)
     {
-        // $this->authorize('create', Slider::class);
         $data = $request->validated();
 
         if (!empty($data['image_url'])) {
@@ -49,7 +49,7 @@ class SliderController extends Controller
 
         unset($data['image_url']);
 
-        Slider::create($data);
+        $this->sliderRepository->create($data);
 
         return redirect()->route('admin.sliders.index')
             ->with('success', 'Slider created successfully.');
@@ -57,20 +57,16 @@ class SliderController extends Controller
 
     public function show(Slider $slider)
     {
-        // $this->authorize('view', $slider);
         return view('admin.sliders.show', compact('slider'));
     }
 
     public function edit(Slider $slider)
     {
-        // $this->authorize('update', $slider);
         return view('admin.sliders.edit', compact('slider'));
     }
 
     public function update(UpdateSliderRequest $request, Slider $slider)
     {
-        // $this->authorize('update', $slider);
-        
         $data = $request->validated();
 
         if (!empty($data['image_url'])) {
@@ -88,7 +84,7 @@ class SliderController extends Controller
 
         unset($data['image_url']);
 
-        $slider->update($data);
+        $this->sliderRepository->update($slider->id, $data);
 
         return redirect()->route('admin.sliders.index')
             ->with('success', 'Slider updated successfully.');
@@ -96,20 +92,18 @@ class SliderController extends Controller
 
     public function destroy(Slider $slider)
     {
-        $this->authorize('delete', $slider);
-        
         $this->uploadService->delete($slider->image);
         
-        $slider->delete();
+        $this->sliderRepository->delete($slider->id);
         return redirect()->route('admin.sliders.index')
             ->with('success', 'Slider deleted successfully.');
     }
 
     public function toggleActive(Slider $slider)
     {
-        // $this->authorize('update', $slider);
-        
-        $slider->update([
+        $this->authorize('update', $slider);
+
+        $this->sliderRepository->update($slider->id, [
             'is_active' => !$slider->is_active
         ]);
 

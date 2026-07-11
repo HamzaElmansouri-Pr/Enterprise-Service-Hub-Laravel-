@@ -44,7 +44,16 @@
                                         <h6>Project Description:</h6>
                                         <p class="text-muted">{{ $tcRequest->description }}</p>
                                     </div>
-                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <h6>Budget Range:</h6>
+                                            <p class="text-muted">{{ $tcRequest->budget_range ?? 'Not specified' }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Timeline:</h6>
+                                            <p class="text-muted">{{ $tcRequest->timeline ?? 'Not specified' }}</p>
+                                        </div>
+                                    </div>
                                     @if($tcRequest->attached_file)
                                     <div class="mb-3">
                                         <h6>Attached File:</h6>

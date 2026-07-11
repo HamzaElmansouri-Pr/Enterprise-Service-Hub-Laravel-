@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\UserService;
+use App\DTOs\CreateUserData;
+use App\DTOs\UpdateUserData;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\Admin\StoreUserRequest;
@@ -13,10 +16,17 @@ class UserController extends Controller
 {
     use AuthorizesRequests;
 
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
         $this->authorize('viewAny', User::class);
-        $users = User::latest()->paginate(10);
+        $users = $this->userService->getAllUsers(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -30,10 +40,9 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         
-        $data = $request->validated();
-        $data['password'] = bcrypt($data['password']);
+        $dto = CreateUserData::fromRequest($request);
         
-        User::create($data);
+        $this->userService->createUser($dto);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
     }
@@ -54,14 +63,9 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         
-        $data = $request->validated();
-        if (isset($data['password']) && !empty($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
-        } else {
-            unset($data['password']);
-        }
-
-        $user->update($data);
+        $dto = UpdateUserData::fromRequest($request);
+        
+        $this->userService->updateUser($user->id, $dto);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
@@ -75,7 +79,7 @@ class UserController extends Controller
 
         $this->authorize('delete', $user);
 
-        $user->delete();
+        $this->userService->deleteUser($user->id);
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 
@@ -87,9 +91,7 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
-        $user->update([
-            'is_active' => !$user->is_active
-        ]);
+        $this->userService->toggleActive($user->id);
 
         return redirect()->back()->with('success', 'User status updated successfully.');
     }

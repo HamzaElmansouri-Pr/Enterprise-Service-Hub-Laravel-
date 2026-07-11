@@ -9,13 +9,22 @@
         "php": "^8.3",
         "ext-zip": "*",
         "cloudinary-labs/cloudinary-laravel": "^3.0",
+        "http-interop/http-factory-guzzle": "*",
         "intervention/image-laravel": "^4.0",
+        "laravel/fortify": "^1.37",
         "laravel/framework": "^12.0",
+        "laravel/reverb": "^1.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/scout": "*",
         "laravel/tinker": "^2.10.1",
-        "spatie/simple-excel": "^3.8"
+        "meilisearch/meilisearch-php": "*",
+        "mews/purifier": "*",
+        "spatie/laravel-translatable": "^6.14",
+        "spatie/simple-excel": "^3.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.9",
         "laravel/breeze": "^2.3",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",

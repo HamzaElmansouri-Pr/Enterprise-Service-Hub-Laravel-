@@ -83,7 +83,7 @@ The backoffice provides modular control over every aspect of the agency's online
 ## 🚀 Installation & Local Setup
 
 ### System Requirements
-- PHP 8.2+
+- PHP 8.3+
 - Node.js & NPM
 - SQLite (recommended for local preview) or MySQL
 
@@ -114,7 +114,14 @@ The backoffice provides modular control over every aspect of the agency's online
    php artisan migrate --seed
    ```
 
-5. **Storage Link**
+5. **Create Admin User**
+   If you didn't use the seeders, or want to create a new admin, run:
+   ```bash
+   php artisan make:admin
+   ```
+   Follow the interactive prompts to create your first Administrator account.
+
+6. **Storage Link**
    ```bash
    php artisan storage:link
    ```

@@ -77,9 +77,27 @@
             <h2 class="fw-bold mb-0">Content Management <span class="text-muted fw-light">Architect</span></h2>
         </div>
         <div class="col-auto">
-            <button class="btn btn-primary px-4 shadow-sm">
+            <button class="btn btn-outline-secondary px-4 shadow-sm me-2" onclick="window.location.reload()">
                 <i class="fas fa-sync-alt me-2"></i> Refresh Layout
             </button>
+            <button class="btn btn-primary px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#livePreviewModal">
+                <i class="fas fa-desktop me-2"></i> Live Preview
+            </button>
+        </div>
+    </div>
+
+    <!-- Live Preview Modal -->
+    <div class="modal fade" id="livePreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white py-2">
+                    <h5 class="modal-title fs-6"><i class="fas fa-desktop me-2"></i> Public Homepage Preview</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 bg-light">
+                    <iframe id="livePreviewIframe" src="{{ url('/') }}" style="width:100%; height:100%; border:none;"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -109,6 +127,13 @@
             ['id' => 'contact-info', 'title' => 'Contact Hub', 'desc' => 'Support contact details', 'icon' => 'fa-headset', 'category' => 'Global'],
             ['id' => 'footer-content', 'title' => 'Footer', 'desc' => 'Site bottom information', 'icon' => 'fa-shoe-prints', 'category' => 'Global'],
         ];
+
+        // Sort homeSections by order_index from the database
+        usort($homeSections, function($a, $b) use ($sections) {
+            $orderA = isset($sections[$a['id']][0]) ? $sections[$a['id']][0]->order_index : 999;
+            $orderB = isset($sections[$b['id']][0]) ? $sections[$b['id']][0]->order_index : 999;
+            return $orderA <=> $orderB;
+        });
     @endphp
 
     <div class="row">
@@ -120,26 +145,31 @@
                     <h6 class="mb-0 fw-bold"><i class="fas fa-layer-group me-2"></i> Landing Page Modules</h6>
                     <span class="badge bg-primary rounded-pill small">{{ count($homeSections) }} Modules</span>
                 </div>
-                <div class="list-group list-group-flush">
+                <div class="list-group list-group-flush" id="homeSectionsSortable">
                     @foreach($homeSections as $item)
                         @php($sect = $sections[$item['id']][0] ?? null)
-                        <a href="{{ route('admin.content.edit', $item['id']) }}" class="list-group-item blueprint-item d-flex align-items-center">
+                        <div class="list-group-item blueprint-item d-flex align-items-center" data-id="{{ $item['id'] }}">
+                            <div class="drag-handle text-muted me-2" style="cursor: grab;">
+                                <i class="fas fa-grip-vertical"></i>
+                            </div>
                             <div class="blueprint-icon me-3">
                                 <i class="fas {{ $item['icon'] }}"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="d-block fw-bold text-dark">{{ $item['title'] }}</span>
-                                <span class="text-muted smallest">{{ $item['desc'] }}</span>
+                                <a href="{{ route('admin.content.edit', $item['id']) }}" class="text-decoration-none">
+                                    <span class="d-block fw-bold text-dark">{{ $item['title'] }}</span>
+                                    <span class="text-muted smallest">{{ $item['desc'] }}</span>
+                                </a>
                             </div>
                             <div class="ms-3 text-end">
                                 @if($sect && $sect->is_active)
-                                    <span class="badge status-badge bg-success-subtle text-success border border-success-subtle"><i class="fas fa-circle me-1 small"></i> Live</span>
+                                    <span class="badge status-badge status-toggle bg-success-subtle text-success border border-success-subtle" data-type="{{ $item['id'] }}" style="cursor: pointer;"><i class="fas fa-circle me-1 small"></i> Live</span>
                                 @else
-                                    <span class="badge status-badge bg-secondary-subtle text-muted border border-secondary-subtle"><i class="fas fa-circle me-1 small"></i> Draft</span>
+                                    <span class="badge status-badge status-toggle bg-secondary-subtle text-muted border border-secondary-subtle" data-type="{{ $item['id'] }}" style="cursor: pointer;"><i class="fas fa-circle me-1 small"></i> Draft</span>
                                 @endif
-                                <div class="mt-1"><i class="fas fa-chevron-right text-muted x-small"></i></div>
+                                <div class="mt-1"><a href="{{ route('admin.content.edit', $item['id']) }}" class="text-muted"><i class="fas fa-chevron-right x-small"></i></a></div>
                             </div>
-                        </a>
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -165,9 +195,9 @@
                             </div>
                             <div class="ms-3 text-end">
                                 @if($sect && $sect->is_active)
-                                    <span class="badge status-badge bg-success-subtle text-success border border-success-subtle">Live</span>
+                                    <span class="badge status-badge status-toggle bg-success-subtle text-success border border-success-subtle" data-type="{{ $item['id'] }}" style="cursor: pointer;">Live</span>
                                 @else
-                                    <span class="badge status-badge bg-secondary-subtle text-muted border border-secondary-subtle">Draft</span>
+                                    <span class="badge status-badge status-toggle bg-secondary-subtle text-muted border border-secondary-subtle" data-type="{{ $item['id'] }}" style="cursor: pointer;">Draft</span>
                                 @endif
                             </div>
                         </a>
@@ -212,3 +242,116 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<!-- SortableJS -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggles = document.querySelectorAll('.status-toggle');
+    
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const type = this.getAttribute('data-type');
+            const url = `{{ url('admin/content') }}/${type}/toggle-active`;
+            const badge = this;
+            
+            // Add loading state
+            badge.style.opacity = '0.5';
+            badge.style.pointerEvents = 'none';
+            
+            fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.is_active) {
+                        badge.classList.remove('bg-secondary-subtle', 'text-muted');
+                        badge.classList.add('bg-success-subtle', 'text-success');
+                        badge.classList.replace('border-secondary-subtle', 'border-success-subtle');
+                        badge.innerHTML = badge.innerHTML.includes('fa-circle') 
+                            ? '<i class="fas fa-circle me-1 small"></i> Live' 
+                            : 'Live';
+                    } else {
+                        badge.classList.remove('bg-success-subtle', 'text-success');
+                        badge.classList.add('bg-secondary-subtle', 'text-muted');
+                        badge.classList.replace('border-success-subtle', 'border-secondary-subtle');
+                        badge.innerHTML = badge.innerHTML.includes('fa-circle') 
+                            ? '<i class="fas fa-circle me-1 small"></i> Draft' 
+                            : 'Draft';
+                    }
+                    // Refresh iframe if open
+                    const iframe = document.getElementById('livePreviewIframe');
+                    if(iframe) iframe.src = iframe.src;
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling status:', error);
+                alert('Failed to update status. Please try again.');
+            })
+            .finally(() => {
+                badge.style.opacity = '1';
+                badge.style.pointerEvents = 'auto';
+            });
+        });
+    });
+
+    // Initialize Sortable
+    const sortableList = document.getElementById('homeSectionsSortable');
+    if (sortableList) {
+        new Sortable(sortableList, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'bg-light',
+            onEnd: function (evt) {
+                const items = sortableList.querySelectorAll('.blueprint-item');
+                const order = Array.from(items).map((item, index) => ({
+                    type: item.getAttribute('data-id'),
+                    order: index
+                }));
+
+                fetch('{{ route("admin.content.reorder") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ order })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        // Optional: show a small toast or notification
+                        // Refresh iframe if open
+                        const iframe = document.getElementById('livePreviewIframe');
+                        if(iframe) iframe.src = iframe.src;
+                    }
+                })
+                .catch(err => console.error('Error saving order', err));
+            }
+        });
+    }
+
+    // Refresh Live Preview when modal is opened
+    const livePreviewModal = document.getElementById('livePreviewModal');
+    if (livePreviewModal) {
+        livePreviewModal.addEventListener('show.bs.modal', function () {
+            const iframe = document.getElementById('livePreviewIframe');
+            if(iframe) iframe.src = iframe.src; // Force reload
+        });
+    }
+});
+</script>
+@endsection
+

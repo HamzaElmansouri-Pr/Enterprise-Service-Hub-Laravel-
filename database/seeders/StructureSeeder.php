@@ -16,7 +16,7 @@ class StructureSeeder extends Seeder
             ['slug' => 'home'],
             [
                 'title' => 'Home',
-                'meta_description' => 'Nova Agency - Complete CRM Solution',
+                'meta_description' => 'Nova Agency - Complete IT Services & Technology Solutions',
                 'is_active' => true,
                 'is_home' => true
             ]
@@ -32,8 +32,8 @@ class StructureSeeder extends Seeder
                 'type' => 'hero-3',
                 'order_index' => 1,
                 'content' => [
-                    'title' => 'The complete CRM solution built for your success',
-                    'subtitle' => 'All your customer data, tools, and insights in one unified platform.',
+                    'title' => 'The complete IT solution built for your success',
+                    'subtitle' => 'All your technology infrastructure, software, and IT support in one unified provider.',
                     'button_text' => 'Try For Free',
                     'features' => json_encode(['14-day free trial', 'No credit card required', 'Free support and migration'])
                 ]
@@ -44,12 +44,12 @@ class StructureSeeder extends Seeder
                 'order_index' => 2,
                 'content' => [
                     'title' => 'Deliver unforgettable customer experiences',
-                    'subtitle' => 'Why Nova Agency crm',
-                    'description' => 'There are many variations of passages of Lorem Ipsum available...',
+                    'subtitle' => 'Why Nova Agency?',
+                    'description' => 'We provide top-notch technology solutions to help your business thrive in the digital age with comprehensive support and robust infrastructure.',
                     'features' => json_encode([
-                        ['title' => 'All-in-One CRM', 'description' => 'Automate your sales...'],
-                        ['title' => 'Affordable', 'description' => 'Make the most of Nova Agency...'],
-                        ['title' => 'Next-Generation', 'description' => 'Automate your sales...']
+                        ['title' => 'Comprehensive IT Services', 'description' => 'Streamline your operations with our enterprise-grade IT solutions.'],
+                        ['title' => 'Affordable', 'description' => 'Make the most of Nova Agency tailored pricing plans.'],
+                        ['title' => 'Next-Generation', 'description' => 'Modernize your infrastructure for the future.']
                     ])
                 ]
             ],

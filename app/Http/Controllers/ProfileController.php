@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\UpdateUserData;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Http\Requests\DeleteUserRequest;
 
 class ProfileController extends Controller
 {
@@ -34,7 +36,8 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $this->userService->updateUser($request->user()->id, $request->validated());
+        $dto = UpdateUserData::fromArray($request->validated());
+        $this->userService->updateUser($request->user()->id, $dto);
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -42,11 +45,9 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(DeleteUserRequest $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        $request->validated();
 
         $user = $request->user();
 

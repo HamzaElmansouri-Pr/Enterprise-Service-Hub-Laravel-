@@ -34,7 +34,6 @@ class ServicePolicy
 
     public function delete(User $user, Service $service): bool
     {
-        // Services are critical structure, maybe Admin only?
         return $user->isAdmin();
     }
 }

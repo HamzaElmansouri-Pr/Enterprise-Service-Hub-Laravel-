@@ -12,11 +12,7 @@
                     @csrf
                     @method('PUT')
                     
-                    <div class="mb-3">
-                        <label class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" required>
-                        @error('title') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    </div>
+                    <x-admin.translatable-input name="title" label="Title" required="true" :value="$service" />
 
                     <div class="mb-3">
                         <label class="form-label">Slug (Optional)</label>
@@ -24,17 +20,12 @@
                         @error('slug') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Subtitle (Optional)</label>
-                        <input type="text" name="subtitle" class="form-control" value="{{ old('subtitle', $service->subtitle) }}">
-                        @error('subtitle') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                    </div>
+                    <x-admin.translatable-input name="subtitle" label="Subtitle (Optional)" :value="$service" />
 
                     <div class="mb-3">
-                        <label class="form-label">Description <span class="text-danger">*</span></label>
-                        <textarea name="description" class="form-control" rows="5" required>{{ old('description', $service->description) }}</textarea>
-                        @error('description') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <x-admin.ai-generator target="[name='description']" context_target="[name='title[en]']" type="service_description" label="Generate Service Description" />
                     </div>
+                    <x-admin.translatable-textarea name="description" label="Description" required="true" :richtext="true" :value="$service" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -84,14 +75,10 @@
                             <h5 class="mb-0">SEO & Social Metadata</h5>
                         </div>
                         <div class="card-body ps-0 pe-0">
-                            <div class="mb-3">
-                                <label class="form-label">Meta Title (SEO)</label>
-                                <input type="text" name="meta_title" class="form-control" value="{{ old('meta_title', $service->meta_title) }}" placeholder="Leave empty to use service title">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Meta Description</label>
-                                <textarea name="meta_description" class="form-control" rows="3" placeholder="Brief summary for search engines">{{ old('meta_description', $service->meta_description) }}</textarea>
-                            </div>
+                            <x-admin.seo-analyzer title_target="[name='title[en]']" content_target="[name='description[en]']" />
+                            <x-admin.translatable-input name="meta_title" label="Meta Title (SEO)" placeholder="Leave empty to use service title" :value="$service" />
+                            
+                            <x-admin.translatable-textarea name="meta_description" label="Meta Description" placeholder="Brief summary for search engines" rows="3" :value="$service" />
                             <div class="mb-3">
                                 <label class="form-label">Social Share Image (OG Image)</label>
                                 @if($service->og_image)
