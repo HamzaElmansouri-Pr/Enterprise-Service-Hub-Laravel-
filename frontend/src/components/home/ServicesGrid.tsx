@@ -104,7 +104,7 @@ export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
                   </h3>
                   
                   {service.subtitle && (
-                    <p
+                    <div
                       className="text-[var(--text-muted)] text-base leading-relaxed line-clamp-3 mb-8"
                       dangerouslySetInnerHTML={{ __html: service.subtitle }}
                     />

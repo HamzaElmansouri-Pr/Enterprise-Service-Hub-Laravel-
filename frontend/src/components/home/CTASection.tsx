@@ -15,7 +15,6 @@ export function CTASection({ cta }: CTASectionProps) {
     <section className="section-padding bg-[var(--bg-abyss)] relative overflow-hidden">
       {/* Decorative Elite Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-deep)] to-[var(--bg-abyss)]" />
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
       
       {/* Elite Orbs */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[var(--primary)]/10 blur-[150px] mix-blend-screen pointer-events-none" />
