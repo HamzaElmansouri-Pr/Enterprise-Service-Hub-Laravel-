@@ -198,7 +198,7 @@ export function Navbar({ locale = "en" }: { locale?: string }) {
         </AnimatePresence>
       </div>
       
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} locale={locale} />
     </motion.header>
   );
 }

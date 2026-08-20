@@ -36,6 +36,11 @@ export const dictionaries = {
       sending: "Sending...",
       success: "Message sent successfully!",
       error: "Failed to send message. Please try again.",
+      cards: {
+        address: "Our Address",
+        email: "Email Us",
+        phone: "Call Us",
+      },
       consultation: {
         title: "Request a Consultation",
         sendTitle: "Send us a Message",
@@ -55,7 +60,15 @@ export const dictionaries = {
       ourTeam: "Our Team",
       viewProject: "View Project",
       readMore: "Read More",
-    }
+    },
+    projectsShowcase: { viewAll: "View All Projects" },
+    blogPreview: { viewAll: "View All Posts" },
+    chatWidget: { greeting: "Hello! I am Nova, your AI assistant. How can I help you today?" },
+    searchModal: { placeholder: "Search projects, services, blogs..." },
+    errorState: { title: "Something went wrong!", message: "An unexpected error occurred. We've been notified and are looking into it." },
+    notFoundState: { title: "Page Not Found", message: "We're sorry, the page you requested could not be found. It may have been moved or deleted.", returnLabel: "Return to Homepage" },
+    blogShow: { recentPosts: "Recent Posts" },
+    serviceShow: { allServices: "All Services" },
   },
   fr: {
     nav: {
@@ -94,6 +107,11 @@ export const dictionaries = {
       sending: "Envoi en cours...",
       success: "Message envoyé avec succès !",
       error: "Échec de l'envoi. Veuillez réessayer.",
+      cards: {
+        address: "Notre adresse",
+        email: "Écrivez-nous",
+        phone: "Appelez-nous",
+      },
       consultation: {
         title: "Demander une consultation",
         sendTitle: "Envoyez-nous un message",
@@ -113,7 +131,15 @@ export const dictionaries = {
       ourTeam: "Notre équipe",
       viewProject: "Voir le projet",
       readMore: "Lire la suite",
-    }
+    },
+    projectsShowcase: { viewAll: "Voir tous les projets" },
+    blogPreview: { viewAll: "Voir tous les articles" },
+    chatWidget: { greeting: "Bonjour ! Je suis Nova, votre assistant IA. Comment puis-je vous aider aujourd'hui ?" },
+    searchModal: { placeholder: "Rechercher des projets, services, blogs..." },
+    errorState: { title: "Quelque chose s'est mal passé !", message: "Une erreur inattendue s'est produite. Nous avons été informés et examinons le problème." },
+    notFoundState: { title: "Page non trouvée", message: "Nous sommes désolés, la page demandée est introuvable. Elle a peut-être été déplacée ou supprimée.", returnLabel: "Retour à l'accueil" },
+    blogShow: { recentPosts: "Articles Récents" },
+    serviceShow: { allServices: "Tous les Services" },
   },
   ar: {
     nav: {
@@ -152,6 +178,11 @@ export const dictionaries = {
       sending: "جاري الإرسال...",
       success: "تم إرسال الرسالة بنجاح!",
       error: "فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+      cards: {
+        address: "عنواننا",
+        email: "راسلنا",
+        phone: "اتصل بنا",
+      },
       consultation: {
         title: "طلب استشارة",
         sendTitle: "أرسل لنا رسالة",
@@ -171,7 +202,15 @@ export const dictionaries = {
       ourTeam: "فريقنا",
       viewProject: "عرض المشروع",
       readMore: "اقرأ المزيد",
-    }
+    },
+    projectsShowcase: { viewAll: "عرض جميع المشاريع" },
+    blogPreview: { viewAll: "عرض جميع المقالات" },
+    chatWidget: { greeting: "مرحباً! أنا نوفا، مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟" },
+    searchModal: { placeholder: "ابحث عن المشاريع، الخدمات، المدونات..." },
+    errorState: { title: "حدث خطأ ما!", message: "حدث خطأ غير متوقع. لقد تم إخطارنا ونعمل على حله." },
+    notFoundState: { title: "الصفحة غير موجودة", message: "عذراً، لم يتم العثور على الصفحة. ربما تم نقلها أو حذفها.", returnLabel: "العودة للرئيسية" },
+    blogShow: { recentPosts: "أحدث المقالات" },
+    serviceShow: { allServices: "جميع الخدمات" },
   }
 };
 

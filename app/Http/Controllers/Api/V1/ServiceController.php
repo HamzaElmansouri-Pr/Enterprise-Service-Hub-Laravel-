@@ -89,22 +89,30 @@ class ServiceController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
-        $service = $this->serviceRepository->findBySlug($slug);
-        $allServices = $this->serviceRepository->getActive(20);
+        try {
+            $data = Cache::remember("api_service_{$slug}", now()->addMinutes(15), function () use ($slug) {
+                $service = $this->serviceRepository->findBySlug($slug);
+                $allServices = $this->serviceRepository->getActive(20);
 
-        $frontendUrl = config('app.frontend_url', config('app.url'));
+                $frontendUrl = config('app.frontend_url', config('app.url'));
 
-        return response()->json([
-            'service' => new ServiceResource($service),
-            'all_services' => ServiceResource::collection($allServices),
-            'jsonLd' => [
-                $this->jsonLd->service($service),
-                $this->jsonLd->breadcrumb([
-                    'Home' => $frontendUrl,
-                    'Services' => $frontendUrl . '/services',
-                    $service->title => $frontendUrl . '/services/' . $service->slug,
-                ]),
-            ],
-        ]);
+                return [
+                    'service' => new ServiceResource($service),
+                    'all_services' => ServiceResource::collection($allServices),
+                    'jsonLd' => [
+                        $this->jsonLd->service($service),
+                        $this->jsonLd->breadcrumb([
+                            'Home' => $frontendUrl,
+                            'Services' => $frontendUrl . '/services',
+                            $service->title => $frontendUrl . '/services/' . $service->slug,
+                        ]),
+                    ],
+                ];
+            });
+
+            return response()->json($data);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Service not found'], 404);
+        }
     }
 }

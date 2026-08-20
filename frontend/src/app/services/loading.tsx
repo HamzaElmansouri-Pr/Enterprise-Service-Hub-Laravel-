@@ -1,4 +1,4 @@
-export default function BlogLoading() {
+export default function ServicesLoading() {
   return (
     <div className="animate-pulse">
       {/* Breadcrumb Skeleton */}
@@ -13,23 +13,17 @@ export default function BlogLoading() {
         </div>
       </div>
 
+      {/* Grid Skeleton */}
       <section className="section-padding bg-[var(--bg-dark)]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="glass-card flex flex-col h-full overflow-hidden">
-                <div className="h-48 w-full bg-white/5"></div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <div className="h-3 w-24 bg-white/5 rounded mb-3"></div>
-                  <div className="h-6 w-full bg-white/5 rounded mb-2"></div>
-                  <div className="h-6 w-3/4 bg-white/5 rounded mb-4"></div>
-                  <div className="h-4 w-full bg-white/5 rounded mb-2"></div>
-                  <div className="h-4 w-5/6 bg-white/5 rounded mt-auto"></div>
-                  <div className="mt-4 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-white/5"></div>
-                    <div className="h-3 w-20 bg-white/5 rounded"></div>
-                  </div>
-                </div>
+              <div key={i} className="glass-card p-8 min-h-[300px] flex flex-col">
+                <div className="w-16 h-16 rounded-2xl bg-white/5 mb-6"></div>
+                <div className="h-6 w-3/4 bg-white/5 rounded mb-4"></div>
+                <div className="h-4 w-full bg-white/5 rounded mb-2"></div>
+                <div className="h-4 w-5/6 bg-white/5 rounded mb-2"></div>
+                <div className="h-4 w-4/6 bg-white/5 rounded mt-auto"></div>
               </div>
             ))}
           </div>

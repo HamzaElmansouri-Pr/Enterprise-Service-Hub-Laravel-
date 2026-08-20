@@ -4,26 +4,23 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreSubscriberRequest;
 
 class SubscriberController extends Controller
 {
-    public function subscribe(Request $request)
+    public function subscribe(StoreSubscriberRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:255',
-        ]);
-
-        if ($validator->fails()) {
+        // Honeypot check
+        if (!empty($request->input('website_url'))) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+                'status' => 'success',
+                'message' => 'Thank you for subscribing to our newsletter.'
+            ], 201);
         }
 
-        $subscriber = Subscriber::where('email', $request->email)->first();
+        $validated = $request->validated();
+
+        $subscriber = Subscriber::where('email', $validated['email'])->first();
 
         if ($subscriber) {
             if (!$subscriber->is_active) {
@@ -40,7 +37,7 @@ class SubscriberController extends Controller
         }
 
         Subscriber::create([
-            'email' => $request->email,
+            'email' => $validated['email'],
             'is_active' => true,
         ]);
 

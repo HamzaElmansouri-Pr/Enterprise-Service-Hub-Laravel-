@@ -15,7 +15,7 @@ interface Comment {
 
 interface CommentSectionProps {
   modelType: string;
-  modelId: number;
+  modelId: string | number;
 }
 
 export function CommentSection({ modelType, modelId }: CommentSectionProps) {

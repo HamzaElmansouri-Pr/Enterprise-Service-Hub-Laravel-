@@ -49,7 +49,9 @@ class ContactController extends Controller
             'contact_phone' => __('cms.contact.contact_phone')
         ], true);
 
-        $services = $this->serviceRepository->getActive();
+        $services = \Illuminate\Support\Facades\Cache::remember('api_contact_services', 1800, function() {
+            return $this->serviceRepository->getActive();
+        });
 
         return response()->json([
             'page' => [
@@ -85,7 +87,9 @@ class ContactController extends Controller
             ->notify(new \App\Notifications\NewContactNotification($contact));
 
         // Dispatch real-time admin panel notification to all admin/editor users
-        $admins = \App\Models\User::whereIn('role', ['admin', 'editor'])->get();
+        $admins = \Illuminate\Support\Facades\Cache::remember('admin_users', 3600, function() {
+            return \App\Models\User::whereIn('role', ['admin', 'editor'])->get();
+        });
         \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AdminAlertNotification(
             'contact',
             'New Contact Message',
@@ -137,7 +141,9 @@ class ContactController extends Controller
             ->notify(new \App\Notifications\NewTcRequestNotification($tcRequest));
 
         // Dispatch real-time admin panel notification to all admin/editor users
-        $admins = \App\Models\User::whereIn('role', ['admin', 'editor'])->get();
+        $admins = \Illuminate\Support\Facades\Cache::remember('admin_users', 3600, function() {
+            return \App\Models\User::whereIn('role', ['admin', 'editor'])->get();
+        });
         \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AdminAlertNotification(
             'tc_request',
             'New Service Request',

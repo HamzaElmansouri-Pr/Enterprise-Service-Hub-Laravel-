@@ -51,7 +51,7 @@ export default async function RootLayout({
         <Navbar locale={locale} />
         <main id="main-content" className="min-h-screen">{children}</main>
         <Footer locale={locale} />
-        <ChatWidget />
+        <ChatWidget locale={locale} />
       </body>
     </html>
   );

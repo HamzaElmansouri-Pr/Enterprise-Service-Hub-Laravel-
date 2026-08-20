@@ -3,11 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { getDictionary } from "@/lib/dictionary";
 
 interface ErrorStateProps {
   title?: string;
   message?: string;
   reset?: () => void;
+  locale?: string;
 }
 
 export function ErrorState({ 

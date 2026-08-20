@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, ReactNode, MouseEvent } from "react";
+import { useRef, useState, ReactNode, MouseEvent, useEffect } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
 
 interface MagneticButtonProps {
@@ -17,6 +17,16 @@ export default function MagneticButton({
   onClick
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(hover: none) and (pointer: coarse)").matches || window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   
   // Track mouse position over the button area
   const [x, setX] = useState(0);
@@ -53,6 +63,14 @@ export default function MagneticButton({
     setX(0);
     setY(0);
   };
+
+  if (isMobile) {
+    return (
+      <div onClick={onClick} className={`inline-block ${className}`}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div

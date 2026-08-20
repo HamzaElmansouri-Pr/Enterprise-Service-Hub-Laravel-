@@ -93,22 +93,30 @@ class BlogController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
-        $blog = $this->blogRepository->findBySlug($slug);
-        $recentBlogs = $this->blogRepository->getRecent($blog, 3);
+        try {
+            $data = Cache::remember("api_blog_{$slug}", now()->addMinutes(15), function () use ($slug) {
+                $blog = $this->blogRepository->findBySlug($slug);
+                $recentBlogs = $this->blogRepository->getRecent($blog, 3);
 
-        $frontendUrl = config('app.frontend_url', config('app.url'));
+                $frontendUrl = config('app.frontend_url', config('app.url'));
 
-        return response()->json([
-            'blog' => new BlogResource($blog),
-            'recent_blogs' => BlogResource::collection($recentBlogs),
-            'jsonLd' => [
-                $this->jsonLd->blogArticle($blog),
-                $this->jsonLd->breadcrumb([
-                    'Home' => $frontendUrl,
-                    'Blog' => $frontendUrl . '/blog',
-                    $blog->title => $frontendUrl . '/blog/' . $blog->slug,
-                ]),
-            ],
-        ]);
+                return [
+                    'blog' => new BlogResource($blog),
+                    'recent_blogs' => BlogResource::collection($recentBlogs),
+                    'jsonLd' => [
+                        $this->jsonLd->blogArticle($blog),
+                        $this->jsonLd->breadcrumb([
+                            'Home' => $frontendUrl,
+                            'Blog' => $frontendUrl . '/blog',
+                            $blog->title => $frontendUrl . '/blog/' . $blog->slug,
+                        ]),
+                    ],
+                ];
+            });
+
+            return response()->json($data);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Blog post not found'], 404);
+        }
     }
 }

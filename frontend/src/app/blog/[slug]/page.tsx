@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getBlog } from "@/lib/api";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { CommentSection } from "@/components/blog/CommentSection";
 import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
+import { cookies } from "next/headers";
+import { getDictionary, Locale } from "@/lib/dictionary";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -19,6 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogDetailPage({ params }: Props) {
   const { slug } = await params;
   const { blog, recent_blogs } = await getBlog(slug);
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value || "en") as Locale;
+  const t = getDictionary(locale);
 
   return (
     <>
@@ -28,7 +35,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <article className="lg:col-span-2">
-              {blog.image && <div className="rounded-2xl overflow-hidden mb-8"><img src={blog.image} alt={blog.title} className="w-full h-auto" /></div>}
+              {blog.image && <div className="rounded-2xl overflow-hidden mb-8"><Image src={blog.image} alt={blog.title} width={1200} height={800} className="w-full h-auto" /></div>}
 
               <div className="flex flex-wrap items-center gap-4 mb-8">
                 {blog.published_at && <span className="text-[var(--text-muted)] text-sm">{new Date(blog.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>}
@@ -36,19 +43,19 @@ export default async function BlogDetailPage({ params }: Props) {
                 {blog.author && <span className="text-[var(--text-muted)] text-sm">by {blog.author.name}</span>}
               </div>
 
-              <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: blog.content || "" }} />
+              <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content || "") }} />
 
-              <CommentSection modelType="blog" modelId={blog.id} />
+              <CommentSection modelType="blog" modelId={blog.slug} />
             </article>
 
             <aside className="lg:col-span-1">
               <div className="glass-card p-6 sticky top-28">
-                <h3 className="text-lg font-bold text-white mb-6">Recent Posts</h3>
+                <h3 className="text-lg font-bold text-white mb-6">{t.blogShow.recentPosts}</h3>
                 <div className="space-y-4">
                   {recent_blogs.map((rb) => (
                     <Link key={rb.id} href={`/blog/${rb.slug}`} className="group flex gap-4 items-start">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--bg-card)]">
-                        {rb.image ? <img src={rb.image} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10" />}
+                      <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--bg-card)] relative">
+                        {rb.image ? <Image src={rb.image} alt="" fill sizes="64px" className="object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10" />}
                       </div>
                       <div>
                         <h4 className="text-sm font-medium text-white group-hover:text-[var(--primary-light)] transition-colors line-clamp-2">{rb.title}</h4>

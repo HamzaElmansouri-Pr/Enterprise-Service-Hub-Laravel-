@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import type { Service } from "@/lib/types";
+import DOMPurify from "isomorphic-dompurify";
 
 interface ServicesGridProps {
   services: Service[];
@@ -37,6 +39,17 @@ function getIcon(icon: string | null) {
 }
 
 export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
+  if (!services || services.length === 0) {
+    return (
+      <section className="section-padding bg-[var(--bg-abyss)] flex items-center justify-center min-h-[40vh]">
+        <div className="text-center elite-glass p-12 rounded-3xl border border-white/5">
+          <h2 className="text-3xl font-bold text-white mb-4">{title || "Our Expertise"}</h2>
+          <p className="text-[var(--text-muted)] text-lg">No services available at the moment. Coming soon!</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="section-padding bg-[var(--bg-abyss)] relative overflow-hidden">
       {/* Decorative Orbs */}
@@ -91,7 +104,7 @@ export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
                     <div className="absolute inset-0 bg-[var(--primary)]/10 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <span className="relative z-10 drop-shadow-lg">
                       {service.image ? (
-                        <img src={getOptimizedImageUrl(service.image, { width: 64, height: 64, crop: 'fit' })} alt="" className="w-8 h-8 object-contain" />
+                        <Image src={getOptimizedImageUrl(service.image, { width: 64, height: 64, crop: 'fit' })} alt="" width={32} height={32} className="object-contain" />
                       ) : (
                         getIcon(service.icon)
                       )}
@@ -106,7 +119,7 @@ export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
                   {service.subtitle && (
                     <div
                       className="text-[var(--text-muted)] text-base leading-relaxed line-clamp-3 mb-8"
-                      dangerouslySetInnerHTML={{ __html: service.subtitle }}
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(service.subtitle) }}
                     />
                   )}
 

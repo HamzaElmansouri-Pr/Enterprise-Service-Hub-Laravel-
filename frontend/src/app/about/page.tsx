@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getAboutPage } from "@/lib/api";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
@@ -34,7 +35,7 @@ export default async function AboutPage() {
               <div>
                 {about.image && (
                   <div className="rounded-2xl overflow-hidden">
-                    <img src={about.image} alt="About" className="w-full h-auto" />
+                    <Image src={about.image} alt="About" width={1200} height={800} className="w-full h-auto" />
                   </div>
                 )}
               </div>
@@ -81,8 +82,8 @@ export default async function AboutPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {team.map((member, i) => (
                   <div key={i} className="glass-card p-6 text-center">
-                    <div className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]">
-                      {member.image ? <img src={member.image} alt={member.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">{member.name?.[0]}</div>}
+                    <div className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] relative">
+                      {member.image ? <Image src={member.image} alt={member.name || ""} fill sizes="80px" className="object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">{member.name?.[0]}</div>}
                     </div>
                     <h3 className="text-white font-semibold">{member.name}</h3>
                     <p className="text-[var(--text-muted)] text-sm">{member.position}</p>

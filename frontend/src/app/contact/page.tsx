@@ -35,21 +35,21 @@ export default async function ContactPage() {
             {page.contact_address && (
               <div className="glass-card p-8 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-[var(--primary)]/10 flex items-center justify-center text-2xl mx-auto mb-4">📍</div>
-                <h3 className="text-white font-semibold mb-2">{locale === 'ar' ? 'عنواننا' : (locale === 'fr' ? 'Notre adresse' : 'Our Address')}</h3>
+                <h3 className="text-white font-semibold mb-2">{t.contact.cards.address}</h3>
                 <p className="text-[var(--text-secondary)] text-sm">{page.contact_address}</p>
               </div>
             )}
             {page.contact_email && (
               <div className="glass-card p-8 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-[var(--primary)]/10 flex items-center justify-center text-2xl mx-auto mb-4">✉️</div>
-                <h3 className="text-white font-semibold mb-2">{locale === 'ar' ? 'راسلنا' : (locale === 'fr' ? 'Email nous' : 'Email Us')}</h3>
+                <h3 className="text-white font-semibold mb-2">{t.contact.cards.email}</h3>
                 <a href={`mailto:${page.contact_email}`} className="text-[var(--primary-light)] text-sm hover:underline">{page.contact_email}</a>
               </div>
             )}
             {page.contact_phone && (
               <div className="glass-card p-8 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-[var(--primary)]/10 flex items-center justify-center text-2xl mx-auto mb-4">📞</div>
-                <h3 className="text-white font-semibold mb-2">{locale === 'ar' ? 'اتصل بنا' : (locale === 'fr' ? 'Appelez-nous' : 'Call Us')}</h3>
+                <h3 className="text-white font-semibold mb-2">{t.contact.cards.phone}</h3>
                 <a href={`tel:${page.contact_phone}`} className="text-[var(--primary-light)] text-sm hover:underline">{page.contact_phone}</a>
               </div>
             )}

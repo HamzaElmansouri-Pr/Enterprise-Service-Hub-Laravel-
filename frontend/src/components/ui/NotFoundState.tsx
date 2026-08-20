@@ -4,12 +4,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { getDictionary } from "@/lib/dictionary";
 
 interface NotFoundStateProps {
   title?: string;
   message?: string;
   returnLink?: string;
   returnLabel?: string;
+  locale?: string;
 }
 
 export function NotFoundState({ 

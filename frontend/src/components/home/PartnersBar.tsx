@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import type { Partner } from "@/lib/types";
 
 interface PartnersBarProps {
@@ -48,7 +49,7 @@ export function PartnersBar({ partners }: PartnersBarProps) {
                 {partner.url ? (
                   <a href={partner.url} target="_blank" rel="noopener noreferrer" className="block opacity-40 hover:opacity-100 hover:scale-110 transition-all duration-300 grayscale hover:grayscale-0 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                     {partner.logo_url ? (
-                      <img src={partner.logo_url} alt={partner.name} className="h-12 w-auto object-contain" />
+                      <Image src={partner.logo_url} alt={partner.name} width={120} height={48} className="h-12 w-auto object-contain" />
                     ) : (
                       <span className="text-[var(--text-secondary)] font-bold text-xl tracking-tight">{partner.name}</span>
                     )}
@@ -56,7 +57,7 @@ export function PartnersBar({ partners }: PartnersBarProps) {
                 ) : (
                   <div className="opacity-40 hover:opacity-100 hover:scale-110 transition-all duration-300 grayscale hover:grayscale-0 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                     {partner.logo_url ? (
-                      <img src={partner.logo_url} alt={partner.name} className="h-12 w-auto object-contain" />
+                      <Image src={partner.logo_url} alt={partner.name} width={120} height={48} className="h-12 w-auto object-contain" />
                     ) : (
                       <span className="text-[var(--text-secondary)] font-bold text-xl tracking-tight">{partner.name}</span>
                     )}

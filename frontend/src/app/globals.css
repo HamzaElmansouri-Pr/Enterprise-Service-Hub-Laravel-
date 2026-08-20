@@ -8,9 +8,15 @@
   /* Elite Palette - Midnight & Electric Blue */
   --bg-abyss: #030712;
   --bg-deep: #0B0F19;
+  --bg-dark: #0f172a;
+  --bg-darker: #020617;
   --bg-surface: rgba(17, 24, 39, 0.6);
+  --bg-card: rgba(17, 24, 39, 0.7);
+  --bg-card-hover: rgba(30, 41, 59, 0.8);
+  --shadow-hover: 0 10px 40px -10px rgba(59, 130, 246, 0.2);
   
   --primary: #3b82f6;
+  --primary-dark: #1d4ed8;
   --primary-glow: #2563eb;
   --primary-light: #60a5fa;
   --primary-transparent: rgba(59, 130, 246, 0.1);
@@ -89,6 +95,15 @@ body {
 .elite-glass:hover {
   border-color: var(--border-highlight);
   box-shadow: 0 0 40px var(--primary-transparent);
+}
+
+/* Standard Glass Card */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 1rem;
 }
 
 /* Animated Border Container */

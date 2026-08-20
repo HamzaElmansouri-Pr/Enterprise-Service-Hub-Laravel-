@@ -82,12 +82,20 @@ class ProjectController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
-        $project = $this->projectRepository->findBySlug($slug);
-        $relatedProjects = $this->projectRepository->getRelatedProjects($project, 3);
+        try {
+            $data = Cache::remember("api_project_{$slug}", now()->addMinutes(15), function () use ($slug) {
+                $project = $this->projectRepository->findBySlug($slug);
+                $relatedProjects = $this->projectRepository->getRelatedProjects($project, 3);
 
-        return response()->json([
-            'project' => new ProjectResource($project),
-            'related_projects' => ProjectResource::collection($relatedProjects),
-        ]);
+                return [
+                    'project' => new ProjectResource($project),
+                    'related_projects' => ProjectResource::collection($relatedProjects),
+                ];
+            });
+
+            return response()->json($data);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
     }
 }

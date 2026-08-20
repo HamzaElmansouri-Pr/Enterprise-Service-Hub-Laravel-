@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getProject } from "@/lib/api";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -25,7 +27,7 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       <section className="section-padding bg-[var(--bg-dark)]">
         <div className="max-w-5xl mx-auto">
-          {project.image && <div className="rounded-2xl overflow-hidden mb-10"><img src={project.image} alt={project.title} className="w-full h-auto" /></div>}
+          {project.image && <div className="rounded-2xl overflow-hidden mb-10"><Image src={project.image} alt={project.title} width={1200} height={800} className="w-full h-auto" /></div>}
 
           <div className="flex flex-wrap gap-4 mb-8">
             {project.category && <span className="px-4 py-1.5 rounded-full bg-[var(--primary)]/10 text-[var(--primary-light)] text-sm">{project.category}</span>}
@@ -33,7 +35,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             {project.completion_date && <span className="px-4 py-1.5 rounded-full bg-white/5 text-[var(--text-secondary)] text-sm">{new Date(project.completion_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>}
           </div>
 
-          <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: project.description || "" }} />
+          <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.description || "") }} />
         </div>
       </section>
 
@@ -45,7 +47,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {related_projects.map((rp) => (
                 <Link key={rp.id} href={`/projects/${rp.slug}`} className="group block rounded-2xl overflow-hidden bg-[var(--bg-card)] hover:shadow-[var(--shadow-hover)] transition-all">
-                  <div className="h-48 overflow-hidden">{rp.image ? <img src={rp.image} alt={rp.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10" />}</div>
+                  <div className="h-48 overflow-hidden relative">{rp.image ? <Image src={rp.image} alt={rp.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10" />}</div>
                   <div className="p-5"><h3 className="font-bold text-white group-hover:text-[var(--primary-light)] transition-colors">{rp.title}</h3></div>
                 </Link>
               ))}

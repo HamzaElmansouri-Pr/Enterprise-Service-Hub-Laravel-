@@ -55,8 +55,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('home', HomeController::class)->name('home');
 
         // Global Search
-        Route::get('search', [\App\Http\Controllers\Api\V1\SearchController::class, 'index'])->name('search');
-        Route::post('search/semantic', [\App\Http\Controllers\Api\V1\SearchController::class, 'semantic'])->name('search.semantic');
+        Route::get('search', [\App\Http\Controllers\Api\V1\SearchController::class, 'index'])
+            ->name('search')
+            ->middleware('throttle:30,1');
 
         // About page
         Route::get('about', AboutController::class)->name('about');
@@ -79,6 +80,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     });
 
     // Uncached Mutation Routes
+    Route::post('search/semantic', [\App\Http\Controllers\Api\V1\SearchController::class, 'semantic'])
+        ->name('search.semantic')
+        ->middleware('throttle:10,1');
+
     Route::post('contact', [ContactController::class, 'submit'])
         ->name('contact.submit')
         ->middleware('throttle:form-submissions');

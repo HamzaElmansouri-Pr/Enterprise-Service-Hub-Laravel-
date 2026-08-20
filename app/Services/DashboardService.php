@@ -103,13 +103,32 @@ class DashboardService
         $blogsSeries = [];
 
         if ($days === 365) {
+            $yearStart = now()->subMonths(11)->startOfMonth();
+
+            $contactsMonthly = Contact::selectRaw("to_char(created_at, 'YYYY-MM') as month, count(*) as count")
+                ->where('created_at', '>=', $yearStart)
+                ->groupBy('month')
+                ->pluck('count', 'month');
+
+            $tcRequestsMonthly = TcRequest::selectRaw("to_char(created_at, 'YYYY-MM') as month, count(*) as count")
+                ->where('created_at', '>=', $yearStart)
+                ->groupBy('month')
+                ->pluck('count', 'month');
+
+            $blogsMonthly = Blog::selectRaw("to_char(published_at, 'YYYY-MM') as month, count(*) as count")
+                ->whereNotNull('published_at')
+                ->where('published_at', '>=', $yearStart)
+                ->groupBy('month')
+                ->pluck('count', 'month');
+
             for ($i = 11; $i >= 0; $i--) {
                 $monthDate = now()->subMonths($i);
+                $key = $monthDate->format('Y-m');
                 $chartDates[] = $monthDate->format('M Y');
                 
-                $contactsSeries[] = Contact::whereMonth('created_at', $monthDate->month)->whereYear('created_at', $monthDate->year)->count();
-                $tcRequestsSeries[] = TcRequest::whereMonth('created_at', $monthDate->month)->whereYear('created_at', $monthDate->year)->count();
-                $blogsSeries[] = Blog::whereNotNull('published_at')->whereMonth('published_at', $monthDate->month)->whereYear('published_at', $monthDate->year)->count();
+                $contactsSeries[] = $contactsMonthly->get($key, 0);
+                $tcRequestsSeries[] = $tcRequestsMonthly->get($key, 0);
+                $blogsSeries[] = $blogsMonthly->get($key, 0);
             }
         } else {
             for ($i = $days - 1; $i >= 0; $i--) {

@@ -3,17 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
-import { submitChat } from "@/lib/api";
+import { getDictionary } from "@/lib/dictionary";
 
 interface ChatMessage {
   role: "user" | "bot";
   content: string;
 }
 
-export function ChatWidget() {
+export function ChatWidget({ locale = "en" }: { locale?: string }) {
+  const t = getDictionary(locale).chatWidget;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "bot", content: "Hello! I am Nova, your AI assistant. How can I help you today?" }
+    { role: "bot", content: t.greeting }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,16 +35,92 @@ export function ChatWidget() {
     setIsLoading(true);
 
     try {
-      const res = await submitChat(userMessage);
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", content: res.reply || "Sorry, I could not understand that." }
-      ]);
+      // Add empty bot message bubble to fill incrementally
+      setMessages((prev) => [...prev, { role: "bot", content: "" }]);
+
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+      
+      let cookieLocale = 'en';
+      if (typeof document !== 'undefined') {
+        const match = document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]*)/);
+        if (match) cookieLocale = match[1];
+      }
+
+      const response = await fetch(`${API_BASE_URL}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/event-stream",
+          "X-App-Locale": cookieLocale,
+          "Accept-Language": cookieLocale,
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      if (!reader) {
+        throw new Error("No reader available");
+      }
+
+      let done = false;
+      let text = "";
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
+
+          for (const line of lines) {
+            if (line.startsWith("data:")) {
+              const dataStr = line.replace("data:", "").trim();
+              if (dataStr === "[DONE]") {
+                done = true;
+                break;
+              }
+              if (dataStr) {
+                try {
+                  const data = JSON.parse(dataStr);
+                  if (data.error) {
+                    text = data.error;
+                    done = true;
+                    break;
+                  }
+                  if (data.chunk) {
+                    text += data.chunk;
+                    
+                    // Update the last message in real-time
+                    setMessages((prev) => {
+                      const newMessages = [...prev];
+                      newMessages[newMessages.length - 1].content = text;
+                      return newMessages;
+                    });
+                  }
+                } catch (e) {
+                  // ignore JSON parse errors on partial chunks
+                }
+              }
+            }
+          }
+        }
+      }
     } catch (error) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", content: "I encountered an error trying to respond. Please try again later." }
-      ]);
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        if (newMessages[newMessages.length - 1].content === "") {
+          newMessages[newMessages.length - 1].content = "I encountered an error trying to respond. Please try again later.";
+          return newMessages;
+        }
+        return [...prev, { role: "bot", content: "I encountered an error trying to respond. Please try again later." }];
+      });
     } finally {
       setIsLoading(false);
     }

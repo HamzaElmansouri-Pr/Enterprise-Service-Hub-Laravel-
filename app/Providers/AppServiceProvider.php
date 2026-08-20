@@ -100,14 +100,8 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Partner::class,
         ];
 
-        $clearTargetedCache = function ($instance) {
-            $invalidator = app(\App\Services\CacheInvalidator::class);
-            $invalidator->invalidateFor($instance);
-        };
-
         foreach ($contentModels as $model) {
-            $model::saved($clearTargetedCache);
-            $model::deleted($clearTargetedCache);
+            $model::observe(\App\Observers\CacheObserver::class);
         }
 
         RateLimiter::for('form-submissions', function (Request $request) {

@@ -58,17 +58,27 @@ async function fetchApi<T>(
     defaultHeaders['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(url, {
+  const method = (options.method || 'GET').toUpperCase();
+  const isMutation = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+
+  const fetchOptions: RequestInit = {
+    ...options,
     headers: {
       ...defaultHeaders,
       ...options.headers,
     },
-    next: {
-      revalidate: 3600, // Default to 1 hour
+  };
+
+  if (isMutation) {
+    fetchOptions.cache = 'no-store';
+  } else {
+    fetchOptions.next = {
+      revalidate: 3600, // Default to 1 hour for GET
       ...options.next,
-    },
-    ...options,
-  });
+    };
+  }
+
+  const response = await fetch(url, fetchOptions);
 
   if (!response.ok) {
     throw new ApiError(
@@ -171,9 +181,10 @@ export async function submitNewsletter(email: string): Promise<ApiMessageRespons
   });
 }
 
-/** Global Search */
 export async function searchGlobal(query: string): Promise<any> {
-  return fetchApi<any>(`/search?q=${encodeURIComponent(query)}`);
+  return fetchApi<any>(`/search?q=${encodeURIComponent(query)}`, {
+    next: { revalidate: 60 }
+  });
 }
 
 /** Chatbot Submit */
@@ -184,13 +195,21 @@ export async function submitChat(message: string): Promise<any> {
   });
 }
 
-/** Get Comments for a model */
-export async function getComments(modelType: string, modelId: number): Promise<any> {
-  return fetchApi<any>(`/comments/${modelType}/${modelId}`);
+export async function getComments(modelType: string, modelId: string | number): Promise<any> {
+  if (modelType === 'blog') {
+    return fetchApi<any>(`/blogs/${modelId}/comments`, { next: { revalidate: 60 } });
+  }
+  return fetchApi<any>(`/comments/${modelType}/${modelId}`, { next: { revalidate: 60 } });
 }
 
 /** Submit a Comment */
-export async function submitComment(modelType: string, modelId: number, data: { name: string; email: string; content: string; parent_id?: number }): Promise<any> {
+export async function submitComment(modelType: string, modelId: string | number, data: { name: string; email: string; content: string; parent_id?: number }): Promise<any> {
+  if (modelType === 'blog') {
+    return fetchApi<any>(`/blogs/${modelId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
   return fetchApi<any>(`/comments/${modelType}/${modelId}`, {
     method: 'POST',
     body: JSON.stringify(data),

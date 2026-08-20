@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import type { Review } from "@/lib/types";
 
 interface TestimonialsProps {
@@ -77,9 +78,9 @@ export function Testimonials({ reviews, title, subtitle }: TestimonialsProps) {
                 {/* Client Info */}
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-[2px] shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                    <div className="w-full h-full rounded-full overflow-hidden bg-[var(--bg-deep)]">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-[var(--bg-deep)] relative">
                       {reviews[active].client_image ? (
-                        <img src={reviews[active].client_image} alt={reviews[active].client_name} className="w-full h-full object-cover" />
+                        <Image src={reviews[active].client_image} alt={reviews[active].client_name} fill sizes="64px" className="object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-white font-bold text-xl">
                           {reviews[active].client_name?.[0] || "?"}

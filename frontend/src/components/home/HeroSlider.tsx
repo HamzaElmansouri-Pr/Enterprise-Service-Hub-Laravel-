@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
+import Image from "next/image";
 import Link from "next/link";
 import type { Slider } from "@/lib/types";
 
@@ -53,11 +54,13 @@ export function HeroSlider({ sliders, cms }: HeroSliderProps) {
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="absolute inset-0"
         >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${optimizedHeroImg})`,
-            }}
+          <Image
+            src={optimizedHeroImg}
+            alt="Hero Background"
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="100vw"
           />
           {/* Elite Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-abyss)]/60 via-[var(--bg-abyss)]/80 to-[var(--bg-abyss)]" />

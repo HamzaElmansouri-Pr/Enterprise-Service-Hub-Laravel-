@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import type { Blog } from "@/lib/types";
 
@@ -8,9 +9,10 @@ interface BlogPreviewProps {
   blogs: Blog[];
   title: string | null;
   subtitle: string | null;
+  viewAllText?: string;
 }
 
-export function BlogPreview({ blogs, title, subtitle }: BlogPreviewProps) {
+export function BlogPreview({ blogs, title, subtitle, viewAllText = "View All Posts" }: BlogPreviewProps) {
   if (blogs.length === 0) return null;
 
   return (
@@ -44,7 +46,7 @@ export function BlogPreview({ blogs, title, subtitle }: BlogPreviewProps) {
                   
                   <div className="relative h-56 overflow-hidden">
                     {blog.image ? (
-                      <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                      <Image src={blog.image} alt={blog.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
                     ) : (
                       <div className="w-full h-full bg-[var(--bg-deep)] flex items-center justify-center"><span className="text-5xl opacity-20">📰</span></div>
                     )}
@@ -104,7 +106,7 @@ export function BlogPreview({ blogs, title, subtitle }: BlogPreviewProps) {
 
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mt-16">
           <Link href="/blog" className="inline-flex items-center gap-3 px-8 py-4 rounded-xl elite-glass border border-white/10 hover:border-white/30 text-white font-medium hover:bg-white/5 transition-all duration-300 group">
-            View All Posts
+            {viewAllText}
             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>

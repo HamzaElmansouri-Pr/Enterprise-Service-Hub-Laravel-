@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.10.1",
         "meilisearch/meilisearch-php": "*",
         "mews/purifier": "*",
+        "predis/predis": "^3.6",
         "spatie/laravel-translatable": "^6.14",
         "spatie/simple-excel": "^3.9"
     },

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TiltCard from "@/components/ui/TiltCard";
@@ -34,7 +35,7 @@ export function ProjectsGrid({ projects, categories, activeCategory }: ProjectsG
               <TiltCard>
                 <Link href={`/projects/${project.slug}`} className="group block rounded-2xl overflow-hidden bg-[var(--bg-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300">
                   <div className="relative h-56 overflow-hidden">
-                    {project.image ? <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10 flex items-center justify-center"><span className="text-5xl opacity-30">📁</span></div>}
+                    {project.image ? <Image src={project.image} alt={project.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10 flex items-center justify-center"><span className="text-5xl opacity-30">📁</span></div>}
                     {project.category && <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[var(--primary)]/80 text-white text-xs font-medium backdrop-blur-sm">{project.category}</span>}
                   </div>
                   <div className="p-6">

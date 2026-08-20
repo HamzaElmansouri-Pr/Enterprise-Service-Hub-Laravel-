@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/types";
 
@@ -8,9 +9,21 @@ interface ProjectsShowcaseProps {
   projects: Project[];
   title: string | null;
   subtitle: string | null;
+  viewAllText?: string;
 }
 
-export function ProjectsShowcase({ projects, title, subtitle }: ProjectsShowcaseProps) {
+export function ProjectsShowcase({ projects, title, subtitle, viewAllText = "View All Projects" }: ProjectsShowcaseProps) {
+  if (!projects || projects.length === 0) {
+    return (
+      <section className="section-padding bg-[var(--bg-darker)] flex items-center justify-center min-h-[40vh]">
+        <div className="text-center elite-glass p-12 rounded-3xl border border-white/5">
+          <h2 className="text-3xl font-bold text-white mb-4">{title || "Featured Work"}</h2>
+          <p className="text-[var(--text-muted)] text-lg">No projects to display yet. Check back later!</p>
+        </div>
+      </section>
+    );
+  }
+
   // Take up to 4 projects for the bento grid display
   const displayProjects = projects.slice(0, 4);
 
@@ -41,7 +54,7 @@ export function ProjectsShowcase({ projects, title, subtitle }: ProjectsShowcase
             href="/projects"
             className="hidden md:inline-flex items-center gap-3 px-6 py-3 rounded-full elite-glass border border-white/10 hover:border-white/30 text-white font-medium hover:bg-white/5 transition-all duration-300 group"
           >
-            View All Projects
+            {viewAllText}
             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -75,10 +88,12 @@ export function ProjectsShowcase({ projects, title, subtitle }: ProjectsShowcase
                   {/* Background Image */}
                   <div className="absolute inset-0">
                     {project.image ? (
-                      <img
+                      <Image
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
                     ) : (
                       <div className="w-full h-full bg-[var(--bg-deep)] flex items-center justify-center">
@@ -130,7 +145,7 @@ export function ProjectsShowcase({ projects, title, subtitle }: ProjectsShowcase
             href="/projects"
             className="inline-flex items-center justify-center w-full gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white font-semibold shadow-lg"
           >
-            View All Projects
+            {viewAllText}
           </Link>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { searchGlobal } from "@/lib/api";
+import { getDictionary } from "@/lib/dictionary";
 
 interface SearchResult {
   id: string;
@@ -17,9 +18,11 @@ interface SearchResult {
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  locale?: string;
 }
 
-export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export function SearchModal({ isOpen, onClose, locale = "en" }: SearchModalProps) {
+  const t = getDictionary(locale).searchModal;
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -97,7 +100,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Search projects, services, blogs..."
+                  placeholder={t.placeholder}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-white placeholder-[var(--text-muted)] pl-10 pr-10 text-lg"
