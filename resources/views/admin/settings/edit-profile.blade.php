@@ -164,7 +164,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
 function deleteImage() {
     if (confirm('Are you sure you want to remove your profile image?')) {
         document.getElementById('delete-image-form').submit();

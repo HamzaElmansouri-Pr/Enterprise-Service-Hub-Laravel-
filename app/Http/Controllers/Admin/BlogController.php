@@ -159,7 +159,7 @@ class BlogController extends Controller
         unset($data['featured_image_url'], $data['og_image_url']);
 
         if (isset($data['title'])) {
-            $data['title'] = is_array($data['title']) ? array_map('purify_html', $data['title']) : purify_html($data['title']);
+            $data['title'] = is_array($data['title']) ? array_map('strip_tags', $data['title']) : strip_tags($data['title']);
         }
         if (isset($data['content'])) {
             $data['content'] = is_array($data['content']) ? array_map('purify_html', $data['content']) : purify_html($data['content']);
@@ -207,33 +207,30 @@ class BlogController extends Controller
             if ($blog->image !== $data['featured_image_url']) {
                 $this->uploadService->delete($blog->image);
             }
-
             $data['image'] = $data['featured_image_url'];
+        } elseif ($request->hasFile('featured_image')) {
+            $this->uploadService->delete($blog->image);
+            $data['image'] = $this->uploadService->upload($request->file('featured_image'), 'blog');
+        } else {
+            unset($data['image']);
         }
 
         if (!empty($data['og_image_url'])) {
             if (($blog->og_image ?? null) !== $data['og_image_url']) {
                 $this->uploadService->delete($blog->og_image ?? null);
             }
-
             $data['og_image'] = $data['og_image_url'];
-        }
-
-        if ($request->hasFile('featured_image')) {
-            $this->uploadService->delete($blog->image);
-            $data['image'] = $this->uploadService->upload($request->file('featured_image'), 'blog');
-        }
-
-        // Handle OG Image
-        if ($request->hasFile('og_image')) {
+        } elseif ($request->hasFile('og_image')) {
             $this->uploadService->delete($blog->og_image ?? null);
             $data['og_image'] = $this->uploadService->upload($request->file('og_image'), 'seo/og');
+        } else {
+            unset($data['og_image']);
         }
 
         unset($data['featured_image_url'], $data['og_image_url']);
 
         if (isset($data['title'])) {
-            $data['title'] = is_array($data['title']) ? array_map('purify_html', $data['title']) : purify_html($data['title']);
+            $data['title'] = is_array($data['title']) ? array_map('strip_tags', $data['title']) : strip_tags($data['title']);
         }
         if (isset($data['content'])) {
             $data['content'] = is_array($data['content']) ? array_map('purify_html', $data['content']) : purify_html($data['content']);

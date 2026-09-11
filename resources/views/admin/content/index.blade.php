@@ -228,16 +228,6 @@
                     @endforeach
                 </div>
             </div>
-
-            <div class="card mt-4 bg-primary text-white shadow-lg overflow-hidden border-0">
-                <div class="card-body p-4 relative">
-                    <i class="fas fa-rocket absolute opacity-10" style="font-size: 5rem; right: -1rem; bottom: -1rem;"></i>
-                    <h5 class="fw-bold mb-3">Architect Tip</h5>
-                    <p class="small mb-0 opacity-80 leading-relaxed">
-                        Toggle sections to "Draft" to hide incomplete content while you build. Your changes reflect instantly in the "Blueprint" view.
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -245,9 +235,9 @@
 
 @section('scripts')
 <!-- SortableJS -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" nonce="{{ $cspNonce ?? '' }}"></script>
 
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
 document.addEventListener('DOMContentLoaded', function() {
     const toggles = document.querySelectorAll('.status-toggle');
     

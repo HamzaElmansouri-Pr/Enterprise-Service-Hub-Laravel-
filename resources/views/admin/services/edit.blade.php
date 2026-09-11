@@ -50,8 +50,18 @@
                                        value="{{ old('icon', Str::startsWith($service->icon, 'storage/') ? '' : $service->icon) }}">
                             </div>
                              <div class="form-text">Current: {{ $service->icon }}</div>
-                             <input type="file" name="icon" class="form-control mt-2" accept="image/*,.svg">
-                             @error('icon') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                             
+                             @if($service->icon)
+                                 <div class="mt-2 p-2 border rounded bg-light d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                     @if(Str::startsWith($service->icon, 'storage/'))
+                                         <img src="{{ asset($service->icon) }}" style="max-width: 100%; max-height: 100%;">
+                                     @else
+                                         <i class="{{ $service->icon }} fa-lg text-primary"></i>
+                                     @endif
+                                 </div>
+                             @endif
+                             <input type="file" name="icon_upload" class="form-control mt-2" accept="image/*,.svg">
+                             @error('icon_upload') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 

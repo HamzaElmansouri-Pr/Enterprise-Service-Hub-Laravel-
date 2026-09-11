@@ -131,7 +131,7 @@
                         </div>
                         <div class="mb-4">
                             <label for="about_description" class="form-label">About Description</label>
-                            <textarea class="form-control" id="about_description" name="about_description" rows="4">{{ $content['about_description'] ?? 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.' }}</textarea>
+                            <textarea class="form-control" id="about_description" name="about_description" rows="4">{{ get_content_value($content['about_description'] ?? null) ?: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.' }}</textarea>
                         </div>
                         
                         <div class="mb-4 p-3 bg-light rounded border border-primary border-opacity-25">
@@ -216,14 +216,14 @@
                                 <div class="mb-4">
                                     <label for="contact_phone" class="form-label">Phone Number</label>
                                     <input type="tel" class="form-control" id="contact_phone" name="contact_phone" 
-                                           value="{{ $content['contact_phone'] ?? '+1 (555) 123-4567' }}">
+                                           value="{{ get_content_value($content['contact_phone'] ?? null) ?: '+1 (555) 123-4567' }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-4">
                                     <label for="contact_email" class="form-label">Email Address</label>
                                     <input type="email" class="form-control" id="contact_email" name="contact_email" 
-                                           value="{{ $content['contact_email'] ?? 'test@gmail.com' }}">
+                                           value="{{ get_content_value($content['contact_email'] ?? null) ?: 'test@gmail.com' }}">
                                 </div>
                             </div>
                         </div>
@@ -321,7 +321,7 @@
                         <div class="mb-4">
                             <label for="partners_title" class="form-label">Partners Section Title (Optional)</label>
                             <input type="text" class="form-control" id="partners_title" name="partners_title" 
-                                   value="{{ $content['partners_title'] ?? '' }}">
+                                   value="{{ get_content_value($content['partners_title'] ?? null) ?: '' }}">
                         </div>
                         <x-admin.translatable-textarea name="partners_subtitle" label="Partners Subtitle (Optional)" rows="2" :value="$content['partners_subtitle'] ?? null" />
                         <div class="alert alert-info">
@@ -335,12 +335,12 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="stats_title" class="form-label">Main Title</label>
                                     <input type="text" class="form-control" id="stats_title" name="stats_title" 
-                                           value="{{ $content['stats_title'] ?? 'Our Success in Numbers' }}" placeholder="e.g. Our Success in Numbers">
+                                           value="{{ get_content_value($content['stats_title'] ?? null) ?: 'Our Success in Numbers' }}" placeholder="e.g. Our Success in Numbers">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="stats_subtitle" class="form-label">Badge/Subtitle</label>
                                     <input type="text" class="form-control" id="stats_subtitle" name="stats_subtitle" 
-                                           value="{{ $content['stats_subtitle'] ?? 'By The Numbers' }}" placeholder="e.g. By The Numbers">
+                                           value="{{ get_content_value($content['stats_subtitle'] ?? null) ?: 'By The Numbers' }}" placeholder="e.g. By The Numbers">
                                 </div>
                             </div>
                         </div>
@@ -400,12 +400,12 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="values_title" class="form-label">Main Title</label>
                                     <input type="text" class="form-control" id="values_title" name="values_title" 
-                                           value="{{ $content['values_title'] ?? 'The Principles That Drive Us' }}">
+                                           value="{{ get_content_value($content['values_title'] ?? null) ?: 'The Principles That Drive Us' }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="values_subtitle" class="form-label">Badge/Subtitle</label>
                                     <input type="text" class="form-control" id="values_subtitle" name="values_subtitle" 
-                                           value="{{ $content['values_subtitle'] ?? 'Our Culture' }}">
+                                           value="{{ get_content_value($content['values_subtitle'] ?? null) ?: 'Our Culture' }}">
                                 </div>
                             </div>
                         </div>
@@ -457,12 +457,12 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="history_title" class="form-label">Main Title</label>
                                     <input type="text" class="form-control" id="history_title" name="history_title" 
-                                           value="{{ $content['history_title'] ?? 'Our Journey' }}">
+                                           value="{{ get_content_value($content['history_title'] ?? null) ?: 'Our Journey' }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="history_subtitle" class="form-label">Badge/Subtitle</label>
                                     <input type="text" class="form-control" id="history_subtitle" name="history_subtitle" 
-                                           value="{{ $content['history_subtitle'] ?? 'Company Timeline' }}">
+                                           value="{{ get_content_value($content['history_subtitle'] ?? null) ?: 'Company Timeline' }}">
                                 </div>
                             </div>
                         </div>
@@ -511,12 +511,12 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="team_title" class="form-label">Main Title</label>
                                     <input type="text" class="form-control" id="team_title" name="team_title" 
-                                           value="{{ $content['team_title'] ?? 'The Experts Behind Our Success' }}">
+                                           value="{{ get_content_value($content['team_title'] ?? null) ?: 'The Experts Behind Our Success' }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="team_subtitle" class="form-label">Badge/Subtitle</label>
                                     <input type="text" class="form-control" id="team_subtitle" name="team_subtitle" 
-                                           value="{{ $content['team_subtitle'] ?? 'Our Team' }}">
+                                           value="{{ get_content_value($content['team_subtitle'] ?? null) ?: 'Our Team' }}">
                                 </div>
                             </div>
                         </div>
@@ -648,7 +648,7 @@
                         <div class="mb-4">
                             <label for="title" class="form-label">Section Title</label>
                             <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ $content['title'] ?? '' }}">
+                                   value="{{ get_content_value($content['title'] ?? null) ?: '' }}">
                         </div>
 
                         <x-admin.translatable-textarea name="subtitle" label="Section Subtitle" rows="2" :value="$content['subtitle'] ?? null" />
@@ -716,7 +716,7 @@
                                 <div class="mb-4">
                                     <label for="button_url" class="form-label">Button URL (Optional)</label>
                                     <input type="text" class="form-control" id="button_url" name="button_url" 
-                                           value="{{ $content['button_url'] ?? '' }}" placeholder="/contact">
+                                           value="{{ get_content_value($content['button_url'] ?? null) ?: '' }}" placeholder="/contact">
                                 </div>
                             </div>
                         </div>
@@ -725,12 +725,12 @@
                         <div class="mb-4">
                             <label for="title" class="form-label">Page Title</label>
                             <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ $content['title'] ?? '' }}">
+                                   value="{{ get_content_value($content['title'] ?? null) ?: '' }}">
                         </div>
 
                         <div class="mb-4">
                             <label for="breadcrumb_title" class="form-label">Breadcrumb Title (Supports HTML)</label>
-                            <textarea class="form-control" id="breadcrumb_title" name="breadcrumb_title" rows="2">{{ $content['breadcrumb_title'] ?? '' }}</textarea>
+                            <textarea class="form-control" id="breadcrumb_title" name="breadcrumb_title" rows="2">{{ get_content_value($content['breadcrumb_title'] ?? null) ?: '' }}</textarea>
                             <small class="text-muted">Example: Our &lt;span&gt;Portfolio&lt;/span&gt;</small>
                         </div>
 
@@ -804,15 +804,15 @@
             <div class="card-body">
                 <div class="preview-content">
                     @if($contentType === 'home-hero')
-                        <h5>{{ $content['hero_title'] ?? 'The complete CRM solution built for your success' }}</h5>
-                        <p class="text-muted">{{ $content['hero_subtitle'] ?? 'All your customer data, tools, and insights in one unified platform.' }}</p>
-                        <button class="btn btn-primary">{{ $content['hero_button_text'] ?? 'try for free' }}</button>
+                        <h5>{{ get_content_value($content['hero_title'] ?? null) ?: 'The complete CRM solution built for your success' }}</h5>
+                        <p class="text-muted">{{ get_content_value($content['hero_subtitle'] ?? null) ?: 'All your customer data, tools, and insights in one unified platform.' }}</p>
+                        <button class="btn btn-primary">{{ get_content_value($content['hero_button_text'] ?? null) ?: 'try for free' }}</button>
                     @elseif($contentType === 'home-features')
-                        <h5>{{ $content['features_title'] ?? 'SupremeIT key benefits' }}</h5>
-                        <p class="text-muted">{{ $content['features_subtitle'] ?? 'Flexible experiences that scale with your growth' }}</p>
+                        <h5>{{ get_content_value($content['features_title'] ?? null) ?: 'SupremeIT key benefits' }}</h5>
+                        <p class="text-muted">{{ get_content_value($content['features_subtitle'] ?? null) ?: 'Flexible experiences that scale with your growth' }}</p>
                     @elseif($contentType === 'about-main' || $contentType === 'home-about')
-                        <h5>{{ $content['about_title'] ?? 'Deliver unforgettable customer experiences' }}</h5>
-                        <p class="text-muted">{{ $content['about_description'] ?? 'About description...' }}</p>
+                        <h5>{{ get_content_value($content['about_title'] ?? null) ?: 'Deliver unforgettable customer experiences' }}</h5>
+                        <p class="text-muted">{{ get_content_value($content['about_description'] ?? null) ?: 'About description...' }}</p>
                         @if(!empty($content['features']))
                         <ul>
                             @foreach($content['features'] as $feat)
@@ -821,8 +821,8 @@
                         </ul>
                         @endif
                     @elseif($contentType === 'services-list')
-                        <h5>{{ $content['title'] ?? 'Our Awesome Services' }}</h5>
-                        <p class="text-muted">{{ $content['subtitle'] ?? 'What We Do' }}</p>
+                        <h5>{{ get_content_value($content['title'] ?? null) ?: 'Our Awesome Services' }}</h5>
+                        <p class="text-muted">{{ get_content_value($content['subtitle'] ?? null) ?: 'What We Do' }}</p>
                         <div class="mt-3">
                             @if(!empty($content['featured_services']))
                                 <div class="small fw-bold mb-2">Selected Services:</div>
@@ -836,21 +836,21 @@
                             @endif
                         </div>
                     @elseif($contentType === 'contact-info')
-                        <h5>{{ $content['contact_title'] ?? 'Ready to get started?' }}</h5>
-                        <p class="text-muted">{{ $content['contact_description'] ?? 'Contact description...' }}</p>
-                        <p><strong>Phone:</strong> {{ $content['contact_phone'] ?? '+1 (555) 123-4567' }}</p>
-                        <p><strong>Email:</strong> {{ $content['contact_email'] ?? 'info@supremeit.com' }}</p>
+                        <h5>{{ get_content_value($content['contact_title'] ?? null) ?: 'Ready to get started?' }}</h5>
+                        <p class="text-muted">{{ get_content_value($content['contact_description'] ?? null) ?: 'Contact description...' }}</p>
+                        <p><strong>Phone:</strong> {{ get_content_value($content['contact_phone'] ?? null) ?: '+1 (555) 123-4567' }}</p>
+                        <p><strong>Email:</strong> {{ get_content_value($content['contact_email'] ?? null) ?: 'info@supremeit.com' }}</p>
                     @elseif($contentType === 'reviews-list')
-                        <span class="badge bg-primary mb-2">{{ $content['subtitle'] ?? 'Testimonials' }}</span>
-                        <h5>{{ $content['title'] ?? 'What our clients say' }}</h5>
+                        <span class="badge bg-primary mb-2">{{ get_content_value($content['subtitle'] ?? null) ?: 'Testimonials' }}</span>
+                        <h5>{{ get_content_value($content['title'] ?? null) ?: 'What our clients say' }}</h5>
                     @elseif($contentType === 'blog-list')
-                        <span class="badge bg-primary mb-2">{{ $content['subtitle'] ?? 'Latest News' }}</span>
-                        <h5>{{ $content['title'] ?? 'Direct from the Blog' }}</h5>
+                        <span class="badge bg-primary mb-2">{{ get_content_value($content['subtitle'] ?? null) ?: 'Latest News' }}</span>
+                        <h5>{{ get_content_value($content['title'] ?? null) ?: 'Direct from the Blog' }}</h5>
                     @elseif($contentType === 'cta-simple')
                         <div class="p-3 bg-primary text-white rounded shadow-sm">
-                            <h6 class="fw-bold mb-2">{{ $content['title'] ?? 'Ready to Transform Your Business?' }}</h6>
-                            <p class="small mb-3 opacity-90">{{ $content['description'] ?? 'CTA description...' }}</p>
-                            <button class="btn btn-sm btn-light text-primary fw-bold">{{ $content['button_text'] ?? 'Get a Free Quote' }}</button>
+                            <h6 class="fw-bold mb-2">{{ get_content_value($content['title'] ?? null) ?: 'Ready to Transform Your Business?' }}</h6>
+                            <p class="small mb-3 opacity-90">{{ get_content_value($content['description'] ?? null) ?: 'CTA description...' }}</p>
+                            <button class="btn btn-sm btn-light text-primary fw-bold">{{ get_content_value($content['button_text'] ?? null) ?: 'Get a Free Quote' }}</button>
                         </div>
                     @endif
                 </div>
@@ -917,7 +917,7 @@
 @endpush
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
 document.addEventListener('DOMContentLoaded', function() {
     // Add feature functionality
     const addFeatureBtn = document.getElementById('add-feature');

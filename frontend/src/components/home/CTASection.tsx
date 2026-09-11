@@ -17,7 +17,7 @@ export function CTASection({ cta }: CTASectionProps) {
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-deep)] to-[var(--bg-abyss)]" />
       
       {/* Elite Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[var(--primary)]/10 blur-[150px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[var(--primary)]/10 blur-[80px] mix-blend-screen pointer-events-none" />
       
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
@@ -29,8 +29,8 @@ export function CTASection({ cta }: CTASectionProps) {
         >
           {/* Subtle inside glow */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none" />
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-[var(--accent)]/20 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[var(--primary)]/20 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-[var(--accent)]/20 rounded-full blur-[60px] pointer-events-none" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[var(--primary)]/20 rounded-full blur-[60px] pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl mx-auto">
             <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-[var(--primary-light)] text-sm font-medium tracking-widest uppercase mb-8 shadow-xl backdrop-blur-md">

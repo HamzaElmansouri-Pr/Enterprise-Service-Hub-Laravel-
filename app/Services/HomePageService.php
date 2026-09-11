@@ -79,7 +79,7 @@ class HomePageService
             // Partners (only if section is active)
             $partnersSection = $sections->get('home-partners');
             $partners = ($partnersSection && $partnersSection->is_active)
-                ? Partner::where('is_active', true)->select('id', 'name', 'logo_url', 'url')->orderBy('order_index')->take(20)->get()
+                ? Partner::where('is_active', true)->select('id', 'name', 'logo', 'url')->orderBy('order_index')->take(20)->get()
                 : collect();
 
             return [

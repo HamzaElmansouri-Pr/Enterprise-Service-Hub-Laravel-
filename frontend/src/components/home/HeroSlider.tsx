@@ -61,6 +61,7 @@ export function HeroSlider({ sliders, cms }: HeroSliderProps) {
             className="object-cover object-center"
             priority
             sizes="100vw"
+            unoptimized={optimizedHeroImg.includes('localhost') || optimizedHeroImg.includes('127.0.0.1')}
           />
           {/* Elite Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-abyss)]/60 via-[var(--bg-abyss)]/80 to-[var(--bg-abyss)]" />
@@ -68,8 +69,8 @@ export function HeroSlider({ sliders, cms }: HeroSliderProps) {
       </AnimatePresence>
 
       {/* Animated Glowing Orbs */}
-      <motion.div style={{ y: y1 }} className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] rounded-full bg-[var(--primary)]/10 blur-[120px] mix-blend-screen pointer-events-none" />
-      <motion.div style={{ y: y2 }} className="absolute bottom-1/4 right-1/4 w-[30vw] h-[30vw] rounded-full bg-[var(--accent)]/10 blur-[100px] mix-blend-screen pointer-events-none" />
+      <motion.div style={{ y: y1 }} className="absolute top-1/4 left-1/4 w-[30vw] h-[30vw] rounded-full bg-[var(--primary)]/10 blur-[60px] mix-blend-screen pointer-events-none" />
+      <motion.div style={{ y: y2 }} className="absolute bottom-1/4 right-1/4 w-[25vw] h-[25vw] rounded-full bg-[var(--accent)]/10 blur-[50px] mix-blend-screen pointer-events-none" />
 
       {/* Content */}
       <motion.div style={{ opacity }} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-20">

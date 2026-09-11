@@ -42,7 +42,7 @@
                                     <td>{{ $slider->id }}</td>
                                     <td>
                                         @if($slider->image)
-                                        <img src="{{ resolve_image_url($slider->image) }}" alt="{{ $slider->title }}" 
+                                        <img src="{{ resolve_image_url($slider->image) }}" alt="{{ get_content_value($slider->title) }}" 
                                              class="img-thumbnail" width="80" height="50" style="object-fit: cover;">
                                         @else
                                         <div class="bg-secondary d-flex align-items-center justify-content-center" 
@@ -51,9 +51,9 @@
                                         </div>
                                         @endif
                                     </td>
-                                    <td>{{ Str::limit($slider->title, 30) }}</td>
-                                    <td>{{ Str::limit($slider->subtitle, 30) }}</td>
-                                    <td>{{ $slider->button_text ?? 'N/A' }}</td>
+                                    <td>{{ Str::limit(get_content_value($slider->title), 30) }}</td>
+                                    <td>{{ Str::limit(get_content_value($slider->subtitle), 30) }}</td>
+                                    <td>{{ get_content_value($slider->button_text) ?: 'N/A' }}</td>
                                     <td>
                                         <form action="{{ route('admin.sliders.toggle-active', $slider) }}" method="POST" class="d-inline">
                                             @csrf

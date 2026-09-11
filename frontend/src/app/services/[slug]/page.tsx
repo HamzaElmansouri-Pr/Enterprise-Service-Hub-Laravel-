@@ -6,6 +6,7 @@ import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
 import { cookies } from "next/headers";
 import { getDictionary, Locale } from "@/lib/dictionary";
+import { getIcon } from "@/lib/iconHelper";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -36,9 +37,17 @@ export default async function ServiceDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main content */}
             <div className="lg:col-span-2">
-              {service.image && (
+              {service.image ? (
                 <div className="rounded-2xl overflow-hidden mb-8">
                   <Image src={service.image} alt={service.title} width={1200} height={800} className="w-full h-auto object-cover" />
+                </div>
+              ) : (
+                <div className="rounded-2xl overflow-hidden mb-8 bg-[var(--bg-deep)] border border-white/5 flex items-center justify-center py-20">
+                  {service.icon?.startsWith('http') ? (
+                    <Image src={service.icon} alt={service.title} width={120} height={120} className="object-contain opacity-50" />
+                  ) : (
+                    <span className="text-8xl opacity-50">{getIcon(service.icon)}</span>
+                  )}
                 </div>
               )}
               <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(service.description || "") }} />

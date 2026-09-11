@@ -42,8 +42,8 @@
                                 <input type="text" name="icon" class="form-control" placeholder="e.g. flaticon-settings" value="{{ old('icon') }}">
                             </div>
                              <div class="form-text">Enter a FontAwesome/Flaticon class OR upload below.</div>
-                             <input type="file" name="icon" class="form-control mt-2" accept="image/*,.svg">
-                             @error('icon') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                             <input type="file" name="icon_upload" class="form-control mt-2" accept="image/*,.svg">
+                             @error('icon_upload') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 

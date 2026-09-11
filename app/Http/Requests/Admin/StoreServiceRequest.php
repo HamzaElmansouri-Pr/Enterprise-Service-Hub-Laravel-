@@ -23,6 +23,7 @@ class StoreServiceRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'image_url' => 'nullable|url|max:2048',
             'icon' => 'nullable', 
+            'icon_upload' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
             'order_index' => 'integer|min:0',
             'meta_title' => 'nullable|array',

@@ -18,8 +18,8 @@ export function BlogPreview({ blogs, title, subtitle, viewAllText = "View All Po
   return (
     <section className="section-padding bg-[var(--bg-abyss)] relative overflow-hidden">
       {/* Decorative Elite Orbs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[var(--primary)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[var(--accent)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-[var(--primary)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-[var(--accent)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-20">
@@ -46,7 +46,14 @@ export function BlogPreview({ blogs, title, subtitle, viewAllText = "View All Po
                   
                   <div className="relative h-56 overflow-hidden">
                     {blog.image ? (
-                      <Image src={blog.image} alt={blog.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                      <Image 
+                        src={blog.image} 
+                        alt={blog.title} 
+                        fill 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+                        className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
+                        unoptimized={blog.image.includes('localhost') || blog.image.includes('127.0.0.1')}
+                      />
                     ) : (
                       <div className="w-full h-full bg-[var(--bg-deep)] flex items-center justify-center"><span className="text-5xl opacity-20">📰</span></div>
                     )}

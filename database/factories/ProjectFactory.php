@@ -25,7 +25,7 @@ class ProjectFactory extends Factory
             'client' => $this->faker->company(),
             'completion_date' => $this->faker->date(),
             'category' => $this->faker->randomElement(['Web Development', 'Mobile App', 'SEO', 'Marketing']),
-            'image' => 'assets/img/project/0' . $this->faker->numberBetween(1, 5) . '.jpg',
+            'image' => 'assets/img/case-studies/0' . $this->faker->numberBetween(1, 5) . '.jpg',
             'is_active' => true,
             'order_index' => $this->faker->numberBetween(1, 10),
         ];

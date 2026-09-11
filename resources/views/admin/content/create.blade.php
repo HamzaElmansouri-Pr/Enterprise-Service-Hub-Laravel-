@@ -268,7 +268,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
 document.addEventListener('DOMContentLoaded', function() {
     // Add feature functionality
     const addFeatureBtn = document.getElementById('add-feature');

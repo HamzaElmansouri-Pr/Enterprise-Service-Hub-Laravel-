@@ -43,10 +43,10 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="fw-bold">{{ $review->client_name }}</td>
+                        <td class="fw-bold">{{ get_content_value($review->client_name) }}</td>
                         <td>
                             <div class="small fw-bold">{{ $review->client_company }}</div>
-                            <div class="small text-muted">{{ $review->client_position }}</div>
+                            <div class="small text-muted">{{ get_content_value($review->client_position) }}</div>
                         </td>
                         <td>
                             @for($i = 1; $i <= 5; $i++)

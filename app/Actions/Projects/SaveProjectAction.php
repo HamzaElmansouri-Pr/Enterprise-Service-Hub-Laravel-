@@ -33,7 +33,7 @@ class SaveProjectAction
         // 2. Handle HTML Purification
         if (function_exists('purify_html')) {
             if (isset($data['title'])) {
-                $data['title'] = is_array($data['title']) ? array_map('purify_html', $data['title']) : purify_html($data['title']);
+                $data['title'] = is_array($data['title']) ? array_map('strip_tags', $data['title']) : strip_tags($data['title']);
             }
             if (isset($data['description'])) {
                 $data['description'] = is_array($data['description']) ? array_map('purify_html', $data['description']) : purify_html($data['description']);
@@ -44,34 +44,29 @@ class SaveProjectAction
             if ($project && ($project->image !== $data['image_url'])) {
                 $this->uploadService->delete($project->image);
             }
-
             $data['image'] = $data['image_url'];
+        } elseif (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
+            if ($project) {
+                $this->uploadService->delete($project->image);
+            }
+            $data['image'] = $this->uploadService->upload($data['image'], 'projects');
+        } else {
+            unset($data['image']);
         }
 
+        // 4. Handle OG Image
         if (!empty($data['og_image_url'])) {
             if ($project && (($project->og_image ?? null) !== $data['og_image_url'])) {
                 $this->uploadService->delete($project->og_image ?? null);
             }
-
             $data['og_image'] = $data['og_image_url'];
-        }
-
-        // 3. Handle Main Image
-        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
-            if ($project) {
-                $this->uploadService->delete($project->image);
-            }
-
-            $data['image'] = $this->uploadService->upload($data['image'], 'projects');
-        }
-
-        // 4. Handle OG Image
-        if (isset($data['og_image']) && $data['og_image'] instanceof \Illuminate\Http\UploadedFile) {
+        } elseif (isset($data['og_image']) && $data['og_image'] instanceof \Illuminate\Http\UploadedFile) {
             if ($project) {
                 $this->uploadService->delete($project->og_image ?? null);
             }
-
             $data['og_image'] = $this->uploadService->upload($data['og_image'], 'seo/og');
+        } else {
+            unset($data['og_image']);
         }
 
         unset($data['image_url'], $data['og_image_url']);

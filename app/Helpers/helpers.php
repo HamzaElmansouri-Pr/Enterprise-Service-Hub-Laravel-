@@ -2,6 +2,19 @@
 
 use Illuminate\Support\Facades\Storage;
 
+if (!function_exists('get_content_value')) {
+    /**
+     * Safely extract a string value from a Spatie translatable array.
+     */
+    function get_content_value($value)
+    {
+        if (is_array($value)) {
+            return $value[app()->getLocale()] ?? $value[app()->getFallbackLocale()] ?? current($value) ?? '';
+        }
+        return $value ?? '';
+    }
+}
+
 if (!function_exists('resolve_image_url')) {
     /**
      * Resolve image URL handling different storage and asset paths.
@@ -13,6 +26,14 @@ if (!function_exists('resolve_image_url')) {
      */
     function resolve_image_url($path, array $options = [])
     {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (is_array($path)) {
+            $path = $path[app()->getLocale()] ?? $path[app()->getFallbackLocale()] ?? current($path);
+        }
+        
         if (empty($path)) {
             return null;
         }
@@ -139,6 +160,13 @@ if (!function_exists('purify_html')) {
         // Remove the XML declaration we added
         $sanitized = str_replace('<?xml encoding="utf-8" ?>', '', $sanitized);
         
-        return trim($sanitized);
+        $sanitized = trim($sanitized);
+        
+        // If the original input had no HTML tags, strip the auto-added <p> wrapper
+        if ($html === strip_tags($html)) {
+            $sanitized = strip_tags($sanitized);
+        }
+        
+        return $sanitized;
     }
 }

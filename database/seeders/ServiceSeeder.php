@@ -16,7 +16,7 @@ class ServiceSeeder extends Seeder
                 'subtitle' => 'Custom websites and web applications',
                 'description' => 'We create stunning, responsive websites.',
                 'icon' => 'fas fa-code',
-                'image' => 'assets/img/service/web-development.jpg',
+                'image' => 'assets/img/case-studies/01.jpg',
                 'order_index' => 1,
             ],
             [
@@ -24,7 +24,7 @@ class ServiceSeeder extends Seeder
                 'subtitle' => 'iOS and Android applications',
                 'description' => 'Build powerful mobile applications.',
                 'icon' => 'fas fa-mobile-alt',
-                'image' => 'assets/img/service/mobile-app.jpg',
+                'image' => 'assets/img/case-studies/02.jpg',
                 'order_index' => 2,
             ],
             [
@@ -32,7 +32,7 @@ class ServiceSeeder extends Seeder
                 'subtitle' => 'User-centered design solutions',
                 'description' => 'Create intuitive and engaging user experiences.',
                 'icon' => 'fas fa-paint-brush',
-                'image' => 'assets/img/service/ui-ux.jpg',
+                'image' => 'assets/img/case-studies/03.jpg',
                 'order_index' => 3,
             ],
             [
@@ -40,7 +40,7 @@ class ServiceSeeder extends Seeder
                 'subtitle' => 'Grow your online presence',
                 'description' => 'Reach your target audience effectively.',
                 'icon' => 'fas fa-bullhorn',
-                'image' => 'assets/img/service/digital-marketing.jpg',
+                'image' => 'assets/img/case-studies/04.jpg',
                 'order_index' => 4,
             ],
         ];

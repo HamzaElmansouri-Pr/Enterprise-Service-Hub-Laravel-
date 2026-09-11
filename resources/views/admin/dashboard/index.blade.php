@@ -531,7 +531,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
     document.addEventListener('DOMContentLoaded', function() {
         // Chart Configs & Globals
         Chart.defaults.color = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#adb5bd' : '#6c757d';

@@ -57,14 +57,12 @@ class SettingsController extends Controller
             if ($user->image !== $validated['image_url']) {
                 $this->uploadService->delete($user->image);
             }
-
             $validated['image'] = $validated['image_url'];
-        }
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
+        } elseif ($request->hasFile('image')) {
             $this->uploadService->delete($user->image);
             $validated['image'] = $this->uploadService->upload($request->file('image'), 'profiles');
+        } else {
+            unset($validated['image']);
         }
 
         unset($validated['image_url']);

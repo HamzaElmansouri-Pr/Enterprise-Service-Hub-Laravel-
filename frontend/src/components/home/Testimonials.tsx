@@ -26,7 +26,7 @@ export function Testimonials({ reviews, title, subtitle }: TestimonialsProps) {
   return (
     <section className="section-padding bg-[var(--bg-abyss)] relative overflow-hidden">
       {/* Decorative Elite Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-[var(--primary)]/5 to-[var(--accent)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-[var(--primary)]/5 to-[var(--accent)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-20">
@@ -55,10 +55,10 @@ export function Testimonials({ reviews, title, subtitle }: TestimonialsProps) {
             <AnimatePresence mode="wait">
               <motion.div 
                 key={active} 
-                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }} 
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} 
-                exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }} 
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                exit={{ opacity: 0, y: -20 }} 
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 className="relative z-10 flex flex-col items-center text-center"
               >
                 {/* Rating */}
@@ -80,7 +80,14 @@ export function Testimonials({ reviews, title, subtitle }: TestimonialsProps) {
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-[2px] shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                     <div className="w-full h-full rounded-full overflow-hidden bg-[var(--bg-deep)] relative">
                       {reviews[active].client_image ? (
-                        <Image src={reviews[active].client_image} alt={reviews[active].client_name} fill sizes="64px" className="object-cover" />
+                        <Image 
+                          src={reviews[active].client_image} 
+                          alt={reviews[active].client_name} 
+                          fill 
+                          sizes="64px" 
+                          className="object-cover" 
+                          unoptimized={reviews[active].client_image.includes('localhost') || reviews[active].client_image.includes('127.0.0.1')}
+                        />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-white font-bold text-xl">
                           {reviews[active].client_name?.[0] || "?"}

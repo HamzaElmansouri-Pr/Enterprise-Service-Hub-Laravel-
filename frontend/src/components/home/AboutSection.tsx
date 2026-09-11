@@ -18,8 +18,8 @@ export function AboutSection({ about }: AboutSectionProps) {
   return (
     <section className="section-padding bg-[var(--bg-abyss)] relative overflow-hidden">
       {/* Decorative Elite Orbs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-[var(--primary)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[var(--accent)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full bg-[var(--primary)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-[var(--accent)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center">
@@ -36,11 +36,12 @@ export function AboutSection({ about }: AboutSectionProps) {
               <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-[var(--bg-deep)]">
                 <Image 
                   src={optimizedImage} 
-                  alt="About Us" 
+                  alt={about.title} 
                   fill
                   className="object-cover opacity-90 hover:opacity-100 hover:scale-105 transition-all duration-700"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
+                  unoptimized={optimizedImage.includes('localhost') || optimizedImage.includes('127.0.0.1')}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-abyss)] via-transparent to-transparent opacity-80" />
               </div>
@@ -49,7 +50,7 @@ export function AboutSection({ about }: AboutSectionProps) {
             {/* Floating Experience Badge */}
             <motion.div 
               animate={{ y: [-10, 10, -10] }} 
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              transition={{ repeat: 3, duration: 4, ease: "easeInOut" }}
               className="absolute -bottom-8 -right-8 sm:-bottom-12 sm:-right-12 w-40 h-40 rounded-[32px] bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-[1px] shadow-[0_0_30px_rgba(59,130,246,0.3)] z-20"
             >
               <div className="w-full h-full rounded-[31px] bg-[var(--bg-deep)] flex flex-col items-center justify-center relative overflow-hidden">

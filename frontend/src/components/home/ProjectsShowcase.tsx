@@ -94,6 +94,7 @@ export function ProjectsShowcase({ projects, title, subtitle, viewAllText = "Vie
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                        unoptimized={project.image.includes('localhost') || project.image.includes('127.0.0.1')}
                       />
                     ) : (
                       <div className="w-full h-full bg-[var(--bg-deep)] flex items-center justify-center">

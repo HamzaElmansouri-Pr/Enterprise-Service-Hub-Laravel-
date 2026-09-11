@@ -51,8 +51,8 @@ export function Footer({ locale = "en" }: { locale?: string }) {
   return (
     <footer className="relative bg-[var(--bg-abyss)] pt-20 pb-10 overflow-hidden border-t border-white/5">
       {/* Decorative Orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-[80px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-[80px] mix-blend-screen pointer-events-none" />
 
       {/* Top Gradient Line */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />

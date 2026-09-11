@@ -134,7 +134,7 @@
                                             <label for="title_color" class="form-label">Title Color</label>
                                             <div class="input-group">
                                                 <input type="color" class="form-control form-control-color" id="title_color" name="title_color" value="{{ old('title_color', $slider->title_color ?? '#ffffff') }}" title="Choose title color">
-                                                <input type="text" class="form-control" value="{{ old('title_color', $slider->title_color ?? '#ffffff') }}" oninput="document.getElementById('title_color').value = this.value">
+                                                <input type="text" class="form-control" value="{{ old('title_color', $slider->title_color ?? '#ffffff') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -143,7 +143,7 @@
                                             <label for="subtitle_color" class="form-label">Subtitle Color</label>
                                             <div class="input-group">
                                                 <input type="color" class="form-control form-control-color" id="subtitle_color" name="subtitle_color" value="{{ old('subtitle_color', $slider->subtitle_color ?? '#e2e8f0') }}" title="Choose subtitle color">
-                                                <input type="text" class="form-control" value="{{ old('subtitle_color', $slider->subtitle_color ?? '#e2e8f0') }}" oninput="document.getElementById('subtitle_color').value = this.value">
+                                                <input type="text" class="form-control" value="{{ old('subtitle_color', $slider->subtitle_color ?? '#e2e8f0') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -152,7 +152,7 @@
                                             <label for="description_color" class="form-label">Description Color</label>
                                             <div class="input-group">
                                                 <input type="color" class="form-control form-control-color" id="description_color" name="description_color" value="{{ old('description_color', $slider->description_color ?? '#cbd5e1') }}" title="Choose description color">
-                                                <input type="text" class="form-control" value="{{ old('description_color', $slider->description_color ?? '#cbd5e1') }}" oninput="document.getElementById('description_color').value = this.value">
+                                                <input type="text" class="form-control" value="{{ old('description_color', $slider->description_color ?? '#cbd5e1') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -174,9 +174,10 @@
                                             <input type="text" class="form-control mt-2" id="image_url" name="image_url"
                                                    value="{{ old('image_url', (str_starts_with($slider->image ?? '', 'http')) ? $slider->image : '') }}"
                                                    placeholder="Or paste image URL (https://...)">
-                                            @if($slider->image && !str_starts_with($slider->image, 'http'))
-                                                <div class="mt-2">
-                                                    <img src="{{ resolve_image_url($slider->image) }}" class="img-thumbnail" style="max-height: 100px;">
+                                            @if($slider->image)
+                                                <div class="mt-2" id="current-image-container">
+                                                    <small class="text-muted d-block mb-1">Current Image:</small>
+                                                    <img src="{{ resolve_image_url($slider->image) }}" class="img-thumbnail" style="max-height: 150px;">
                                                 </div>
                                             @endif
                                             <div class="form-text">Recommended: 1920x1080px. Background for video fallback.</div>
@@ -219,3 +220,63 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script nonce="{{ $cspNonce ?? '' }}">
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('image');
+    const imageUrlInput = document.getElementById('image_url');
+    const currentImageContainer = document.getElementById('current-image-container');
+    const imageParent = imageInput ? imageInput.closest('.mb-3') : null;
+
+    // Create preview container for newly selected images
+    const previewContainer = document.createElement('div');
+    previewContainer.id = 'image-preview-container';
+    previewContainer.className = 'mt-2 d-none';
+    previewContainer.innerHTML = '<small class="text-muted d-block mb-1">New Image Preview:</small><img id="image-preview" src="" class="img-thumbnail" style="max-height: 150px;">';
+
+    // Insert the preview after the current image or at the end of the parent
+    if (currentImageContainer) {
+        currentImageContainer.after(previewContainer);
+    } else if (imageParent) {
+        imageParent.appendChild(previewContainer);
+    }
+
+    const previewImg = document.getElementById('image-preview');
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (imageUrlInput) {
+        imageUrlInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                previewImg.src = url;
+                previewContainer.classList.remove('d-none');
+            }
+        });
+    }
+
+    // Sync color picker text inputs with their color inputs
+    document.querySelectorAll('input[type="color"]').forEach(function(colorInput) {
+        const textInput = colorInput.closest('.input-group').querySelector('input[type="text"]');
+        if (textInput) {
+            textInput.addEventListener('input', function() {
+                colorInput.value = this.value;
+            });
+        }
+    });
+});
+</script>
+@endpush

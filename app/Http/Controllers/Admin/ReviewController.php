@@ -101,13 +101,12 @@ class ReviewController extends Controller
             if ($review->client_image !== $data['client_image_url']) {
                 $this->uploadService->delete($review->client_image);
             }
-
             $data['client_image'] = $data['client_image_url'];
-        }
-
-        if ($request->hasFile('client_image')) {
+        } elseif ($request->hasFile('client_image')) {
             $this->uploadService->delete($review->client_image);
             $data['client_image'] = $this->uploadService->upload($request->file('client_image'), 'testimonials');
+        } else {
+            unset($data['client_image']);
         }
 
         unset($data['client_image_url']);

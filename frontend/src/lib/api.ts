@@ -73,7 +73,7 @@ async function fetchApi<T>(
     fetchOptions.cache = 'no-store';
   } else {
     fetchOptions.next = {
-      revalidate: 3600, // Default to 1 hour for GET
+      revalidate: 60, // Default to 1 minute for GET
       ...options.next,
     };
   }

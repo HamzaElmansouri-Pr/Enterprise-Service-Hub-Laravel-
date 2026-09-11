@@ -68,13 +68,12 @@ class PartnerController extends Controller
             if ($partner->logo !== $data['logo_url']) {
                 $this->uploadService->delete($partner->logo);
             }
-
             $data['logo'] = $data['logo_url'];
-        }
-        
-        if ($request->hasFile('logo')) {
+        } elseif ($request->hasFile('logo')) {
             $this->uploadService->delete($partner->logo);
             $data['logo'] = $this->uploadService->upload($request->file('logo'), 'partners');
+        } else {
+            unset($data['logo']);
         }
 
         unset($data['logo_url']);

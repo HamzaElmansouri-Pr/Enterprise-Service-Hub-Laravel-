@@ -76,8 +76,8 @@ class ServiceController extends Controller
             $data['subtitle'] = array_map('purify_html', $data['subtitle']);
         }
 
-        if ($request->hasFile('icon')) {
-             $data['icon'] = $this->uploadService->upload($request->file('icon'), 'services/icons');
+        if ($request->hasFile('icon_upload')) {
+             $data['icon'] = $this->uploadService->upload($request->file('icon_upload'), 'services/icons');
         } elseif (empty($data['icon'])) {
              // Default icon if not provided
              $data['icon'] = 'flaticon-settings';
@@ -130,27 +130,25 @@ class ServiceController extends Controller
             if ($service->image !== $data['image_url']) {
                 $this->uploadService->delete($service->image);
             }
-
             $data['image'] = $data['image_url'];
+        } elseif ($request->hasFile('image')) {
+            $this->uploadService->delete($service->image);
+            $data['image'] = $this->uploadService->upload($request->file('image'), 'services');
+        } else {
+            unset($data['image']);
         }
 
+        // Handle OG Image
         if (!empty($data['og_image_url'])) {
             if (($service->og_image ?? null) !== $data['og_image_url']) {
                 $this->uploadService->delete($service->og_image ?? null);
             }
-
             $data['og_image'] = $data['og_image_url'];
-        }
-
-        if ($request->hasFile('image')) {
-            $this->uploadService->delete($service->image);
-            $data['image'] = $this->uploadService->upload($request->file('image'), 'services');
-        }
-
-        // Handle OG Image
-        if ($request->hasFile('og_image')) {
+        } elseif ($request->hasFile('og_image')) {
             $this->uploadService->delete($service->og_image ?? null);
             $data['og_image'] = $this->uploadService->upload($request->file('og_image'), 'seo/og');
+        } else {
+            unset($data['og_image']);
         }
 
         if (isset($data['description']) && is_array($data['description'])) {
@@ -160,8 +158,10 @@ class ServiceController extends Controller
             $data['subtitle'] = array_map('purify_html', $data['subtitle']);
         }
 
-        if ($request->hasFile('icon')) {
-            $data['icon'] = $this->uploadService->upload($request->file('icon'), 'services/icons');
+        if ($request->hasFile('icon_upload')) {
+            $data['icon'] = $this->uploadService->upload($request->file('icon_upload'), 'services/icons');
+        } else {
+            unset($data['icon']);
         }
 
         unset($data['image_url'], $data['og_image_url']);

@@ -7,6 +7,7 @@ import DOMPurify from "isomorphic-dompurify";
 
 import { cookies } from "next/headers";
 import { getDictionary } from "@/lib/dictionary";
+import { getIcon } from "@/lib/iconHelper";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
@@ -48,8 +49,10 @@ export default async function ServicesPage() {
                     <span className="relative z-10 drop-shadow-lg">
                       {service.image ? (
                         <Image src={service.image} alt="" width={32} height={32} className="object-contain" />
+                      ) : service.icon?.startsWith('http') ? (
+                        <Image src={service.icon} alt="" width={32} height={32} className="object-contain" />
                       ) : (
-                        "⚡"
+                        getIcon(service.icon)
                       )}
                     </span>
                   </div>

@@ -73,13 +73,13 @@ class SliderController extends Controller
             if ($slider->image !== $data['image_url']) {
                 $this->uploadService->delete($slider->image);
             }
-
             $data['image'] = $data['image_url'];
-        }
-
-        if ($request->hasFile('image')) {
+        } elseif ($request->hasFile('image')) {
             $this->uploadService->delete($slider->image);
             $data['image'] = $this->uploadService->upload($request->file('image'), 'sliders');
+        } else {
+            // Keep existing image if no new one is provided
+            unset($data['image']);
         }
 
         unset($data['image_url']);

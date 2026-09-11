@@ -20,7 +20,7 @@ class ServiceResource extends JsonResource
             'slug' => $this->slug,
             'subtitle' => $this->subtitle,
             'description' => $this->description,
-            'icon' => $this->icon,
+            'icon' => str_starts_with($this->icon ?? '', 'storage/') ? resolve_image_url($this->icon) : $this->icon,
             'image' => resolve_image_url($this->image),
             'order_index' => $this->order_index,
             'is_active' => $this->is_active,

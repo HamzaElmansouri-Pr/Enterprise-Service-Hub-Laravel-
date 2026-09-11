@@ -48,7 +48,7 @@
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td class="fw-bold">{{ $service->title }}</td>
+                        <td class="fw-bold">{{ get_content_value($service->title) }}</td>
                         <td class="text-muted small">{{ $service->slug }}</td>
                         <td>
                             @if($service->is_active)

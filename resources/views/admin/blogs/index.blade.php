@@ -101,7 +101,7 @@
                             @endif
                         </td>
                         <td class="fw-bold">
-                            {{ Str::limit($blog->title, 40) }}
+                            {{ Str::limit(get_content_value($blog->title), 40) }}
                             <div class="small text-muted">{{ $blog->slug }}</div>
                         </td>
                         <td>{{ $blog->author ? $blog->author->name : 'Unknown' }}</td>

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Navigate to the project root directory
+cd "$(dirname "$0")" || exit
+
+echo "====================================================="
+echo " Starting Enterprise Service Hub (Elma Core)"
+echo "====================================================="
+
+echo "[1/2] Starting Laravel Backend (PHP Artisan Serve)..."
+php artisan serve --host=127.0.0.1 --port=8000 &
+BACKEND_PID=$!
+
+echo "[2/2] Starting Next.js Frontend..."
+cd frontend || exit
+npm run dev &
+FRONTEND_PID=$!
+
+echo "====================================================="
+echo " Services are starting up! Press Ctrl+C to stop both."
+echo "====================================================="
+
+# Trap Ctrl+C (SIGINT) and kill both processes
+trap "echo -e '\nStopping services...'; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit 0" SIGINT SIGTERM
+
+# Wait for both background processes to keep the script running
+wait $BACKEND_PID $FRONTEND_PID

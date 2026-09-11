@@ -13,30 +13,7 @@ interface ServicesGridProps {
   subtitle: string | null;
 }
 
-const serviceIcons: Record<string, string> = {
-  default: "⚡",
-  web: "🌐",
-  mobile: "📱",
-  cloud: "☁️",
-  security: "🔒",
-  consulting: "💡",
-  data: "📊",
-  design: "🎨",
-};
-
-function getIcon(icon: string | null) {
-  if (!icon) return serviceIcons.default;
-  if (icon.length <= 4) return icon;
-  if (icon.includes("setting")) return "⚙️";
-  if (icon.includes("web") || icon.includes("globe")) return "🌐";
-  if (icon.includes("cloud")) return "☁️";
-  if (icon.includes("shield") || icon.includes("security")) return "🔒";
-  if (icon.includes("code")) return "💻";
-  if (icon.includes("chart") || icon.includes("data")) return "📊";
-  if (icon.includes("design") || icon.includes("paint")) return "🎨";
-  if (icon.includes("mobile") || icon.includes("phone")) return "📱";
-  return serviceIcons.default;
-}
+import { getIcon } from "@/lib/iconHelper";
 
 export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
   if (!services || services.length === 0) {
@@ -53,8 +30,8 @@ export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
   return (
     <section className="section-padding bg-[var(--bg-abyss)] relative overflow-hidden">
       {/* Decorative Orbs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[var(--primary)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-[var(--accent)]/5 blur-[150px] mix-blend-screen pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-[var(--primary)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[var(--accent)]/5 blur-[80px] mix-blend-screen pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -104,7 +81,23 @@ export function ServicesGrid({ services, title, subtitle }: ServicesGridProps) {
                     <div className="absolute inset-0 bg-[var(--primary)]/10 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <span className="relative z-10 drop-shadow-lg">
                       {service.image ? (
-                        <Image src={getOptimizedImageUrl(service.image, { width: 64, height: 64, crop: 'fit' })} alt="" width={32} height={32} className="object-contain" />
+                        <Image 
+                          src={getOptimizedImageUrl(service.image, { width: 64, height: 64, crop: 'fit' })} 
+                          alt="" 
+                          width={32} 
+                          height={32} 
+                          className="object-contain" 
+                          unoptimized={service.image.includes('localhost') || service.image.includes('127.0.0.1')}
+                        />
+                      ) : service.icon?.startsWith('http') ? (
+                        <Image 
+                          src={service.icon} 
+                          alt="" 
+                          width={32} 
+                          height={32} 
+                          className="object-contain" 
+                          unoptimized={service.icon.includes('localhost') || service.icon.includes('127.0.0.1')}
+                        />
                       ) : (
                         getIcon(service.icon)
                       )}

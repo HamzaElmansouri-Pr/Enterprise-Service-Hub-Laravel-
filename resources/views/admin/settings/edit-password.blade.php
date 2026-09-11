@@ -98,7 +98,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
 // Password strength indicator
 document.getElementById('password').addEventListener('input', function() {
     const password = this.value;

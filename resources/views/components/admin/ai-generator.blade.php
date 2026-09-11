@@ -45,7 +45,7 @@
 
 @once
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
 document.addEventListener('DOMContentLoaded', function() {
     const aiPanels = document.querySelectorAll('.ai-generator-panel');
     

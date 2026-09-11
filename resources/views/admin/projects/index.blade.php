@@ -42,7 +42,7 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="fw-bold">{{ $project->title }}</td>
+                        <td class="fw-bold">{{ get_content_value($project->title) }}</td>
                         <td>{{ $project->client ?? '-' }}</td>
                         <td><span class="badge bg-info text-dark">{{ $project->category ?? 'General' }}</span></td>
                         <td>

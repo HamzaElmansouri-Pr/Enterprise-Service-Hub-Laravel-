@@ -82,7 +82,7 @@
     }
 </style>
 
-<script>
+<script nonce="{{ $cspNonce ?? '' }}">
     let currentInputTarget = null;
     let currentPreviewTarget = null;
     let selectedMediaUrl = null;
