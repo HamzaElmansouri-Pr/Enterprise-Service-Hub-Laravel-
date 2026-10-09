@@ -11,7 +11,7 @@ import { SearchModal } from "./SearchModal";
 
 import { getDictionary } from "@/lib/dictionary";
 
-export function Navbar({ locale = "en" }: { locale?: string }) {
+export function Navbar({ locale = "en", siteInfo = {} }: { locale?: string, siteInfo?: Record<string, string> }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -55,13 +55,25 @@ export function Navbar({ locale = "en" }: { locale?: string }) {
             }`}
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group focus-ring rounded-full" aria-label="ELMA Core Home">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--primary-glow)] transition-all duration-300 relative overflow-hidden">
-              <span className="text-white font-bold text-lg relative z-10">EC</span>
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            </div>
+          <Link href="/" className="flex items-center gap-3 group focus-ring rounded-full" aria-label={siteInfo.site_name || "ELMA Core Home"}>
+            {siteInfo.logo ? (
+              <img src={siteInfo.logo} alt={siteInfo.site_name || "Logo"} className="h-10 w-auto" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--primary-glow)] transition-all duration-300 relative overflow-hidden">
+                <span className="text-white font-bold text-lg relative z-10">
+                  {(siteInfo.site_name || "EC")[0]}
+                </span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              </div>
+            )}
             <span className="text-xl font-bold text-white hidden sm:block tracking-tight">
-              ELMA<span className="text-[var(--primary-light)]">Core</span>
+              {siteInfo.site_name ? (
+                <>
+                  {siteInfo.site_name.split(' ')[0]}<span className="text-[var(--primary-light)]">{siteInfo.site_name.substring(siteInfo.site_name.indexOf(' ') + 1)}</span>
+                </>
+              ) : (
+                <>ELMA<span className="text-[var(--primary-light)]">Core</span></>
+              )}
             </span>
           </Link>
 

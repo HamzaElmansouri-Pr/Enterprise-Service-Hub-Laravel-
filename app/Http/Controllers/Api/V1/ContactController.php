@@ -79,6 +79,10 @@ class ContactController extends Controller
         }
 
         $validated = $request->validated();
+        
+        if (empty($validated['subject'])) {
+            $validated['subject'] = 'No Subject';
+        }
 
         $contact = $this->contactRepository->create($validated);
 

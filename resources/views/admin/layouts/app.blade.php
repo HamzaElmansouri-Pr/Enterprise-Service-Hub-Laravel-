@@ -684,6 +684,10 @@
                 <i class="fas fa-photo-video"></i>
                 <span>{{ __('admin.sidebar.media_library') }}</span>
             </a>
+            <a class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" href="{{ route('admin.pages.index') }}">
+                <i class="fas fa-search"></i>
+                <span>Pages & SEO</span>
+            </a>
             <a class="nav-link {{ request()->routeIs('admin.content.*') ? 'active' : '' }}" href="{{ route('admin.content.index') }}">
                 <i class="fas fa-edit"></i>
                 <span>{{ __('admin.sidebar.cms_manager') }}</span>

@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Models\Section;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
+
+class GlobalController extends Controller
+{
+    public function index(): JsonResponse
+    {
+        $globalData = Cache::remember('api_global_data', now()->addMinutes(60), function () {
+            $siteInfo = Section::where('type', 'site-info')->with('contentBlocks')->first();
+            $footerContent = Section::where('type', 'footer-content')->with('contentBlocks')->first();
+
+            $siteInfoData = $siteInfo ? $siteInfo->contentBlocks->pluck('content', 'key')->toArray() : [];
+            $footerContentData = $footerContent ? $footerContent->contentBlocks->pluck('content', 'key')->toArray() : [];
+
+            // Resolve any images within the global settings
+            if (isset($siteInfoData['logo']) && is_string($siteInfoData['logo'])) {
+                $siteInfoData['logo'] = resolve_image_url($siteInfoData['logo']);
+            }
+            if (isset($siteInfoData['favicon']) && is_string($siteInfoData['favicon'])) {
+                $siteInfoData['favicon'] = resolve_image_url($siteInfoData['favicon']);
+            }
+            if (isset($footerContentData['footer_logo']) && is_string($footerContentData['footer_logo'])) {
+                $footerContentData['footer_logo'] = resolve_image_url($footerContentData['footer_logo']);
+            }
+
+            return [
+                'site_info' => $siteInfoData,
+                'footer_content' => $footerContentData,
+            ];
+        });
+
+        return response()->json($globalData);
+    }
+}

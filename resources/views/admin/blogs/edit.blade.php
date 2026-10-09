@@ -76,13 +76,11 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Featured Image</label>
-                                @if($blog->image)
-                                    <div class="mb-2">
-                                        <img src="{{ resolve_image_url($blog->image) }}" class="rounded img-fluid">
-                                    </div>
-                                @endif
-                                <input type="file" name="featured_image" class="form-control" accept="image/*">
-                                <input type="url" name="featured_image_url" class="form-control mt-2"
+                                <div class="mb-2">
+                                    <img id="featured_image_preview" src="{{ $blog->image ? resolve_image_url($blog->image) : '' }}" class="rounded img-fluid" style="max-height: 200px; {{ $blog->image ? '' : 'display: none;' }}">
+                                </div>
+                                <input type="file" name="featured_image" id="featured_image_input" class="form-control" accept="image/*">
+                                <input type="url" name="featured_image_url" id="featured_image_url_input" class="form-control mt-2"
                                        value="{{ old('featured_image_url', (str_starts_with($blog->image ?? '', 'http://') || str_starts_with($blog->image ?? '', 'https://')) ? $blog->image : '') }}"
                                        placeholder="Or paste featured image URL (https://...)">
                                 @error('featured_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
@@ -112,5 +110,42 @@
     </div>
 </div>
 @push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('featured_image_input');
+        const urlInput = document.getElementById('featured_image_url_input');
+        const preview = document.getElementById('featured_image_preview');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+                urlInput.value = ''; // clear url input when file is selected
+            }
+        });
+
+        urlInput.addEventListener('input', function(e) {
+            const url = e.target.value;
+            if (url) {
+                preview.src = url;
+                preview.style.display = 'block';
+                fileInput.value = ''; // clear file input when url is pasted
+            } else if (!fileInput.value) {
+                const originalImage = "{{ $blog->image ? resolve_image_url($blog->image) : '' }}";
+                if (originalImage) {
+                    preview.src = originalImage;
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+            }
+        });
+    });
+</script>
 @endpush
 @endsection

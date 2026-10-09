@@ -59,6 +59,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->name('search')
             ->middleware('throttle:30,1');
 
+        // Global Settings
+        Route::get('global', [\App\Http\Controllers\Api\V1\GlobalController::class, 'index'])->name('global');
+
         // About page
         Route::get('about', AboutController::class)->name('about');
 

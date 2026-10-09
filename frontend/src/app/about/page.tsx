@@ -21,7 +21,7 @@ export default async function AboutPage() {
   const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
   const t = getDictionary(locale);
   const { page } = await getAboutPage();
-  const { about, stats, values, team } = page;
+  const { about, stats, values, team, history } = page;
 
   return (
     <>
@@ -69,6 +69,26 @@ export default async function AboutPage() {
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10 flex items-center justify-center text-xl mb-4">{i === 0 ? "🎯" : i === 1 ? "💡" : "🤝"}</div>
                     <h3 className="text-lg font-bold text-white mb-3">{value.title}</h3>
                     <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{value.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* History / Milestones */}
+          {history && history.milestones && history.milestones.length > 0 && (
+            <div className="py-12 border-t border-white/5">
+              <div className="text-center mb-16">
+                {history.subtitle && <span className="text-[var(--primary-light)] font-semibold tracking-wider uppercase text-sm">{history.subtitle}</span>}
+                <h2 className="text-3xl font-bold text-white mt-2">{history.title || "Our Journey"}</h2>
+              </div>
+              <div className="relative border-l border-[var(--primary)]/30 ml-4 md:ml-6 space-y-12 pb-8">
+                {history.milestones.map((milestone: any, i: number) => (
+                  <div key={i} className="relative pl-8 md:pl-12">
+                    <div className="absolute left-[-5px] top-1 w-2.5 h-2.5 rounded-full bg-[var(--primary)] ring-4 ring-[var(--bg-deep)]" />
+                    <span className="text-[var(--primary-light)] font-bold text-sm tracking-wider mb-1 block">{milestone.year}</span>
+                    <h3 className="text-xl font-bold text-white mb-2">{milestone.title}</h3>
+                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-2xl">{milestone.description}</p>
                   </div>
                 ))}
               </div>

@@ -77,6 +77,8 @@ class CMSPageResolver
             case 'page-header':
             case 'projects-page-header':
             case 'services-page-header':
+            case 'blog-page-header':
+            case 'contact-page-header':
                 $data->title = $section->getContent('title') ?: ($data->title ?? '');
                 $data->breadcrumb_title = $section->getContent('breadcrumb_title') ?: ($section->getContent('title') ?: ($data->breadcrumb_title ?? ''));
                 $img = $section->getContent('image');

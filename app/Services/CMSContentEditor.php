@@ -158,8 +158,9 @@ class CMSContentEditor
         }
 
         // Cache busting
-        if ($type === 'site-info') {
+        if ($type === 'site-info' || $type === 'footer-content') {
             cache()->forget('site_info');
+            cache()->forget('api_global_data');
         }
     }
 

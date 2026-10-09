@@ -224,3 +224,8 @@ export interface AboutResponse {
 export interface ApiMessageResponse {
   message: string;
 }
+
+export interface GlobalConfigResponse {
+  site_info: Record<string, string>;
+  footer_content: Record<string, string>;
+}

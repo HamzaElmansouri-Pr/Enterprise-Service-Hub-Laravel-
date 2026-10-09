@@ -11,26 +11,42 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "ELMA Core — IT Services & Technology Solutions",
-    template: "%s | ELMA Core",
-  },
-  description:
-    "Professional IT services, technology solutions, and digital transformation for businesses of all sizes.",
-  keywords: ["IT services", "technology solutions", "web development", "digital transformation"],
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    siteName: "ELMA Core",
-  },
-};
+import { LiveAnnouncer } from "@/components/ui/LiveAnnouncer";
+import { getGlobalConfig } from "@/lib/api";
 
 export const viewport = {
   themeColor: "#3b82f6",
 };
 
-import { LiveAnnouncer } from "@/components/ui/LiveAnnouncer";
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const globalConfig = await getGlobalConfig();
+    const siteInfo = globalConfig?.site_info || {};
+    
+    return {
+      title: {
+        default: siteInfo.site_name || "ELMA Core — IT Services & Technology Solutions",
+        template: `%s | ${siteInfo.site_name || "ELMA Core"}`,
+      },
+      description: siteInfo.site_description || "Professional IT services, technology solutions, and digital transformation for businesses of all sizes.",
+      keywords: siteInfo.seo_keywords ? siteInfo.seo_keywords.split(',') : ["IT services", "technology solutions", "web development", "digital transformation"],
+      openGraph: {
+        type: "website",
+        locale: "en_US",
+        siteName: siteInfo.site_name || "ELMA Core",
+      },
+    };
+  } catch (e) {
+    return {
+      title: {
+        default: "ELMA Core — IT Services & Technology Solutions",
+        template: "%s | ELMA Core",
+      },
+      description: "Professional IT services, technology solutions, and digital transformation for businesses of all sizes.",
+      keywords: ["IT services", "technology solutions", "web development", "digital transformation"],
+    };
+  }
+}
 
 export default async function RootLayout({
   children,
@@ -40,6 +56,13 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
   const dir = locale === "ar" ? "rtl" : "ltr";
+  
+  let globalConfig = null;
+  try {
+    globalConfig = await getGlobalConfig();
+  } catch (e) {
+    console.error("Failed to fetch global config", e);
+  }
 
   return (
     <html lang={locale} dir={dir} className={inter.variable}>
@@ -48,9 +71,9 @@ export default async function RootLayout({
           Skip to content
         </a>
         <LiveAnnouncer />
-        <Navbar locale={locale} />
+        <Navbar locale={locale} siteInfo={globalConfig?.site_info} />
         <main id="main-content" className="min-h-screen">{children}</main>
-        <Footer locale={locale} />
+        <Footer locale={locale} siteInfo={globalConfig?.site_info} footerContent={globalConfig?.footer_content} />
         <ChatWidget locale={locale} />
       </body>
     </html>

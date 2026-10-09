@@ -91,6 +91,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('content/{type}/item/{key}/{index}', [ContentController::class, 'updateItem'])->name('content.update-item');
         Route::delete('content/{type}/image/{key}', [ContentController::class, 'destroyImage'])->name('content.destroy-image');
 
+        // Pages & SEO
+        Route::resource('pages', \App\Http\Controllers\Admin\PageController::class)->only(['index', 'edit', 'update']);
+
         // Settings
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::get('settings/profile', [SettingsController::class, 'editProfile'])->name('settings.edit-profile');

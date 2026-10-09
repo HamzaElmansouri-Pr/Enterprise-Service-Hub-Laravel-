@@ -31,8 +31,9 @@ class ContentController extends Controller
         $section->is_active = !$section->is_active;
         $section->save();
 
-        if ($type === 'site-info') {
+        if ($type === 'site-info' || $type === 'footer-content') {
             cache()->forget('site_info');
+            cache()->forget('api_global_data');
         }
 
         return response()->json([
@@ -101,8 +102,9 @@ class ContentController extends Controller
             $block->delete();
         }
 
-        if ($type === 'site-info') {
+        if ($type === 'site-info' || $type === 'footer-content') {
             cache()->forget('site_info');
+            cache()->forget('api_global_data');
         }
 
         return redirect()->back()->with('success', 'Image deleted successfully.');

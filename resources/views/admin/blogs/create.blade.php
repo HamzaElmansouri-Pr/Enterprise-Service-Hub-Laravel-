@@ -57,10 +57,10 @@
                                 @error('featured_image_url') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                 
                                 <label class="form-label small text-muted">Or upload new file (Legacy)</label>
-                                <input type="file" name="featured_image" class="form-control form-control-sm" accept="image/*">
+                                <input type="file" name="featured_image" id="featured_image_input" class="form-control form-control-sm" accept="image/*">
                                 @error('featured_image') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                 
-                                <img src="" id="featured_image_preview" class="img-fluid mt-2 rounded d-none" style="max-height: 200px; object-fit: cover;">
+                                <img src="" id="featured_image_preview" class="img-fluid mt-2 rounded d-none" style="max-height: 200px; object-fit: cover;" onerror="this.classList.add('d-none')">
                             </div>
 
                             <div class="mb-3">
@@ -89,5 +89,40 @@
 @include('admin.media.partials.picker')
 
 @push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('featured_image_input');
+        const urlInput = document.getElementById('featured_image_url');
+        const preview = document.getElementById('featured_image_preview');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('d-none');
+                    }
+                    reader.readAsDataURL(file);
+                    if (urlInput) urlInput.value = '';
+                }
+            });
+        }
+
+        if (urlInput) {
+            urlInput.addEventListener('input', function(e) {
+                const url = e.target.value;
+                if (url) {
+                    preview.src = url;
+                    preview.classList.remove('d-none');
+                    if (fileInput) fileInput.value = '';
+                } else if (!fileInput || !fileInput.value) {
+                    preview.classList.add('d-none');
+                }
+            });
+        }
+    });
+</script>
 @endpush
 @endsection

@@ -52,7 +52,7 @@ if (!function_exists('resolve_image_url')) {
             $url = asset($path);
         } elseif (!str_contains($path, '/') && !str_contains($path, '\\')) {
             // Deterministic default for flat names
-            $url = asset('storage/' . $path);
+            $url = Storage::url($path);
         } else {
             // Standard storage paths
             if (str_starts_with($path, 'storage/')) {
@@ -62,7 +62,7 @@ if (!function_exists('resolve_image_url')) {
             if (config('filesystems.default') === 'cloudinary') {
                 $url = Storage::disk('cloudinary')->url($path);
             } else {
-                $url = asset('storage/' . $path);
+                $url = Storage::url($path);
             }
         }
 

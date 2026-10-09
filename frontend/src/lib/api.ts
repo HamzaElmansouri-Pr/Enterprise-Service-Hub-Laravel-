@@ -99,6 +99,11 @@ export async function getHomePage(): Promise<HomeResponse> {
   return fetchApi<HomeResponse>('/home');
 }
 
+/** Get global configuration (site info, footer content) */
+export async function getGlobalConfig(): Promise<any> {
+  return fetchApi<any>('/global');
+}
+
 /** Get the about page CMS content */
 export async function getAboutPage(): Promise<AboutResponse> {
   return fetchApi<AboutResponse>('/about');

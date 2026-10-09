@@ -408,7 +408,7 @@
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         @if($blog->image)
-                                            <img src="{{ asset('storage/' . $blog->image) }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <img src="{{ resolve_image_url($blog->image) }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='{{ asset('images/placeholder.png') }}'">
                                         @else
                                             <div class="rounded bg-light text-muted d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
                                                 <i class="fas fa-image"></i>

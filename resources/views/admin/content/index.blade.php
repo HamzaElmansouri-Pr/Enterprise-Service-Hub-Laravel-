@@ -114,12 +114,15 @@
         ];
 
         $landingPages = [
-            ['id' => 'about-main', 'title' => 'About Page', 'desc' => 'Detailed company history', 'icon' => 'fa-info-circle'],
+            ['id' => 'about-main', 'title' => 'About Page', 'desc' => 'Detailed company info', 'icon' => 'fa-info-circle'],
+            ['id' => 'about-history', 'title' => 'Company History', 'desc' => 'Milestones and journey', 'icon' => 'fa-history'],
             ['id' => 'about-stats', 'title' => 'Success Metrics', 'desc' => 'Animated counter numbers', 'icon' => 'fa-chart-bar'],
             ['id' => 'about-values', 'title' => 'Core Values', 'desc' => 'Philosophy & mission', 'icon' => 'fa-gem'],
             ['id' => 'about-team', 'title' => 'Our Team', 'desc' => 'Management profiles', 'icon' => 'fa-users'],
             ['id' => 'services-page-header', 'title' => 'Services Header', 'desc' => 'Top banner for services', 'icon' => 'fa-heading'],
             ['id' => 'projects-page-header', 'title' => 'Projects Header', 'desc' => 'Top banner for projects', 'icon' => 'fa-heading'],
+            ['id' => 'blog-page-header', 'title' => 'Blog Header', 'desc' => 'Top banner for blog', 'icon' => 'fa-heading'],
+            ['id' => 'contact-page-header', 'title' => 'Contact Header', 'desc' => 'Top banner for contact', 'icon' => 'fa-heading'],
         ];
 
         $globalModules = [
