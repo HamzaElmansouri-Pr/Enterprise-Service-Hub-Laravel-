@@ -50,6 +50,11 @@ class CMSManager
         return $this->contentEditor->updateSectionItem($section, $key, $index, $itemData, $request);
     }
 
+    public function invalidateSectionCaches(Section $section): void
+    {
+        $this->contentEditor->invalidateSectionCaches($section);
+    }
+
     public function getValidationRules(string $type): array
     {
         return $this->validationRules->getRules($type);

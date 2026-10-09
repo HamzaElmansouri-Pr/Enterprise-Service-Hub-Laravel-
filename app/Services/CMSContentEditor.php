@@ -29,7 +29,22 @@ class CMSContentEditor
             'is_home' => $pageSlug === 'home',
         ]);
         
-        return $page->sections()->firstOrCreate(['type' => $type], [
+        $section = $page->sections()->where('type', $type)->first();
+
+        if (!$section && isset(['home-hero' => 'hero-3', 'home-about' => 'about-3'][$type])) {
+            $legacyType = ['home-hero' => 'hero-3', 'home-about' => 'about-3'][$type];
+            $section = $page->sections()->where('type', $legacyType)->first();
+
+            if ($section) {
+                // Normalize pre-CMS section names the first time they are edited.
+                $section->update([
+                    'type' => $type,
+                    'name' => ucwords(str_replace('-', ' ', $sectionKey)),
+                ]);
+            }
+        }
+
+        return $section ?: $page->sections()->firstOrCreate(['type' => $type], [
             'name' => ucwords(str_replace('-', ' ', $sectionKey)),
             'is_active' => true,
         ]);
@@ -157,11 +172,7 @@ class CMSContentEditor
             );
         }
 
-        // Cache busting
-        if ($type === 'site-info' || $type === 'footer-content') {
-            cache()->forget('site_info');
-            cache()->forget('api_global_data');
-        }
+        $this->invalidateSectionCaches($section);
     }
 
     /**
@@ -194,7 +205,36 @@ class CMSContentEditor
             ['content' => $jsonContent]
         );
 
+        $this->invalidateSectionCaches($section);
+
         return $items[$index];
+    }
+
+    /** Clear every response cache affected by a CMS section mutation. */
+    public function invalidateSectionCaches(Section $section): void
+    {
+        $pageSlug = $section->page?->slug;
+        $locales = config('app.available_locales', ['en', 'fr', 'ar']);
+
+        if ($pageSlug) {
+            cache()->forget("cms_page_{$pageSlug}"); // legacy key
+            cache()->forget("cms_page_{$pageSlug}_loc"); // legacy key
+            foreach ($locales as $locale) {
+                cache()->forget("cms_page_{$pageSlug}_{$locale}");
+            }
+        }
+
+        if ($pageSlug === 'home') {
+            cache()->forget('api_home_data');
+        }
+
+        if (in_array($section->type, ['site-info', 'footer-content'], true)) {
+            cache()->forget('site_info');
+            cache()->forget('api_global_data'); // legacy key
+            foreach ($locales as $locale) {
+                cache()->forget("api_global_data_{$locale}");
+            }
+        }
     }
 
     private function parseType(string $type): array

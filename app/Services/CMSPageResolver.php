@@ -13,7 +13,8 @@ class CMSPageResolver
 {
     public function resolvePage(string $slug, array $fallbacks = [], bool $localize = false): stdClass
     {
-        $cacheKey = "cms_page_{$slug}" . ($localize ? "_loc" : "");
+        // Localized content must not share a cache entry between languages.
+        $cacheKey = "cms_page_{$slug}" . ($localize ? '_' . app()->getLocale() : '');
         
         return cache()->remember($cacheKey, now()->addMinutes(60), function () use ($slug, $fallbacks, $localize) {
             $pageModel = Page::with(['sections' => function ($query) {

@@ -26,4 +26,12 @@ class ContactPolicy
     {
         return $user->isAdmin();
     }
+
+    /**
+     * Editors may triage and reply to messages; deletion remains administrator-only.
+     */
+    public function update(User $user, Contact $contact): bool
+    {
+        return $user->canAccessAdminPanel();
+    }
 }

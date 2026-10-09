@@ -66,11 +66,6 @@
                                 <span class="badge {{ $service->is_active ? 'bg-success' : 'bg-secondary' }} fs-6">
                                     {{ $service->is_active ? 'Active' : 'Inactive' }}
                                 </span>
-                                @if($service->is_featured)
-                                <span class="badge bg-warning fs-6">
-                                    <i class="fas fa-star me-1"></i>Featured
-                                </span>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -225,14 +220,6 @@
                         </button>
                     </form>
                     
-                    <form action="{{ route('admin.services.toggle-featured', $service) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-sm {{ $service->is_featured ? 'btn-outline-warning' : 'btn-warning' }} w-100">
-                            <i class="fas fa-star me-2"></i>
-                            {{ $service->is_featured ? 'Remove from Featured' : 'Mark as Featured' }}
-                        </button>
-                    </form>
                     
                     <a href="{{ route('service.detail', $service) }}" target="_blank" class="btn btn-sm btn-outline-info w-100">
                         <i class="fas fa-external-link-alt me-2"></i>

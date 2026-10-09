@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\TcRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Requests\UpdateTcRequestStatusRequest;
@@ -194,5 +195,21 @@ class TcRequestController extends Controller
             
             $writer->close();
         }, $fileName, ['Content-Type' => 'text/csv']);
+    }
+
+    public function downloadFile(TcRequest $tcRequest)
+    {
+        $this->authorize('view', $tcRequest);
+
+        abort_unless($tcRequest->attached_file, 404);
+
+        $path = $tcRequest->attached_file;
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return redirect()->away($path);
+        }
+
+        abort_unless(Storage::disk('public')->exists($path), 404);
+
+        return Storage::disk('public')->download($path);
     }
 }

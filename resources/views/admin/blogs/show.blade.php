@@ -73,14 +73,9 @@
                         <div class="mb-3">
                             <h6>Status:</h6>
                             <div class="d-flex gap-2">
-                                <span class="badge {{ $blog->is_published ? 'bg-success' : 'bg-secondary' }} fs-6">
-                                    {{ $blog->is_published ? 'Published' : 'Draft' }}
+                                <span class="badge {{ $blog->is_active ? 'bg-success' : 'bg-secondary' }} fs-6">
+                                    {{ $blog->is_active ? 'Published' : 'Draft' }}
                                 </span>
-                                @if($blog->is_featured)
-                                <span class="badge bg-warning fs-6">
-                                    <i class="fas fa-star me-1"></i>Featured
-                                </span>
-                                @endif
                             </div>
                         </div>
                         
@@ -159,15 +154,8 @@
                 
                 <div class="mb-3">
                     <strong>Status:</strong><br>
-                    <span class="badge {{ $blog->is_published ? 'bg-success' : 'bg-secondary' }}">
-                        {{ $blog->is_published ? 'Published' : 'Draft' }}
-                    </span>
-                </div>
-                
-                <div class="mb-3">
-                    <strong>Featured:</strong><br>
-                    <span class="badge {{ $blog->is_featured ? 'bg-warning' : 'bg-light text-dark' }}">
-                        {{ $blog->is_featured ? 'Yes' : 'No' }}
+                    <span class="badge {{ $blog->is_active ? 'bg-success' : 'bg-secondary' }}">
+                        {{ $blog->is_active ? 'Published' : 'Draft' }}
                     </span>
                 </div>
             </div>
@@ -182,18 +170,9 @@
                     <form action="{{ route('admin.blogs.toggle-published', $blog) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-sm {{ $blog->is_published ? 'btn-warning' : 'btn-success' }} w-100">
+                        <button type="submit" class="btn btn-sm {{ $blog->is_active ? 'btn-warning' : 'btn-success' }} w-100">
                             <i class="fas fa-eye me-2"></i>
-                            {{ $blog->is_published ? 'Unpublish' : 'Publish' }} Post
-                        </button>
-                    </form>
-                    
-                    <form action="{{ route('admin.blogs.toggle-featured', $blog) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-sm {{ $blog->is_featured ? 'btn-outline-warning' : 'btn-warning' }} w-100">
-                            <i class="fas fa-star me-2"></i>
-                            {{ $blog->is_featured ? 'Remove from Featured' : 'Mark as Featured' }}
+                            {{ $blog->is_active ? 'Unpublish' : 'Publish' }} Post
                         </button>
                     </form>
                     

@@ -27,9 +27,7 @@ class BlogRepository extends BaseRepository implements BlogRepositoryInterface
     {
         $query = $this->model->newQuery();
 
-        if ($isActive !== 'all') {
-            $query->where('is_active', filter_var($isActive, FILTER_VALIDATE_BOOLEAN));
-        }
+        $query->where('is_active', true)->whereNotNull('published_at');
 
         if ($search) {
             $query->where(function ($q) use ($search) {

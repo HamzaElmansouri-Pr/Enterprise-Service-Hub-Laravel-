@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         
-        $dto = CreateUserData::fromRequest($request);
+        $dto = CreateUserData::fromArray($request->validated());
         
         $this->userService->createUser($dto);
 
@@ -63,7 +63,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         
-        $dto = UpdateUserData::fromRequest($request);
+        $dto = UpdateUserData::fromArray($request->validated());
         
         $this->userService->updateUser($user->id, $dto);
 

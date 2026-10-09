@@ -27,14 +27,11 @@ class ContentController extends Controller
 
     public function toggleActive(string $type)
     {
-        $section = Section::where('type', $type)->firstOrFail();
+        $section = $this->cmsManager->getSection($type);
         $section->is_active = !$section->is_active;
         $section->save();
 
-        if ($type === 'site-info' || $type === 'footer-content') {
-            cache()->forget('site_info');
-            cache()->forget('api_global_data');
-        }
+        $this->cmsManager->invalidateSectionCaches($section);
 
         return response()->json([
             'success' => true,
@@ -102,10 +99,7 @@ class ContentController extends Controller
             $block->delete();
         }
 
-        if ($type === 'site-info' || $type === 'footer-content') {
-            cache()->forget('site_info');
-            cache()->forget('api_global_data');
-        }
+        $this->cmsManager->invalidateSectionCaches($section);
 
         return redirect()->back()->with('success', 'Image deleted successfully.');
     }
@@ -139,6 +133,13 @@ class ContentController extends Controller
                 Section::where('type', $item['type'])->update(['order_index' => $item['order']]);
             }
         });
+
+        foreach ($request->input('order') as $item) {
+            $section = Section::where('type', $item['type'])->first();
+            if ($section) {
+                $this->cmsManager->invalidateSectionCaches($section);
+            }
+        }
 
         return response()->json(['success' => true, 'message' => 'Sections reordered successfully.']);
     }

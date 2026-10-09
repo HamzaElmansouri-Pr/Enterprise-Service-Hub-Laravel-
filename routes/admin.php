@@ -34,11 +34,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('ai/assistant', [\App\Http\Controllers\Admin\AIController::class, 'assistantRouter'])->name('ai.assistant');
         
         // Modules
+        Route::patch('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
         Route::resource('services', ServiceController::class);
+        Route::patch('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])->name('projects.toggle-status');
+        Route::patch('projects/{project}/toggle-featured', [ProjectController::class, 'toggleFeatured'])->name('projects.toggle-featured');
         Route::resource('projects', ProjectController::class);
         Route::resource('reviews', ReviewController::class);
         Route::patch('blogs/{blog}/inline-update', [BlogController::class, 'inlineUpdate'])->name('blogs.inline-update');
         Route::post('blogs/bulk-action', [BlogController::class, 'bulkAction'])->name('blogs.bulk-action');
+        Route::patch('blogs/{blog}/toggle-published', [BlogController::class, 'togglePublished'])->name('blogs.toggle-published');
         Route::resource('blogs', BlogController::class);
         
         Route::patch('comments/{comment}/update-status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('comments.update-status');
@@ -59,6 +63,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('subscribers', SubscriberController::class)->only(['index', 'destroy']);
         
         Route::get('tc-requests/export', [TcRequestController::class, 'export'])->name('tc-requests.export');
+        Route::get('tc-requests/{tc_request}/download-file', [TcRequestController::class, 'downloadFile'])->name('tc-requests.download-file');
         Route::patch('tc-requests/mark-all-read', [TcRequestController::class, 'markAllAsRead'])->name('tc-requests.mark-all-read');
         Route::patch('tc-requests/{tc_request}/mark-read', [TcRequestController::class, 'markAsRead'])->name('tc-requests.mark-read');
         Route::patch('tc-requests/{tc_request}/mark-unread', [TcRequestController::class, 'markAsUnread'])->name('tc-requests.mark-unread');

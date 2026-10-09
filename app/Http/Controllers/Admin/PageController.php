@@ -38,12 +38,18 @@ class PageController extends Controller
 
     protected function clearPageCaches(string $slug)
     {
-        // CMSPageResolver caches keys like cms_page_{slug} and cms_page_{slug}_loc
+        // CMSPageResolver keys localized pages by locale.
         Cache::forget("cms_page_{$slug}");
         Cache::forget("cms_page_{$slug}_loc");
+        foreach (config('app.available_locales', ['en', 'fr', 'ar']) as $locale) {
+            Cache::forget("cms_page_{$slug}_{$locale}");
+        }
         
         // Clear related API endpoints
-        Cache::forget("api_global_data"); // Just in case
+        Cache::forget("api_global_data"); // legacy key
+        foreach (config('app.available_locales', ['en', 'fr', 'ar']) as $locale) {
+            Cache::forget("api_global_data_{$locale}");
+        }
         
         // Assuming HomeController, AboutController etc. might cache based on page
         switch($slug) {

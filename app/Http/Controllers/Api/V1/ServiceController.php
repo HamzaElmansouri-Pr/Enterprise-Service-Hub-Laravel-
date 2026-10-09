@@ -37,11 +37,12 @@ class ServiceController extends Controller
         $search = request()->get('search');
         $sort = request()->get('sort', 'order_index'); // order_index, created_at
         $direction = request()->get('direction', 'asc');
-        // By default API only returns active, but allow fetching all if explicitly requested (and perhaps check admin token in future)
-        $isActive = request()->get('is_active', true);
+        // This is a public endpoint. Inactive records are back-office drafts and
+        // must never be selectable with a query parameter.
+        $isActive = true;
 
         // Build dynamic cache key
-        $cacheKey = "api_services_index_p{$pageNumber}_pp{$perPage}_s{$search}_sort{$sort}_{$direction}_act{$isActive}";
+        $cacheKey = "api_services_index_p{$pageNumber}_pp{$perPage}_s{$search}_sort{$sort}_{$direction}";
 
         return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($perPage, $search, $sort, $direction, $isActive) {
             $services = $this->serviceRepository->getFilteredActive(

@@ -187,4 +187,12 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
     }
+
+    public function toggleStatus(Service $service)
+    {
+        $this->authorize('update', $service);
+        $service->update(['is_active' => !$service->is_active]);
+
+        return back()->with('success', 'Service status updated successfully.');
+    }
 }

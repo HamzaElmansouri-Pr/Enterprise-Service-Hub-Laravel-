@@ -28,6 +28,7 @@ class Project extends Model
         'category',
         'image',
         'is_active',
+        'is_featured',
         'order_index',
         'meta_title',
         'meta_description',
@@ -36,6 +37,7 @@ class Project extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
         'completion_date' => 'date',
     ];
 

@@ -36,10 +36,11 @@ class BlogController extends Controller
         $category = request()->get('category');
         $sort = request()->get('sort', 'published_at'); // published_at, title
         $direction = request()->get('direction', 'desc');
-        $isActive = request()->get('is_active', true);
+        // Drafts are only available through the authenticated back office.
+        $isActive = true;
 
         // Make cache key dynamic based on all parameters
-        $cacheKey = "api_blogs_index_p{$pageNumber}_pp{$perPage}_s{$search}_c{$category}_sort{$sort}_{$direction}_act{$isActive}";
+        $cacheKey = "api_blogs_index_p{$pageNumber}_pp{$perPage}_s{$search}_c{$category}_sort{$sort}_{$direction}";
 
         return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($perPage, $search, $category, $sort, $direction, $isActive) {
             // Note: Since BlogRepository's getFilteredActive didn't previously include category, we will fetch without it or rely on search for now, as it's a future column.

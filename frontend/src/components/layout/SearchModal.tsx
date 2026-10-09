@@ -156,7 +156,7 @@ export function SearchModal({ isOpen, onClose, locale = "en" }: SearchModalProps
                 ) : query.trim() ? (
                   <div className="py-12 text-center text-[var(--text-muted)]">
                     <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                    <p>No results found for "{query}"</p>
+                    <p>No results found for &quot;{query}&quot;</p>
                   </div>
                 ) : (
                   <div className="py-12 text-center text-[var(--text-muted)]">

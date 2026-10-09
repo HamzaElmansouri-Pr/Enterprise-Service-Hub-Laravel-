@@ -70,7 +70,6 @@ class BlogController extends Controller
     {
         $validated = $request->validate([
             'is_active' => 'sometimes|boolean',
-            'is_featured' => 'sometimes|boolean',
         ]);
 
         $blog->update($validated);
@@ -258,5 +257,16 @@ class BlogController extends Controller
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post deleted successfully!');
+    }
+
+    public function togglePublished(Blog $blog)
+    {
+        $isActive = !$blog->is_active;
+        $blog->update([
+            'is_active' => $isActive,
+            'published_at' => $isActive ? ($blog->published_at ?? now()) : $blog->published_at,
+        ]);
+
+        return back()->with('success', $isActive ? 'Blog post published.' : 'Blog post moved to draft.');
     }
 }

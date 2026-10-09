@@ -11,6 +11,8 @@ readonly class UpdateUserData
         public string $email,
         public ?string $password = null,
         public ?string $image = null,
+        public ?string $role = null,
+        public ?bool $is_active = null,
     ) {}
 
     /**
@@ -23,6 +25,8 @@ readonly class UpdateUserData
             email: $data['email'],
             password: $data['password'] ?? null,
             image: $data['image'] ?? null,
+            role: $data['role'] ?? null,
+            is_active: array_key_exists('is_active', $data) ? (bool) $data['is_active'] : null,
         );
     }
 
@@ -43,6 +47,14 @@ readonly class UpdateUserData
 
         if ($this->image !== null) {
             $result['image'] = $this->image;
+        }
+
+        if ($this->role !== null) {
+            $result['role'] = $this->role;
+        }
+
+        if ($this->is_active !== null) {
+            $result['is_active'] = $this->is_active;
         }
 
         return $result;

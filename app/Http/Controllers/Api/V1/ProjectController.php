@@ -33,11 +33,12 @@ class ProjectController extends Controller
         $search = $request->get('search', '');
         $sort = $request->get('sort', 'order_index');
         $direction = $request->get('direction', 'asc');
-        $isActive = $request->get('is_active', true);
+        // Public callers must not be able to request back-office drafts.
+        $isActive = true;
         $pageNumber = $request->get('page', 1);
         $perPage = $request->get('per_page', 12);
         
-        $cacheKey = "api_projects_index_" . md5($category . $search . $sort . $direction . $isActive . $pageNumber . $perPage);
+        $cacheKey = "api_projects_index_" . md5($category . $search . $sort . $direction . $pageNumber . $perPage);
 
         return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($request, $category, $search, $sort, $direction, $isActive, $perPage) {
             $projects = $this->projectRepository->getFilteredActive(

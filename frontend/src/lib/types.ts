@@ -213,12 +213,62 @@ export interface ContactInfoResponse {
 
 export interface AboutResponse {
   page: PageMeta & {
-    about: Record<string, string> | null;
-    stats: { label: string; value: string }[] | null;
-    values: { title: string; description: string }[] | null;
-    history: Record<string, string> | null;
-    team: { name: string; position: string; image?: string }[] | null;
+    about: AboutContent | null;
+    stats: AboutListSection<AboutStat> | null;
+    values: AboutListSection<AboutValue> | null;
+    history: AboutHistory | null;
+    team: AboutTeamSection | null;
   };
+}
+
+export interface AboutContent {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  content?: string;
+  image?: string;
+}
+
+export interface AboutListSection<T> {
+  title?: string;
+  subtitle?: string;
+  items?: T[];
+}
+
+export interface AboutStat {
+  label?: string;
+  value?: string;
+  number?: string;
+  suffix?: string;
+}
+
+export interface AboutValue {
+  title?: string;
+  description?: string;
+}
+
+export interface AboutMilestone {
+  year?: string;
+  title?: string;
+  description?: string;
+}
+
+export interface AboutHistory {
+  title?: string;
+  subtitle?: string;
+  milestones?: AboutMilestone[];
+}
+
+export interface AboutTeamMember {
+  name?: string;
+  position?: string;
+  image?: string;
+}
+
+export interface AboutTeamSection {
+  title?: string;
+  subtitle?: string;
+  members?: AboutTeamMember[];
 }
 
 export interface ApiMessageResponse {
