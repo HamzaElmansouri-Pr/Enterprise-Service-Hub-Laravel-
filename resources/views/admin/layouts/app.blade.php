@@ -853,7 +853,7 @@
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             @if(Auth::user()->image)
-                                <img src="{{ asset('storage/' . Auth::user()->image) }}" alt="Profile" 
+                                <img src="{{ resolve_image_url(Auth::user()->image) }}" alt="Profile" 
                                      class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
                             @else
                                 <i class="fas fa-user-circle"></i>

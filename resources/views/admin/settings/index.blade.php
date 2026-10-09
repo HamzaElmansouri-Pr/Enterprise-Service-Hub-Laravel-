@@ -21,7 +21,7 @@
                             <div class="card-body text-center">
                                 <div class="mb-3">
                                     @if($user && $user->image)
-                                        <img src="{{ asset('storage/' . $user->image) }}" alt="Profile Image" 
+                                        <img src="{{ resolve_image_url($user->image) }}" alt="Profile Image" 
                                              class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
                                     @else
                                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto" 
