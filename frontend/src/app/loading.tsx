@@ -28,7 +28,7 @@ export default function Loading() {
         className="mt-10 text-center"
       >
         <p className="text-[var(--text-main)] font-medium tracking-[0.2em] uppercase text-xs mb-3">
-          Nova Agency
+          ELMA Core
         </p>
         <div className="flex gap-1.5 justify-center">
           {[0, 1, 2].map((i) => (

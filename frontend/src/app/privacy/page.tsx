@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for Nova Agency.",
+  description: "Privacy Policy for ELMA Core.",
 };
 
 export default function PrivacyPage() {
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto prose prose-invert prose-lg">
           <h2>1. Introduction</h2>
           <p>
-            Welcome to Nova Agency. We are committed to protecting your personal information and your right to privacy. 
+            Welcome to ELMA Core. We are committed to protecting your personal information and your right to privacy. 
             If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us.
           </p>
           

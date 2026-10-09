@@ -17,9 +17,9 @@ class AboutPageSeeder extends Seeder
 
         if ($aboutSection) {
             $aboutSection->update([
-                'title' => 'About Nova Agency',
+                'title' => 'About ELMA Core',
                 'subtitle' => 'Pioneering Digital Transformation',
-                'content' => 'Nova Agency is a leading digital transformation consultancy dedicated to empowering enterprises through innovative technology solutions. Our team of world-class experts specializes in software development, cloud architecture, and artificial intelligence.',
+                'content' => 'ELMA Core is a leading digital transformation consultancy dedicated to empowering enterprises through innovative technology solutions. Our team of world-class experts specializes in software development, cloud architecture, and artificial intelligence.',
                 'meta_data' => [
                     'stats' => [
                         ['label' => 'Projects Delivered', 'value' => '150+'],
@@ -43,9 +43,9 @@ class AboutPageSeeder extends Seeder
             Section::create([
                 'key' => 'about-main',
                 'type' => 'page-content',
-                'title' => 'About Nova Agency',
+                'title' => 'About ELMA Core',
                 'subtitle' => 'Pioneering Digital Transformation',
-                'content' => 'Nova Agency is a leading digital transformation consultancy dedicated to empowering enterprises through innovative technology solutions. Our team of world-class experts specializes in software development, cloud architecture, and artificial intelligence.',
+                'content' => 'ELMA Core is a leading digital transformation consultancy dedicated to empowering enterprises through innovative technology solutions. Our team of world-class experts specializes in software development, cloud architecture, and artificial intelligence.',
                 'is_active' => true,
                 'meta_data' => [
                     'stats' => [

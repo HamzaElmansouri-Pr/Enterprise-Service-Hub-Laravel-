@@ -44,26 +44,24 @@ export function Navbar({ locale = "en" }: { locale?: string }) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-4" : "py-6"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "py-4" : "py-6"
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav
-          className={`flex items-center justify-between transition-all duration-500 mx-auto ${
-            scrolled
+          className={`flex items-center justify-between transition-all duration-500 mx-auto ${scrolled
               ? "elite-glass rounded-full px-6 py-3 max-w-5xl shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
               : "px-2 py-2"
-          }`}
+            }`}
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group focus-ring rounded-full" aria-label="Nova Agency Home">
+          <Link href="/" className="flex items-center gap-3 group focus-ring rounded-full" aria-label="ELMA Core Home">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--primary-glow)] transition-all duration-300 relative overflow-hidden">
-              <span className="text-white font-bold text-lg relative z-10">N</span>
+              <span className="text-white font-bold text-lg relative z-10">EC</span>
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </div>
             <span className="text-xl font-bold text-white hidden sm:block tracking-tight">
-              Nova<span className="text-[var(--primary-light)]">Agency</span>
+              ELMA<span className="text-[var(--primary-light)]">Core</span>
             </span>
           </Link>
 
@@ -75,9 +73,8 @@ export function Navbar({ locale = "en" }: { locale?: string }) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-300 focus-ring ${
-                    isActive ? "text-white" : "text-[var(--text-muted)] hover:text-white"
-                  }`}
+                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-300 focus-ring ${isActive ? "text-white" : "text-[var(--text-muted)] hover:text-white"
+                    }`}
                 >
                   {isActive && (
                     <motion.div
@@ -168,11 +165,10 @@ export function Navbar({ locale = "en" }: { locale?: string }) {
                     >
                       <Link
                         href={link.href}
-                        className={`block px-4 py-3 rounded-xl text-base font-medium transition-all focus-ring ${
-                          isActive
+                        className={`block px-4 py-3 rounded-xl text-base font-medium transition-all focus-ring ${isActive
                             ? "bg-[var(--primary-transparent)] text-white border border-[var(--primary)]/30"
                             : "text-[var(--text-muted)] hover:bg-white/5 hover:text-white"
-                        }`}
+                          }`}
                       >
                         {link.label}
                       </Link>
@@ -197,7 +193,7 @@ export function Navbar({ locale = "en" }: { locale?: string }) {
           )}
         </AnimatePresence>
       </div>
-      
+
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} locale={locale} />
     </motion.header>
   );

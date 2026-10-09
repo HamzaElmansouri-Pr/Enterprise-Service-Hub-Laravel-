@@ -1,4 +1,4 @@
-# Nova Agency CMS
+# ELMA Core CMS
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=flat&logo=laravel&logoColor=white)

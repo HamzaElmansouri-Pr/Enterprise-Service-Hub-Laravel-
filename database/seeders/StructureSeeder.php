@@ -16,7 +16,7 @@ class StructureSeeder extends Seeder
             ['slug' => 'home'],
             [
                 'title' => 'Home',
-                'meta_description' => 'Nova Agency - Complete IT Services & Technology Solutions',
+                'meta_description' => 'ELMA Core - Complete IT Services & Technology Solutions',
                 'is_active' => true,
                 'is_home' => true
             ]
@@ -44,11 +44,11 @@ class StructureSeeder extends Seeder
                 'order_index' => 2,
                 'content' => [
                     'title' => 'Deliver unforgettable customer experiences',
-                    'subtitle' => 'Why Nova Agency?',
+                    'subtitle' => 'Why ELMA Core?',
                     'description' => 'We provide top-notch technology solutions to help your business thrive in the digital age with comprehensive support and robust infrastructure.',
                     'features' => json_encode([
                         ['title' => 'Comprehensive IT Services', 'description' => 'Streamline your operations with our enterprise-grade IT solutions.'],
-                        ['title' => 'Affordable', 'description' => 'Make the most of Nova Agency tailored pricing plans.'],
+                        ['title' => 'Affordable', 'description' => 'Make the most of ELMA Core tailored pricing plans.'],
                         ['title' => 'Next-Generation', 'description' => 'Modernize your infrastructure for the future.']
                     ])
                 ]

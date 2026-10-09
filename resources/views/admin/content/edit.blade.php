@@ -80,7 +80,7 @@
                         </div>
                         
                     @elseif($contentType === 'home-features')
-                        <x-admin.translatable-input name="features_title" label="Features Section Title" :value="$content['features_title'] ?? null" placeholder="Nova Agency key benefits" />
+                        <x-admin.translatable-input name="features_title" label="Features Section Title" :value="$content['features_title'] ?? null" placeholder="ELMA Core key benefits" />
                         
                         <x-admin.translatable-textarea name="features_subtitle" label="Features Subtitle" rows="2" :value="$content['features_subtitle'] ?? null" placeholder="Flexible experiences that scale with your growth and deliver faster time to value" />
                         
@@ -89,7 +89,7 @@
                             <div id="features-list">
                                 @foreach($content['features'] ?? [
                                     ['title' => 'All-in-One CRM', 'description' => 'Automate your sales, marketing, and service in one platform.'],
-                                    ['title' => 'Affordable', 'description' => 'Make the most of Nova Agency\'s modern features & integrations.'],
+                                    ['title' => 'Affordable', 'description' => 'Make the most of ELMA Core\'s modern features & integrations.'],
                                     ['title' => 'Next-Generation', 'description' => 'Automate your sales, marketing, and service in one platform.']
                                 ] as $index => $feature)
                                 <div class="feature-item border p-3 mb-3 rounded">
@@ -124,7 +124,7 @@
                     @elseif($contentType === 'about-main' || $contentType === 'home-about')
                         <x-admin.translatable-input name="about_title" label="About Title" :value="$content['about_title'] ?? null" placeholder="Deliver unforgettable customer experiences" />
                         
-                        <x-admin.translatable-input name="about_subtitle" label="About Subtitle" :value="$content['about_subtitle'] ?? null" placeholder="Why Nova Agency crm" />
+                        <x-admin.translatable-input name="about_subtitle" label="About Subtitle" :value="$content['about_subtitle'] ?? null" placeholder="Why ELMA Core crm" />
                         
                         <div class="mb-3 mt-3">
                             <x-admin.ai-generator target="#about_description" context_target="[name='about_title[en]']" type="section_writer" label="Generate Short Description" />
@@ -209,7 +209,7 @@
                         <div class="mb-3 mt-3">
                             <x-admin.ai-generator target="[name='contact_description']" context_target="[name='contact_title[en]']" type="section_writer" label="Generate Contact Info" />
                         </div>
-                        <x-admin.translatable-textarea name="contact_description" label="Contact Description" rows="3" :value="$content['contact_description'] ?? null" placeholder="Contact us today to learn more about how Nova Agency can help your business grow." />
+                        <x-admin.translatable-textarea name="contact_description" label="Contact Description" rows="3" :value="$content['contact_description'] ?? null" placeholder="Contact us today to learn more about how ELMA Core can help your business grow." />
                         
                         <div class="row">
                             <div class="col-md-6">
@@ -247,7 +247,7 @@
                         </div>
                         
                     @elseif($contentType === 'site-info')
-                        <x-admin.translatable-input name="site_name" label="Site Name" :value="$content['site_name'] ?? null" placeholder="Nova Agency" />
+                        <x-admin.translatable-input name="site_name" label="Site Name" :value="$content['site_name'] ?? null" placeholder="ELMA Core" />
                         
                         <div class="mb-3 mt-3">
                             <x-admin.ai-generator target="[name='site_description']" context_target="[name='site_name[en]']" type="section_writer" label="Generate Site Description" />
@@ -707,7 +707,7 @@
 
                     @elseif($contentType === 'cta-simple')
                         <x-admin.translatable-input name="title" label="CTA Title" :value="$content['title'] ?? null" placeholder="Ready to Transform Your Business?" />
-                        <x-admin.translatable-textarea name="description" label="CTA Description" rows="3" :value="$content['description'] ?? null" placeholder="Let's discuss how Nova Agency can help you achieve your technology goals with our expert solutions." />
+                        <x-admin.translatable-textarea name="description" label="CTA Description" rows="3" :value="$content['description'] ?? null" placeholder="Let's discuss how ELMA Core can help you achieve your technology goals with our expert solutions." />
                         <div class="row">
                             <div class="col-md-6">
                                 <x-admin.translatable-input name="button_text" label="Button Text" :value="$content['button_text'] ?? null" placeholder="Get a Free Quote" />

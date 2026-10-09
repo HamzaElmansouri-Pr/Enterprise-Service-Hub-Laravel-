@@ -80,7 +80,7 @@ class EliteAboutSeeder extends Seeder
             'history_title' => 'Our Journey From a Startup to Now',
             'history_subtitle' => 'Milestones',
             'milestones' => json_encode([
-                ['year' => '2015', 'title' => 'The Beginning', 'description' => 'Nova Agency was founded with a vision to simplify complex IT challenges.'],
+                ['year' => '2015', 'title' => 'The Beginning', 'description' => 'ELMA Core was founded with a vision to simplify complex IT challenges.'],
                 ['year' => '2018', 'title' => 'Global Expansion', 'description' => 'We opened our first international office and expanded our service portfolio.'],
                 ['year' => '2021', 'title' => 'Innovation Award', 'description' => 'Recognized as the most innovative IT agency in the region.'],
                 ['year' => '2024', 'title' => 'Next Phase', 'description' => 'Launching our proprietary AI-driven platform for enterprise solutions.']
@@ -95,7 +95,7 @@ class EliteAboutSeeder extends Seeder
         ]);
         
         $this->updateBlocks($team, [
-            'team_title' => 'Meet the Visionaries Behind Nova Agency',
+            'team_title' => 'Meet the Visionaries Behind ELMA Core',
             'team_subtitle' => 'Our Team',
             'members' => json_encode([
                 ['name' => 'Alex Rivera', 'position' => 'CEO & Founder', 'image' => 'assets/img/team/01.jpg', 'linkedin' => '#', 'twitter' => '#'],

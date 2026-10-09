@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for Nova Agency.",
+  description: "Terms of Service for ELMA Core.",
 };
 
 export default function TermsPage() {
@@ -15,7 +15,7 @@ export default function TermsPage() {
         <div className="max-w-4xl mx-auto prose prose-invert prose-lg">
           <h2>1. Agreement to Terms</h2>
           <p>
-            These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you") and Nova Agency ("Company," "we," "us," or "our"), concerning your access to and use of the website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto.
+            These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you") and ELMA Core ("Company," "we," "us," or "our"), concerning your access to and use of the website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto.
           </p>
           
           <h2>2. Intellectual Property Rights</h2>

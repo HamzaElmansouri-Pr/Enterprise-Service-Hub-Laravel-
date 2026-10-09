@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', 'Admin Dashboard') - Nova Agency</title>
+    <title>@yield('title', 'Admin Dashboard') - ELMA Core</title>
     
     <!-- Dark Mode Init -->
     <script nonce="{{ $cspNonce ?? '' }}">
@@ -653,7 +653,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <h4>Nova Agency Admin</h4>
+            <h4>ELMA Core Admin</h4>
         </div>
         
         <nav class="nav flex-column">

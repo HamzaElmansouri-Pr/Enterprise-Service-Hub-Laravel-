@@ -44,7 +44,7 @@ class ReviewSeeder extends Seeder
                 'client_name' => 'John Smith',
                 'client_position' => 'CEO',
                 'client_company' => 'TechCorp',
-                'review_text' => 'Great work on our website! The Nova Agency team was professional and delivered exactly what we needed.',
+                'review_text' => 'Great work on our website! The ELMA Core team was professional and delivered exactly what we needed.',
                 'rating' => 5,
                 'is_active' => true,
                 'order_index' => 1,

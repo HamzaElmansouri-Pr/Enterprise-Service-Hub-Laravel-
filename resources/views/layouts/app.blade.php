@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>@yield('title', config('app.name', 'Nova Agency'))</title>
+        <title>@yield('title', config('app.name', 'ELMA Core'))</title>
 
         <!-- Template CSS Assets -->
         <link rel="shortcut icon" href="{{ asset('assets/img/favicon.svg') }}">

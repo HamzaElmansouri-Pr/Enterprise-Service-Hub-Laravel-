@@ -13,8 +13,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Nova Agency — IT Services & Technology Solutions",
-    template: "%s | Nova Agency",
+    default: "ELMA Core — IT Services & Technology Solutions",
+    template: "%s | ELMA Core",
   },
   description:
     "Professional IT services, technology solutions, and digital transformation for businesses of all sizes.",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Nova Agency",
+    siteName: "ELMA Core",
   },
 };
 

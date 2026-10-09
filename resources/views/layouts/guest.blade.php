@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Nova Agency') }} - Authentication</title>
+    <title>{{ config('app.name', 'ELMA Core') }} - Authentication</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -115,13 +115,13 @@
                 
                 <a href="/" class="inline-block transition-transform hover:scale-105">
                     @if($hasLogo)
-                        <img src="{{ asset('assets/img/logo/white-logo-3.svg') }}" alt="Nova Agency" class="h-10">
+                        <img src="{{ asset('assets/img/logo/white-logo-3.svg') }}" alt="ELMA Core" class="h-10">
                     @else
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                                 <i class="fas fa-layer-group text-white text-lg"></i>
                             </div>
-                            <span class="text-2xl font-bold text-white font-heading tracking-tight">Nova Agency</span>
+                            <span class="text-2xl font-bold text-white font-heading tracking-tight">ELMA Core</span>
                         </div>
                     @endif
                 </a>
@@ -163,7 +163,7 @@
             </div>
 
             <div class="relative z-10 text-slate-500 text-sm">
-                &copy; {{ date('Y') }} Nova Agency. All rights reserved.
+                &copy; {{ date('Y') }} ELMA Core. All rights reserved.
             </div>
         </div>
 
