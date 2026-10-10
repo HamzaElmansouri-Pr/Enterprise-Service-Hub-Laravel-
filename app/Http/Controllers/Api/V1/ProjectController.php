@@ -38,7 +38,8 @@ class ProjectController extends Controller
         $pageNumber = $request->get('page', 1);
         $perPage = $request->get('per_page', 12);
         
-        $cacheKey = "api_projects_index_" . md5($category . $search . $sort . $direction . $pageNumber . $perPage);
+        $locale = app()->getLocale();
+        $cacheKey = "api_projects_index_{$locale}_" . md5($category . $search . $sort . $direction . $pageNumber . $perPage);
 
         return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($request, $category, $search, $sort, $direction, $isActive, $perPage) {
             $projects = $this->projectRepository->getFilteredActive(
@@ -83,8 +84,9 @@ class ProjectController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
+        $locale = app()->getLocale();
         try {
-            $data = Cache::remember("api_project_{$slug}", now()->addMinutes(15), function () use ($slug) {
+            $data = Cache::remember("api_project_{$locale}_{$slug}", now()->addMinutes(15), function () use ($slug) {
                 $project = $this->projectRepository->findBySlug($slug);
                 $relatedProjects = $this->projectRepository->getRelatedProjects($project, 3);
 

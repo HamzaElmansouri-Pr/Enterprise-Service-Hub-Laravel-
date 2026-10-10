@@ -49,7 +49,8 @@ class ContactController extends Controller
             'contact_phone' => __('cms.contact.contact_phone')
         ], true);
 
-        $services = \Illuminate\Support\Facades\Cache::remember('api_contact_services', 1800, function() {
+        $locale = app()->getLocale();
+        $services = \Illuminate\Support\Facades\Cache::remember("api_contact_services_{$locale}", 1800, function() {
             return $this->serviceRepository->getActive();
         });
 

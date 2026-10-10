@@ -42,7 +42,8 @@ class ServiceController extends Controller
         $isActive = true;
 
         // Build dynamic cache key
-        $cacheKey = "api_services_index_p{$pageNumber}_pp{$perPage}_s{$search}_sort{$sort}_{$direction}";
+        $locale = app()->getLocale();
+        $cacheKey = "api_services_index_{$locale}_p{$pageNumber}_pp{$perPage}_s{$search}_sort{$sort}_{$direction}";
 
         return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($perPage, $search, $sort, $direction, $isActive) {
             $services = $this->serviceRepository->getFilteredActive(
@@ -97,8 +98,9 @@ class ServiceController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
+        $locale = app()->getLocale();
         try {
-            $data = Cache::remember("api_service_{$slug}", now()->addMinutes(15), function () use ($slug) {
+            $data = Cache::remember("api_service_{$locale}_{$slug}", now()->addMinutes(15), function () use ($slug) {
                 $service = $this->serviceRepository->findBySlug($slug);
                 $allServices = $this->serviceRepository->getActive(20);
 

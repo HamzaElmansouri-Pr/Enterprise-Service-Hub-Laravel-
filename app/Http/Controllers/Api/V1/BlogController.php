@@ -40,7 +40,8 @@ class BlogController extends Controller
         $isActive = true;
 
         // Make cache key dynamic based on all parameters
-        $cacheKey = "api_blogs_index_p{$pageNumber}_pp{$perPage}_s{$search}_c{$category}_sort{$sort}_{$direction}";
+        $locale = app()->getLocale();
+        $cacheKey = "api_blogs_index_{$locale}_p{$pageNumber}_pp{$perPage}_s{$search}_c{$category}_sort{$sort}_{$direction}";
 
         return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($perPage, $search, $category, $sort, $direction, $isActive) {
             // Note: Since BlogRepository's getFilteredActive didn't previously include category, we will fetch without it or rely on search for now, as it's a future column.
@@ -94,8 +95,9 @@ class BlogController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
+        $locale = app()->getLocale();
         try {
-            $data = Cache::remember("api_blog_{$slug}", now()->addMinutes(15), function () use ($slug) {
+            $data = Cache::remember("api_blog_{$locale}_{$slug}", now()->addMinutes(15), function () use ($slug) {
                 $blog = $this->blogRepository->findBySlug($slug);
                 $recentBlogs = $this->blogRepository->getRecent($blog, 3);
 
