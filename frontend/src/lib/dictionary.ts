@@ -69,6 +69,18 @@ export const dictionaries = {
     notFoundState: { title: "Page Not Found", message: "We're sorry, the page you requested could not be found. It may have been moved or deleted.", returnLabel: "Return to Homepage" },
     blogShow: { recentPosts: "Recent Posts" },
     serviceShow: { allServices: "All Services" },
+    servicesPage: {
+      eyebrow: "Our expertise",
+      heroTitle: "Digital services. Built around your business.",
+      heroDescription: "From websites to mobile experiences, we turn your ideas into useful digital products.",
+      primaryAction: "Discuss your project",
+      gridEyebrow: "What we do",
+      gridTitle: "The expertise to move you forward.",
+      gridDescription: "We combine strategy, design and technology to build digital solutions that help your business grow.",
+      viewService: "View service",
+      ctaTitle: "Have a project in mind?",
+      ctaDescription: "Let's find the right solution for your business.",
+    },
   },
   fr: {
     nav: {
@@ -140,6 +152,18 @@ export const dictionaries = {
     notFoundState: { title: "Page non trouvée", message: "Nous sommes désolés, la page demandée est introuvable. Elle a peut-être été déplacée ou supprimée.", returnLabel: "Retour à l'accueil" },
     blogShow: { recentPosts: "Articles Récents" },
     serviceShow: { allServices: "Tous les Services" },
+    servicesPage: {
+      eyebrow: "Notre expertise",
+      heroTitle: "Des services digitaux conçus pour votre entreprise.",
+      heroDescription: "Des sites web aux expériences mobiles, nous transformons vos idées en produits digitaux utiles.",
+      primaryAction: "Parlons de votre projet",
+      gridEyebrow: "Ce que nous faisons",
+      gridTitle: "L'expertise qui vous fait avancer.",
+      gridDescription: "Nous combinons stratégie, design et technologie pour créer des solutions digitales qui développent votre activité.",
+      viewService: "Voir le service",
+      ctaTitle: "Un projet en tête ?",
+      ctaDescription: "Trouvons la solution adaptée à votre entreprise.",
+    },
   },
   ar: {
     nav: {
@@ -211,6 +235,18 @@ export const dictionaries = {
     notFoundState: { title: "الصفحة غير موجودة", message: "عذراً، لم يتم العثور على الصفحة. ربما تم نقلها أو حذفها.", returnLabel: "العودة للرئيسية" },
     blogShow: { recentPosts: "أحدث المقالات" },
     serviceShow: { allServices: "جميع الخدمات" },
+    servicesPage: {
+      eyebrow: "خبراتنا",
+      heroTitle: "خدمات رقمية مصممة لأعمالك.",
+      heroDescription: "من المواقع الإلكترونية إلى تجارب الجوال، نحوّل أفكارك إلى منتجات رقمية مفيدة.",
+      primaryAction: "ناقش مشروعك",
+      gridEyebrow: "ما نقدمه",
+      gridTitle: "الخبرة التي تدفعك إلى الأمام.",
+      gridDescription: "نجمع بين الاستراتيجية والتصميم والتقنية لبناء حلول رقمية تساعد أعمالك على النمو.",
+      viewService: "عرض الخدمة",
+      ctaTitle: "هل لديك مشروع في ذهنك؟",
+      ctaDescription: "لنجد الحل المناسب لأعمالك.",
+    },
   }
 };
 

@@ -13,6 +13,9 @@ const isCaseStudySeed = (url?: string | null) =>
 const isAboutSeed = (url?: string | null) =>
   /\/assets\/img\/about\/01\.jpg$/.test(pathOf(url));
 
+const isServicesHeaderSeed = (url?: string | null) =>
+  /\/assets\/img\/breadcrumb-bg\.jpg$/.test(pathOf(url));
+
 export const isKnownSeededPlaceholder = (url?: string | null) =>
   isCaseStudySeed(url) || isAboutSeed(url);
 
@@ -36,6 +39,13 @@ export function shouldRenderServiceImage(url?: string | null) {
 
 export function resolveHeroPresentationImage(url?: string | null) {
   return isKnownSeededHero(url) || !url
+    ? "/images/hero-architecture-fallback.png"
+    : url;
+}
+
+/** The seeded Services header is generic artwork; real CMS uploads always win. */
+export function resolveServicesHeroImage(url?: string | null) {
+  return isServicesHeaderSeed(url) || !url
     ? "/images/hero-architecture-fallback.png"
     : url;
 }

@@ -27,7 +27,7 @@ export function PartnersBar({ partners, content }: { partners: Partner[]; conten
                 width={176}
                 height={64}
                 sizes="(max-width: 640px) 42vw, (max-width: 1024px) 27vw, 15vw"
-                className="h-10 w-auto max-w-[166px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                className="h-20 w-auto max-w-[176px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                 unoptimized={logo.includes("localhost") || logo.includes("127.0.0.1")}
               />
             ) : (
@@ -35,13 +35,13 @@ export function PartnersBar({ partners, content }: { partners: Partner[]; conten
             );
 
             return (
-              <li key={partner.id} className="flex min-h-14 items-center justify-center">
+              <li key={partner.id} className="flex min-h-20 items-center justify-center">
                 {partner.url ? (
-                  <a href={partner.url} target="_blank" rel="noreferrer" aria-label={`Visit ${partner.name}`} className="group flex min-h-12 min-w-12 items-center justify-center rounded-sm px-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]">
+                  <a href={partner.url} target="_blank" rel="noreferrer" aria-label={`Visit ${partner.name}`} className="group flex min-h-16 min-w-16 items-center justify-center rounded-sm px-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]">
                     {visual}
                   </a>
                 ) : (
-                  <div className="flex min-h-12 min-w-12 items-center justify-center px-2">{visual}</div>
+                  <div className="flex min-h-16 min-w-16 items-center justify-center px-2">{visual}</div>
                 )}
               </li>
             );
