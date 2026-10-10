@@ -65,7 +65,19 @@ class CategoryController extends Controller
             }
         }
 
-        $this->categoryRepository->create($data);
+        $category = $this->categoryRepository->create($data);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'category' => [
+                    'id' => $category->id,
+                    'name' => get_content_value($category->name),
+                    'slug' => $category->slug,
+                ],
+                'message' => 'Category created successfully.',
+            ]);
+        }
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully.');

@@ -40,6 +40,28 @@ class AdminCategoryTest extends TestCase
         $response->assertSee('Web App');
     }
 
+    public function test_admin_can_view_edit_project_with_categories_component(): void
+    {
+        $cat = Category::create([
+            'name' => ['en' => 'Design & UI'],
+            'slug' => 'design-ui',
+        ]);
+
+        $project = Project::create([
+            'title' => ['en' => 'Sample Project'],
+            'slug' => 'sample-project',
+            'description' => ['en' => 'Sample description'],
+            'is_active' => true,
+        ]);
+
+        $project->categories()->attach($cat->id);
+
+        $response = $this->actingAs($this->admin)->get(route('admin.projects.edit', $project));
+        $response->assertStatus(200);
+        $response->assertSee('Design &amp; UI', false);
+        $response->assertSee('category-pill-btn', false);
+    }
+
     public function test_admin_can_create_category(): void
     {
         $response = $this->actingAs($this->admin)->post(route('admin.categories.store'), [

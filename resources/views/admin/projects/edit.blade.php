@@ -27,33 +27,7 @@
                             @error('client') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
-                            <input type="hidden" name="categories_submitted" value="1">
-                            <label class="form-label d-flex justify-content-between align-items-center mb-1">
-                                <span>Categories (Optional)</span>
-                                <a href="{{ route('admin.categories.create') }}" target="_blank" class="small text-primary text-decoration-none">
-                                    <i class="fas fa-plus-circle me-1"></i>New Category
-                                </a>
-                            </label>
-                            <div class="border rounded p-2 bg-light-subtle" style="max-height: 140px; overflow-y: auto;">
-                                @php
-                                    $selectedCategoryIds = old('category_ids', $project->categories->pluck('id')->toArray());
-                                @endphp
-                                @forelse($categories as $cat)
-                                    <div class="form-check mb-1">
-                                        <input class="form-check-input" type="checkbox" name="category_ids[]" value="{{ $cat->id }}" id="cat_{{ $cat->id }}"
-                                            {{ in_array($cat->id, $selectedCategoryIds) ? 'checked' : '' }}>
-                                        <label class="form-check-label small" for="cat_{{ $cat->id }}">
-                                            {{ get_content_value($cat->name) }}
-                                        </label>
-                                    </div>
-                                @empty
-                                    <div class="text-muted small p-1">
-                                        No categories yet. <a href="{{ route('admin.categories.create') }}" target="_blank">Create one</a>.
-                                    </div>
-                                @endforelse
-                            </div>
-                            <div class="form-text small">Select one or more categories, or leave unselected.</div>
-                            @error('category_ids') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            <x-admin.category-multiselect :categories="$categories" :selected="$project->categories->pluck('id')->toArray()" />
                         </div>
                     </div>
 
