@@ -129,6 +129,14 @@ export interface PageMeta {
   grid_eyebrow?: string | null;
   grid_title?: string | null;
   grid_description?: string | null;
+  configured_fields?: string[];
+}
+
+export interface Pagination {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
 }
 
 export interface CMSData {
@@ -208,6 +216,7 @@ export interface ServiceDetailResponse {
 export interface ProjectsResponse {
   projects: Project[];
   categories: string[];
+  pagination: Pagination;
   page: PageMeta;
 }
 
@@ -218,12 +227,7 @@ export interface ProjectDetailResponse {
 
 export interface BlogsResponse {
   blogs: Blog[];
-  pagination: {
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-  };
+  pagination: Pagination;
   recent_blogs: Blog[];
   page: PageMeta;
 }

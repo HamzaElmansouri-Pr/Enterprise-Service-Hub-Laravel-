@@ -50,6 +50,13 @@ export function resolveServicesHeroImage(url?: string | null) {
     : url;
 }
 
+/** The Projects header shares the CMS image contract used by Services. */
+export function resolveProjectsHeroImage(url?: string | null) {
+  return isServicesHeaderSeed(url) || !url
+    ? "/images/hero-architecture-fallback.png"
+    : url;
+}
+
 /** Legacy seed content may retain the former demo brand in a CMS text field. */
 export function isLegacyBrandCopy(value?: string | null) {
   return /\b(?:nova agency|supremeit)\b/i.test(value || "");

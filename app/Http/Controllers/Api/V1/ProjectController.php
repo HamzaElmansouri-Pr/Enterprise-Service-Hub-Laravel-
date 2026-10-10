@@ -59,6 +59,28 @@ class ProjectController extends Controller
                 'image' => __('cms.projects.image'),
             ], true);
 
+            // The Projects page header is a normal CMS section. Expose every
+            // existing page-header field so the public frontend can render the
+            // backoffice values without creating a second configuration path.
+            // The list also lets the frontend distinguish an intentionally
+            // blank optional field from an older section that never had it.
+            $headerFields = [
+                'eyebrow',
+                'title',
+                'breadcrumb_title',
+                'description',
+                'button_text',
+                'button_url',
+                'grid_eyebrow',
+                'grid_title',
+                'grid_description',
+                'image',
+            ];
+            $projectsHeader = $page->model?->sections->firstWhere('type', 'projects-page-header');
+            $configuredFields = $projectsHeader
+                ? $projectsHeader->contentBlocks->pluck('key')->intersect($headerFields)->values()->all()
+                : [];
+
             return response()->json([
                 'projects' => ProjectResource::collection($projects),
                 'pagination' => [
@@ -74,6 +96,14 @@ class ProjectController extends Controller
                     'image' => $page->image ?? null,
                     'meta_title' => $page->model->meta_title ?? null,
                     'meta_description' => $page->model->meta_description ?? null,
+                    'eyebrow' => $page->eyebrow ?? null,
+                    'description' => $page->description ?? null,
+                    'button_text' => $page->button_text ?? null,
+                    'button_url' => $page->button_url ?? null,
+                    'grid_eyebrow' => $page->grid_eyebrow ?? null,
+                    'grid_title' => $page->grid_title ?? null,
+                    'grid_description' => $page->grid_description ?? null,
+                    'configured_fields' => $configuredFields,
                 ],
             ]);
         });

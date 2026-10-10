@@ -151,10 +151,14 @@ export async function getService(slug: string): Promise<ServiceDetailResponse> {
 export async function getProjects(params?: {
   category?: string;
   search?: string;
+  page?: number;
+  perPage?: number;
 }): Promise<ProjectsResponse> {
   const searchParams = new URLSearchParams();
   if (params?.category) searchParams.set('category', params.category);
   if (params?.search) searchParams.set('search', params.search);
+  if (params?.page && params.page > 1) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('per_page', String(params.perPage));
   const qs = searchParams.toString();
   return fetchApi<ProjectsResponse>(`/projects${qs ? `?${qs}` : ''}`);
 }
