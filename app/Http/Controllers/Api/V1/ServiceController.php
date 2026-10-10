@@ -73,6 +73,13 @@ class ServiceController extends Controller
                     'image' => $page->image ?? null,
                     'meta_title' => $page->model->meta_title ?? null,
                     'meta_description' => $page->model->meta_description ?? null,
+                    'eyebrow' => $page->eyebrow ?? null,
+                    'description' => $page->description ?? null,
+                    'button_text' => $page->button_text ?? null,
+                    'button_url' => $page->button_url ?? null,
+                    'grid_eyebrow' => $page->grid_eyebrow ?? null,
+                    'grid_title' => $page->grid_title ?? null,
+                    'grid_description' => $page->grid_description ?? null,
                 ],
                 'jsonLd' => [
                     $this->jsonLd->serviceList($services),

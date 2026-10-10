@@ -44,6 +44,10 @@
                     @method('PUT')
                     
                     {{-- Global Section Toggle --}}
+                    @php
+                        $isToggleable = !in_array($contentType, ['site-info', 'global-navigation', 'theme-settings', 'footer-content', 'contact-info']) && !str_contains($contentType, 'page-header');
+                    @endphp
+                    @if($isToggleable)
                     @php($section = \App\Models\Section::where('type', $contentType)->first())
                     <div class="mb-4 p-3 bg-light rounded border">
                         <div class="form-check form-switch">
@@ -53,6 +57,7 @@
                         </div>
                         <small class="text-muted">Turn off to hide this entire section from the frontend.</small>
                     </div>
+                    @endif
                     @if($contentType === 'home-hero')
                         <x-admin.translatable-input name="hero_title" label="Hero Title" :value="$content['hero_title'] ?? null" placeholder="The complete CRM solution built for your success" />
                         
@@ -806,19 +811,32 @@
                         </div>
 
                     @elseif(str_contains($contentType, 'page-header'))
-                        <div class="mb-4">
-                            <label for="title" class="form-label">Page Title</label>
-                            <input type="text" class="form-control" id="title" name="title" 
-                                   value="{{ get_content_value($content['title'] ?? null) ?: '' }}">
+                        <x-admin.translatable-input name="eyebrow" label="Eyebrow (Optional)" :value="$content['eyebrow'] ?? null" placeholder="e.g. Our expertise" />
+                        
+                        <x-admin.translatable-input name="title" label="Page Title" :value="$content['title'] ?? null" placeholder="e.g. Digital services." />
+                        
+                        <x-admin.translatable-textarea name="breadcrumb_title" label="Breadcrumb Title (Supports HTML)" rows="2" :value="$content['breadcrumb_title'] ?? null" />
+                        <small class="text-muted d-block mb-3">Example: Our &lt;span&gt;Portfolio&lt;/span&gt;</small>
+                        
+                        <x-admin.translatable-textarea name="description" label="Header Description (Optional)" rows="3" :value="$content['description'] ?? null" placeholder="e.g. From websites to mobile experiences..." />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <x-admin.translatable-input name="button_text" label="CTA Button Text (Optional)" :value="$content['button_text'] ?? null" placeholder="e.g. Discuss your project" />
+                            </div>
+                            <div class="col-md-6">
+                                <x-admin.translatable-input name="button_url" label="CTA Button URL (Optional)" :value="$content['button_url'] ?? null" placeholder="e.g. /contact" />
+                            </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="breadcrumb_title" class="form-label">Breadcrumb Title (Supports HTML)</label>
-                            <textarea class="form-control" id="breadcrumb_title" name="breadcrumb_title" rows="2">{{ get_content_value($content['breadcrumb_title'] ?? null) ?: '' }}</textarea>
-                            <small class="text-muted">Example: Our &lt;span&gt;Portfolio&lt;/span&gt;</small>
+                        <div class="mb-4 mt-3 pt-3 border-top">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-layer-group me-1 text-primary"></i> Page Section Text (Optional)</h6>
+                            <x-admin.translatable-input name="grid_eyebrow" label="Section Eyebrow" :value="$content['grid_eyebrow'] ?? null" placeholder="e.g. What we do" />
+                            <x-admin.translatable-input name="grid_title" label="Section Title" :value="$content['grid_title'] ?? null" placeholder="e.g. The expertise to move you forward." />
+                            <x-admin.translatable-textarea name="grid_description" label="Section Description" rows="2" :value="$content['grid_description'] ?? null" placeholder="e.g. We combine strategy, design and technology..." />
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-4 mt-3 pt-3 border-top">
                             <label class="form-label">Header Background Image</label>
                             <input type="file" class="form-control" name="image_file" accept="image/*">
                             @if(!empty($content['image']))

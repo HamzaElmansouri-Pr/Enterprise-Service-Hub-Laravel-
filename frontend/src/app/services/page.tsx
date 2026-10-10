@@ -26,9 +26,16 @@ export default async function ServicesPage() {
   const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
   const dictionary = getDictionary(locale);
   const t = dictionary.servicesPage;
-  const pageTitle = data.page.title?.trim();
+  const pageTitle = data.page.title?.trim() || t.heroTitle;
   const pageBreadcrumb = data.page.breadcrumb_title?.trim() || pageTitle || dictionary.nav.services;
   const heroImage = resolveServicesHeroImage(data.page.image);
+  const eyebrow = data.page.eyebrow?.trim() || t.eyebrow;
+  const description = data.page.description?.trim() || t.heroDescription;
+  const buttonText = data.page.button_text?.trim() || t.primaryAction;
+  const buttonUrl = data.page.button_url?.trim() || "/contact";
+  const gridEyebrow = data.page.grid_eyebrow?.trim() || t.gridEyebrow;
+  const gridTitle = data.page.grid_title?.trim() || t.gridTitle;
+  const gridDescription = data.page.grid_description?.trim() || t.gridDescription;
 
   return (
     <>
@@ -53,10 +60,10 @@ export default async function ServicesPage() {
           </nav>
 
           <div className="mt-10 max-w-[720px]">
-            <span className="eyebrow eyebrow--light">{t.eyebrow}</span>
-            <h1 className="max-w-[680px] text-[clamp(3rem,5.2vw,4rem)] font-extrabold leading-[.98] tracking-[-.065em] text-white">{t.heroTitle}</h1>
-            <p className="mt-6 max-w-xl text-[1.05rem] leading-7 text-slate-300 sm:text-[1.12rem]">{t.heroDescription}</p>
-            <Link href="/contact" className="button-primary mt-8">{t.primaryAction} <span aria-hidden="true">→</span></Link>
+            {eyebrow && <span className="eyebrow eyebrow--light">{eyebrow}</span>}
+            <h1 className="max-w-[680px] text-[clamp(3rem,5.2vw,4rem)] font-extrabold leading-[.98] tracking-[-.065em] text-white">{pageTitle}</h1>
+            {description && <p className="mt-6 max-w-xl text-[1.05rem] leading-7 text-slate-300 sm:text-[1.12rem]">{description}</p>}
+            {buttonText && <Link href={buttonUrl} className="button-primary mt-8">{buttonText} <span aria-hidden="true">→</span></Link>}
           </div>
         </div>
       </section>
@@ -65,10 +72,10 @@ export default async function ServicesPage() {
         <div className="site-container">
           <div className="grid gap-6 border-b border-slate-200 pb-9 lg:grid-cols-[1.45fr_.55fr] lg:items-end lg:gap-12">
             <div>
-              <span className="eyebrow">{t.gridEyebrow}</span>
-              <h2 className="max-w-3xl text-[clamp(2.15rem,3.6vw,3.55rem)] font-extrabold leading-[1.02] tracking-[-.055em] text-[var(--ink)]">{t.gridTitle}</h2>
+              <span className="eyebrow">{gridEyebrow}</span>
+              <h2 className="max-w-3xl text-[clamp(2.15rem,3.6vw,3.55rem)] font-extrabold leading-[1.02] tracking-[-.055em] text-[var(--ink)]">{gridTitle}</h2>
             </div>
-            <p className="max-w-sm text-[.98rem] leading-7 text-[var(--muted)]">{t.gridDescription}</p>
+            <p className="max-w-sm text-[.98rem] leading-7 text-[var(--muted)]">{gridDescription}</p>
           </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-2">

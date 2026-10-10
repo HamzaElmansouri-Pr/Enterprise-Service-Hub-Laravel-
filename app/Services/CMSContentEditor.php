@@ -213,28 +213,9 @@ class CMSContentEditor
     /** Clear every response cache affected by a CMS section mutation. */
     public function invalidateSectionCaches(Section $section): void
     {
-        $pageSlug = $section->page?->slug;
-        $locales = config('app.available_locales', ['en', 'fr', 'ar']);
-
-        if ($pageSlug) {
-            cache()->forget("cms_page_{$pageSlug}"); // legacy key
-            cache()->forget("cms_page_{$pageSlug}_loc"); // legacy key
-            foreach ($locales as $locale) {
-                cache()->forget("cms_page_{$pageSlug}_{$locale}");
-            }
-        }
-
-        if ($pageSlug === 'home') {
-            cache()->forget('api_home_data');
-        }
-
-        if (in_array($section->type, ['site-info', 'footer-content', 'global-navigation', 'theme-settings'], true)) {
-            cache()->forget('site_info');
-            cache()->forget('api_global_data'); // legacy key
-            foreach ($locales as $locale) {
-                cache()->forget("api_global_data_{$locale}");
-            }
-        }
+        // Flush the entire cache to ensure all dynamic API endpoints (like /api/v1/services) 
+        // with complex query-based cache keys are fully refreshed when CMS content changes.
+        \Illuminate\Support\Facades\Cache::flush();
     }
 
     private function parseType(string $type): array

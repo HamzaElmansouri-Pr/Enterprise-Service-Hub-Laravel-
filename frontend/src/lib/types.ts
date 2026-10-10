@@ -122,6 +122,13 @@ export interface PageMeta {
   image?: string | null;
   meta_title?: string | null;
   meta_description?: string | null;
+  eyebrow?: string | null;
+  description?: string | null;
+  button_text?: string | null;
+  button_url?: string | null;
+  grid_eyebrow?: string | null;
+  grid_title?: string | null;
+  grid_description?: string | null;
 }
 
 export interface CMSData {

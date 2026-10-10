@@ -80,8 +80,15 @@ class CMSPageResolver
             case 'services-page-header':
             case 'blog-page-header':
             case 'contact-page-header':
+                $data->eyebrow = $section->getContent('eyebrow') ?: ($data->eyebrow ?? '');
                 $data->title = $section->getContent('title') ?: ($data->title ?? '');
                 $data->breadcrumb_title = $section->getContent('breadcrumb_title') ?: ($section->getContent('title') ?: ($data->breadcrumb_title ?? ''));
+                $data->description = $section->getContent('description') ?: ($data->description ?? '');
+                $data->button_text = $section->getContent('button_text') ?: ($data->button_text ?? '');
+                $data->button_url = $section->getContent('button_url') ?: ($data->button_url ?? '');
+                $data->grid_eyebrow = $section->getContent('grid_eyebrow') ?: ($data->grid_eyebrow ?? '');
+                $data->grid_title = $section->getContent('grid_title') ?: ($data->grid_title ?? '');
+                $data->grid_description = $section->getContent('grid_description') ?: ($data->grid_description ?? '');
                 $img = $section->getContent('image');
                 if ($img) $data->image = resolve_image_url($img);
                 break;
