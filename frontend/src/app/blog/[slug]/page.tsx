@@ -1,74 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
 import { getBlog } from "@/lib/api";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { CommentSection } from "@/components/blog/CommentSection";
-import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
-import { cookies } from "next/headers";
-import { getDictionary, Locale } from "@/lib/dictionary";
 
 interface Props { params: Promise<{ slug: string }> }
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const data = await getBlog(slug);
-  return {
-    title: data.blog.meta_title || data.blog.title,
-    description: data.blog.meta_description || data.blog.excerpt || "",
-    openGraph: data.blog.og_image ? { images: [{ url: data.blog.og_image }] } : undefined,
-  };
-}
-
-export default async function BlogDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const { blog, recent_blogs } = await getBlog(slug);
-  const cookieStore = await cookies();
-  const locale = (cookieStore.get("NEXT_LOCALE")?.value || "en") as Locale;
-  const t = getDictionary(locale);
-
-  return (
-    <>
-      <Breadcrumb title={blog.title} items={[{ label: "Blog", href: "/blog" }, { label: blog.title }]} />
-
-      <section className="section-padding bg-[var(--bg-dark)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <article className="lg:col-span-2">
-              {blog.image && <div className="rounded-2xl overflow-hidden mb-8"><Image src={blog.image} alt={blog.title} width={1200} height={800} className="w-full h-auto" /></div>}
-
-              <div className="flex flex-wrap items-center gap-4 mb-8">
-                {blog.published_at && <span className="text-[var(--text-muted)] text-sm">{new Date(blog.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>}
-                {blog.category && <span className="px-3 py-1 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] text-xs font-medium">{blog.category}</span>}
-                {blog.author && <span className="text-[var(--text-muted)] text-sm">by {blog.author.name}</span>}
-              </div>
-
-              <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content || "") }} />
-
-              <CommentSection modelType="blog" modelId={blog.slug} />
-            </article>
-
-            <aside className="lg:col-span-1">
-              <div className="glass-card p-6 sticky top-28">
-                <h3 className="text-lg font-bold text-white mb-6">{t.blogShow.recentPosts}</h3>
-                <div className="space-y-4">
-                  {recent_blogs.map((rb) => (
-                    <Link key={rb.id} href={`/blog/${rb.slug}`} className="group flex gap-4 items-start">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--bg-card)] relative">
-                        {rb.image ? <Image src={rb.image} alt="" fill sizes="64px" className="object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10" />}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-white group-hover:text-[var(--primary-light)] transition-colors line-clamp-2">{rb.title}</h4>
-                        {rb.published_at && <p className="text-[var(--text-muted)] text-xs mt-1">{new Date(rb.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const { slug } = await params; const { blog } = await getBlog(slug); return { title: blog.meta_title || blog.title, description: blog.meta_description || blog.excerpt || "", openGraph: blog.og_image ? { images: [{ url: blog.og_image }] } : undefined }; }
+export default async function BlogDetailPage({ params }: Props) { const { slug } = await params; const { blog, recent_blogs: recent } = await getBlog(slug); return <><Breadcrumb title={blog.title} items={[{ label: "Insights", href: "/blog" }, { label: blog.title }]} /><section className="page-section bg-white"><div className="site-container grid gap-12 lg:grid-cols-[1fr_300px]"><article>{blog.image && <div className="relative mb-8 aspect-[1.8] overflow-hidden bg-slate-200"><Image src={blog.image} alt={blog.title} fill sizes="(max-width:1024px) 100vw, 70vw" className="object-cover" unoptimized={blog.image.includes("localhost") || blog.image.includes("127.0.0.1")} /></div>}<div className="mb-8 flex flex-wrap items-center gap-3 text-xs text-[var(--muted)]">{blog.category && <span className="font-extrabold uppercase tracking-[.14em] text-[var(--blue)]">{blog.category}</span>}{blog.published_at && <span>{new Date(blog.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>}{blog.author && <span>By {blog.author.name}</span>}</div><div className="rich-content text-[1.05rem]" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content || blog.excerpt || "") }} /><CommentSection modelType="blog" modelId={blog.slug} /></article><aside><div className="sticky top-24 border-t-2 border-[var(--blue)] bg-[var(--mist)] p-6"><p className="text-xs font-extrabold uppercase tracking-[.15em] text-[var(--blue)]">Keep reading</p><h2 className="mt-2 text-xl font-extrabold text-[var(--ink)]">Recent insights</h2><div className="mt-5 space-y-5">{recent.map((item) => <Link key={item.id} href={`/blog/${item.slug}`} className="group block"><p className="text-xs font-extrabold uppercase tracking-[.13em] text-[var(--blue)]">{item.category || "Insight"}</p><h3 className="mt-1 text-sm font-bold leading-5 text-[var(--ink)] group-hover:text-[var(--blue)]">{item.title}</h3></Link>)}</div></div></aside></div></section></>; }

@@ -49,7 +49,7 @@ export function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-[var(--text-muted)] hover:text-white hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
+        className="flex items-center gap-1 px-2 py-2 text-[.68rem] font-bold text-current opacity-90 transition-opacity hover:opacity-100"
         aria-label="Change language"
       >
         <Globe className="w-4 h-4" />
@@ -63,7 +63,7 @@ export function LanguageSwitcher() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-32 elite-glass rounded-xl p-2 shadow-2xl border border-white/10 z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-32 rounded-md border border-slate-200 bg-white p-1.5 text-[var(--ink)] shadow-xl z-50 overflow-hidden"
           >
             <div className="flex flex-col space-y-1">
               {languages.map((lang) => (
@@ -72,8 +72,8 @@ export function LanguageSwitcher() {
                   onClick={() => switchLanguage(lang.code)}
                   className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                     currentLang.code === lang.code
-                      ? "bg-[var(--primary-transparent)] text-white font-medium"
-                      : "text-[var(--text-muted)] hover:bg-white/10 hover:text-white"
+                      ? "bg-[var(--blue-pale)] text-[var(--blue)] font-bold"
+                      : "text-[var(--ink-soft)] hover:bg-slate-50 hover:text-[var(--ink)]"
                   }`}
                 >
                   {lang.name}

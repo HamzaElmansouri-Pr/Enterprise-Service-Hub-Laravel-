@@ -127,8 +127,10 @@
 
         $globalModules = [
             ['id' => 'site-info', 'title' => 'Branding', 'desc' => 'Logo, Favicon & SEO', 'icon' => 'fa-fingerprint', 'category' => 'Global'],
+            ['id' => 'global-navigation', 'title' => 'Navigation', 'desc' => 'Header links and primary CTA', 'icon' => 'fa-bars', 'category' => 'Global'],
             ['id' => 'contact-info', 'title' => 'Contact Hub', 'desc' => 'Support contact details', 'icon' => 'fa-headset', 'category' => 'Global'],
             ['id' => 'footer-content', 'title' => 'Footer', 'desc' => 'Site bottom information', 'icon' => 'fa-shoe-prints', 'category' => 'Global'],
+            ['id' => 'theme-settings', 'title' => 'Theme', 'desc' => 'Approved public color controls', 'icon' => 'fa-palette', 'category' => 'Global'],
         ];
 
         // Sort homeSections by order_index from the database
@@ -347,4 +349,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
-

@@ -87,9 +87,13 @@ class CMSPageResolver
                 break;
 
             case 'contact-info':
+                $data->contact_title = $section->getContent('contact_title') ?: ($data->contact_title ?? '');
+                $data->contact_description = $section->getContent('contact_description') ?: ($data->contact_description ?? '');
                 $data->contact_address = $section->getContent('contact_address') ?: ($data->contact_address ?? '');
                 $data->contact_email = $section->getContent('contact_email') ?: ($data->contact_email ?? '');
                 $data->contact_phone = $section->getContent('contact_phone') ?: ($data->contact_phone ?? '');
+                $logo = $section->getContent('contact_logo');
+                if ($logo) $data->contact_logo = resolve_image_url($logo);
                 break;
 
             case 'cta-simple':
@@ -98,6 +102,9 @@ class CMSPageResolver
                 $data->cta->subtitle = $section->getContent('subtitle') ?: ($data->cta->subtitle ?? '');
                 $data->cta->description = $section->getContent('description') ?: ($data->cta->description ?? '');
                 $data->cta->button_text = $section->getContent('button_text') ?: ($data->cta->button_text ?? '');
+                $data->cta->button_url = $section->getContent('button_url') ?: ($data->cta->button_url ?? '/contact');
+                $data->cta->eyebrow = $section->getContent('eyebrow') ?: ($data->cta->eyebrow ?? '');
+                $data->cta->visual_variant = $section->getContent('visual_variant') ?: ($data->cta->visual_variant ?? 'primary');
                 break;
 
             case 'services-list':
@@ -111,11 +118,15 @@ class CMSPageResolver
             case 'reviews-list':
                 $data->reviews_title = $section->getContent('title') ?: ($data->reviews_title ?? '');
                 $data->reviews_subtitle = $section->getContent('subtitle') ?: ($data->reviews_subtitle ?? '');
+                $data->reviews_eyebrow = $section->getContent('eyebrow') ?: ($data->reviews_eyebrow ?? '');
                 break;
 
             case 'blog-list':
                 $data->blog_title = $section->getContent('title') ?: ($data->blog_title ?? '');
                 $data->blog_subtitle = $section->getContent('subtitle') ?: ($data->blog_subtitle ?? '');
+                $data->blog_eyebrow = $section->getContent('eyebrow') ?: ($data->blog_eyebrow ?? '');
+                $data->blog_button_text = $section->getContent('button_text') ?: ($data->blog_button_text ?? '');
+                $data->blog_button_url = $section->getContent('button_url') ?: ($data->blog_button_url ?? '');
                 break;
 
             case 'about-stats':
@@ -132,6 +143,14 @@ class CMSPageResolver
 
             case 'about-team':
                 $this->mapTeamSection($section, $data);
+                break;
+
+            case 'home-partners':
+                $data->partners = (object) [
+                    'eyebrow' => $section->getContent('eyebrow'),
+                    'title' => $section->getContent('partners_title'),
+                    'subtitle' => $section->getContent('partners_subtitle'),
+                ];
                 break;
         }
     }
@@ -158,6 +177,12 @@ class CMSPageResolver
         $data->about->subtitle = $section->getContent('about_subtitle') ?: ($section->getContent('subtitle') ?: ($data->about->subtitle ?? ''));
         $data->about->description = $section->getContent('about_description') ?: ($section->getContent('description') ?: ($data->about->description ?? ''));
         $data->about->content = $section->getContent('about_content') ?: ($section->getContent('content') ?: ($data->about->content ?? ''));
+        $data->about->eyebrow = $section->getContent('eyebrow') ?: ($data->about->eyebrow ?? '');
+        $data->about->highlight_value = $section->getContent('highlight_value') ?: ($data->about->highlight_value ?? '');
+        $data->about->highlight_suffix = $section->getContent('highlight_suffix') ?: ($data->about->highlight_suffix ?? '');
+        $data->about->highlight_label = $section->getContent('highlight_label') ?: ($data->about->highlight_label ?? '');
+        $data->about->button_text = $section->getContent('button_text') ?: ($data->about->button_text ?? '');
+        $data->about->button_url = $section->getContent('button_url') ?: ($data->about->button_url ?? '');
         
         $img = $section->getContent('about_image') ?: $section->getContent('image');
         if ($img) $data->about->image = resolve_image_url($img);
@@ -232,6 +257,9 @@ class CMSPageResolver
     {
         $data->projects_title = $section->getContent('title');
         $data->projects_subtitle = $section->getContent('subtitle');
+        $data->projects_eyebrow = $section->getContent('eyebrow');
+        $data->projects_button_text = $section->getContent('button_text');
+        $data->projects_button_url = $section->getContent('button_url');
         $featuredJson = $section->getContent('featured_projects');
         if ($featuredJson) {
             $data->featured_projects = json_decode($featuredJson, true);
@@ -242,6 +270,9 @@ class CMSPageResolver
     {
         $data->services_title = $section->getContent('title');
         $data->services_subtitle = $section->getContent('subtitle');
+        $data->services_eyebrow = $section->getContent('eyebrow');
+        $data->services_button_text = $section->getContent('button_text');
+        $data->services_button_url = $section->getContent('button_url');
         $featuredJson = $section->getContent('featured_services');
         if ($featuredJson) {
             $data->featured_services = json_decode($featuredJson, true);

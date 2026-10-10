@@ -11,8 +11,8 @@ export default function PrivacyPage() {
     <>
       <Breadcrumb title="Privacy Policy" items={[{ label: "Privacy Policy" }]} />
       
-      <section className="section-padding bg-[var(--bg-dark)]">
-        <div className="max-w-4xl mx-auto prose prose-invert prose-lg">
+      <section className="page-section bg-white">
+        <div className="site-container max-w-4xl rich-content text-[1.05rem]">
           <h2>1. Introduction</h2>
           <p>
             Welcome to ELMA Core. We are committed to protecting your personal information and your right to privacy. 

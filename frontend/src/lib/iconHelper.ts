@@ -1,24 +1,20 @@
-const serviceIcons: Record<string, string> = {
-  default: "⚡",
-  web: "🌐",
-  mobile: "📱",
-  cloud: "☁️",
-  security: "🔒",
-  consulting: "💡",
-  data: "📊",
-  design: "🎨",
-};
+export type ServiceIconName = "default" | "web" | "mobile" | "cloud" | "security" | "consulting" | "data" | "design" | "code" | "settings" | "marketing";
 
-export function getIcon(icon: string | null) {
-  if (!icon) return serviceIcons.default;
-  if (icon.length <= 4) return icon;
-  if (icon.includes("setting")) return "⚙️";
-  if (icon.includes("web") || icon.includes("globe")) return "🌐";
-  if (icon.includes("cloud")) return "☁️";
-  if (icon.includes("shield") || icon.includes("security")) return "🔒";
-  if (icon.includes("code")) return "💻";
-  if (icon.includes("chart") || icon.includes("data")) return "📊";
-  if (icon.includes("design") || icon.includes("paint")) return "🎨";
-  if (icon.includes("mobile") || icon.includes("phone")) return "📱";
-  return serviceIcons.default;
+/**
+ * CMS icon values are intentionally permissive. Map the familiar values to a
+ * single, consistent outline system instead of rendering browser-dependent emoji.
+ */
+export function getServiceIconName(icon: string | null): ServiceIconName {
+  const value = icon?.toLowerCase().trim() || "";
+  if (value.includes("setting") || value.includes("infrastructure")) return "settings";
+  if (value.includes("web") || value.includes("globe")) return "web";
+  if (value.includes("cloud")) return "cloud";
+  if (value.includes("shield") || value.includes("security")) return "security";
+  if (value.includes("code") || value.includes("develop")) return "code";
+  if (value.includes("chart") || value.includes("data") || value.includes("analytic")) return "data";
+  if (value.includes("design") || value.includes("paint") || value.includes("ui")) return "design";
+  if (value.includes("mobile") || value.includes("phone")) return "mobile";
+  if (value.includes("market") || value.includes("bullhorn") || value.includes("megaphone")) return "marketing";
+  if (value.includes("consult") || value.includes("strategy")) return "consulting";
+  return "default";
 }

@@ -228,7 +228,7 @@ class CMSContentEditor
             cache()->forget('api_home_data');
         }
 
-        if (in_array($section->type, ['site-info', 'footer-content'], true)) {
+        if (in_array($section->type, ['site-info', 'footer-content', 'global-navigation', 'theme-settings'], true)) {
             cache()->forget('site_info');
             cache()->forget('api_global_data'); // legacy key
             foreach ($locales as $locale) {

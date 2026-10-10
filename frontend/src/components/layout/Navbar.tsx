@@ -1,212 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { Search } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { SearchModal } from "./SearchModal";
-
 import { getDictionary } from "@/lib/dictionary";
+import type { GlobalNavigation, NavigationItem, SiteInfo } from "@/lib/types";
 
-export function Navbar({ locale = "en", siteInfo = {} }: { locale?: string, siteInfo?: Record<string, string> }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+const defaultLinks = (locale: string) => {
+  const nav = getDictionary(locale).nav;
+  return [
+    { href: "/", label: nav.home, external: false }, { href: "/services", label: nav.services, external: false },
+    { href: "/projects", label: nav.projects, external: false }, { href: "/about", label: nav.about, external: false },
+    { href: "/blog", label: nav.blog, external: false }, { href: "/contact", label: nav.contact, external: false },
+  ];
+};
+
+function labelFor(item: NavigationItem, locale: string): string {
+  return typeof item.label === "string" ? item.label : item.label[locale] || item.label.en || "Navigation link";
+}
+
+export function Navbar({ locale = "en", siteInfo, navigation }: { locale?: string; siteInfo?: SiteInfo; navigation?: GlobalNavigation }) {
+  const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const t = getDictionary(locale).nav;
-
-  const navLinks = [
-    { href: "/", label: t.home },
-    { href: "/about", label: t.about },
-    { href: "/services", label: t.services },
-    { href: "/projects", label: t.projects },
-    { href: "/blog", label: t.blog },
-    { href: "/contact", label: t.contact },
-  ];
-
+  const configuredLinks = (navigation?.navigation || [])
+    .filter((item) => item.location !== "footer-company" && item.location !== "footer-services" && item.is_active !== false)
+    .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+    .map((item) => ({ href: item.url, label: labelFor(item, locale), external: item.open_in_new_tab }));
+  const links = configuredLinks.length ? configuredLinks : defaultLinks(locale);
+  const cta = { label: navigation?.header_cta_label || getDictionary(locale).nav.getStarted, href: navigation?.header_cta_url || "/contact" };
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 18);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsOpen(false);
-  }, [pathname]);
+  const brand = siteInfo?.site_name || "ELMACORE";
 
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "py-4" : "py-6"
-        }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav
-          className={`flex items-center justify-between transition-all duration-500 mx-auto ${scrolled
-              ? "elite-glass rounded-full px-6 py-3 max-w-5xl shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
-              : "px-2 py-2"
-            }`}
-        >
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group focus-ring rounded-full" aria-label={siteInfo.site_name || "ELMA Core Home"}>
-            {siteInfo.logo ? (
-              <img src={siteInfo.logo} alt={siteInfo.site_name || "Logo"} className="h-10 w-auto" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--primary-glow)] transition-all duration-300 relative overflow-hidden">
-                <span className="text-white font-bold text-lg relative z-10">
-                  {(siteInfo.site_name || "EC")[0]}
-                </span>
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </div>
-            )}
-            <span className="text-xl font-bold text-white hidden sm:block tracking-tight">
-              {siteInfo.site_name ? (
-                <>
-                  {siteInfo.site_name.split(' ')[0]}<span className="text-[var(--primary-light)]">{siteInfo.site_name.substring(siteInfo.site_name.indexOf(' ') + 1)}</span>
-                </>
-              ) : (
-                <>ELMA<span className="text-[var(--primary-light)]">Core</span></>
-              )}
-            </span>
-          </Link>
+    <header className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-200 ${scrolled ? "border-slate-200 bg-white/96 shadow-sm backdrop-blur" : "border-white/10 bg-[#06162d]/92"}`}>
+      <div className="site-container flex h-[72px] items-center justify-between gap-5 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5 lg:justify-self-start" aria-label={`${brand} home`}>
+          {siteInfo?.logo ? <Image src={siteInfo.logo} alt={brand} width={144} height={32} sizes="144px" className="h-8 max-w-36 object-contain" unoptimized={siteInfo.logo.includes("localhost") || siteInfo.logo.includes("127.0.0.1")} /> : <><span className="flex h-7 w-7 items-center justify-center bg-[var(--blue)] text-lg font-black text-white">E</span><span className={`text-sm font-extrabold tracking-[.04em] ${scrolled ? "text-[var(--ink)]" : "text-white"}`}>{brand}</span></>}
+        </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1 bg-[var(--bg-deep)]/40 p-1 rounded-full border border-white/5 backdrop-blur-md">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-300 focus-ring ${isActive ? "text-white" : "text-[var(--text-muted)] hover:text-white"
-                    }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute inset-0 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-glow)] rounded-full shadow-[0_0_15px_var(--primary-transparent)]"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10">{link.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* CTA + Mobile Toggle */}
-          <div className="flex items-center gap-4">
-            {/* Language Switcher */}
-            <div className="hidden md:block border-r border-white/10 pr-4 mr-1">
-              <LanguageSwitcher />
-            </div>
-
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white focus-ring hover:bg-white/10 transition-colors"
-              aria-label="Search"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-
-            <Link
-              href="/contact"
-              className="hidden md:inline-flex relative group px-6 py-2.5 rounded-full overflow-hidden focus-ring"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-light)] to-[var(--primary)] opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300" />
-              <span className="relative z-10 text-white text-sm font-semibold tracking-wide">
-                {t.getStarted}
-              </span>
-            </Link>
-
-            {/* Mobile burger */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white focus-ring"
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isOpen}
-              aria-controls="mobile-menu"
-            >
-              <AnimatePresence mode="wait">
-                {isOpen ? (
-                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                    <X className="w-5 h-5" />
-                  </motion.div>
-                ) : (
-                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                    <Menu className="w-5 h-5" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
-          </div>
+        <nav className="hidden items-center gap-6 lg:flex lg:justify-self-center xl:gap-7" aria-label="Primary navigation">
+          {links.map((link) => <Link key={`${link.href}-${link.label}`} href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noreferrer" : undefined} className={`text-[.78rem] font-bold transition-colors ${pathname === link.href ? "!text-[var(--blue)]" : scrolled ? "!text-[var(--ink)] hover:!text-[var(--blue)]" : "!text-slate-100 hover:!text-[#78a2ff]"}`}>{link.label}</Link>)}
         </nav>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              id="mobile-menu"
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 10, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden absolute left-4 right-4 elite-glass rounded-2xl p-4 shadow-2xl"
-            >
-              <div className="flex flex-col space-y-1">
-                <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 mb-2">
-                  <span className="text-sm font-medium text-[var(--text-muted)]">{t.language}</span>
-                  <LanguageSwitcher />
-                </div>
-                {navLinks.map((link, i) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <Link
-                        href={link.href}
-                        className={`block px-4 py-3 rounded-xl text-base font-medium transition-all focus-ring ${isActive
-                            ? "bg-[var(--primary-transparent)] text-white border border-[var(--primary)]/30"
-                            : "text-[var(--text-muted)] hover:bg-white/5 hover:text-white"
-                          }`}
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: navLinks.length * 0.05 }}
-                  className="pt-4 mt-2 border-t border-white/10"
-                >
-                  <Link
-                    href="/contact"
-                    className="block w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-semibold focus-ring"
-                  >
-                    {t.getStarted}
-                  </Link>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center gap-2 lg:justify-self-end">
+          <div className={scrolled ? "text-[var(--ink)]" : "text-white"}><LanguageSwitcher /></div>
+          <button type="button" onClick={() => setSearchOpen(true)} className={`hidden h-9 w-9 items-center justify-center sm:flex ${scrolled ? "text-[var(--ink)]" : "text-white"}`} aria-label="Search"><Search size={17} /></button>
+          <Link href={cta.href} className="button-primary hidden min-h-9 px-4 text-[.7rem] md:inline-flex">{cta.label} <span aria-hidden="true">→</span></Link>
+          <button type="button" onClick={() => setOpen((value) => !value)} className={`flex h-9 w-9 items-center justify-center lg:hidden ${scrolled ? "text-[var(--ink)]" : "text-white"}`} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open}>{open ? <X size={22} /> : <Menu size={22} />}</button>
+        </div>
       </div>
 
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} locale={locale} />
-    </motion.header>
+      {open && <div className="border-t border-slate-200 bg-white lg:hidden"><nav className="site-container flex flex-col py-4" aria-label="Mobile navigation">{links.map((link) => <Link key={`${link.href}-${link.label}`} href={link.href} onClick={() => setOpen(false)} className={`border-b border-slate-100 py-3 text-sm font-bold ${pathname === link.href ? "text-[var(--blue)]" : "text-[var(--ink)]"}`}>{link.label}</Link>)}<Link href={cta.href} onClick={() => setOpen(false)} className="button-primary mt-4">{cta.label} →</Link></nav></div>}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} locale={locale} />
+    </header>
   );
 }

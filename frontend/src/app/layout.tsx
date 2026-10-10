@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Inter } from "next/font/google";
@@ -36,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
         siteName: siteInfo.site_name || "ELMA Core",
       },
     };
-  } catch (e) {
+  } catch {
     return {
       title: {
         default: "ELMA Core — IT Services & Technology Solutions",
@@ -60,21 +61,27 @@ export default async function RootLayout({
   let globalConfig = null;
   try {
     globalConfig = await getGlobalConfig();
-  } catch (e) {
-    console.error("Failed to fetch global config", e);
-  }
+  } catch { /* The public site remains available with visual fallbacks. */ }
+
+  const theme = globalConfig?.theme;
+  const themeStyle = {
+    ...(theme?.primary_color ? { "--blue": theme.primary_color } : {}),
+    ...(theme?.accent_color ? { "--blue-dark": theme.accent_color } : {}),
+    ...(theme?.surface_color ? { "--mist": theme.surface_color } : {}),
+  } as CSSProperties;
+  const chatEnabled = theme?.chat_enabled !== false && theme?.chat_enabled !== "0" && theme?.chat_enabled !== "false";
 
   return (
     <html lang={locale} dir={dir} className={inter.variable}>
-      <body className={`antialiased${dir === "rtl" ? " font-arabic" : ""}`}>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-[var(--primary)] text-white px-4 py-2 z-50 rounded-md font-semibold focus-ring">
+      <body style={themeStyle} className={`antialiased${dir === "rtl" ? " font-arabic" : ""}`}>
+        <a href="#main-content" className="skip-link">
           Skip to content
         </a>
         <LiveAnnouncer />
-        <Navbar locale={locale} siteInfo={globalConfig?.site_info} />
+        <Navbar locale={locale} siteInfo={globalConfig?.site_info} navigation={globalConfig?.navigation} />
         <main id="main-content" className="min-h-screen">{children}</main>
-        <Footer locale={locale} siteInfo={globalConfig?.site_info} footerContent={globalConfig?.footer_content} />
-        <ChatWidget locale={locale} />
+        <Footer locale={locale} siteInfo={globalConfig?.site_info} footerContent={globalConfig?.footer_content} navigation={globalConfig?.navigation} />
+        {chatEnabled && <ChatWidget locale={locale} siteName={globalConfig?.site_info?.site_name || "ELMACORE"} />}
       </body>
     </html>
   );

@@ -85,7 +85,7 @@ export interface Slider {
   secondary_button_text: string | null;
   secondary_button_url: string | null;
   alignment: string | null;
-  overlay_opacity: number | null;
+  overlay_opacity: number | string | null;
   text_theme: string | null;
   video_url: string | null;
   title_color: string | null;
@@ -131,24 +131,48 @@ export interface CMSData {
   heroImage: string | null;
   services_title: string | null;
   services_subtitle: string | null;
+  services_eyebrow?: string | null;
+  services_button_text?: string | null;
+  services_button_url?: string | null;
   projects_title: string | null;
   projects_subtitle: string | null;
+  projects_eyebrow?: string | null;
+  projects_button_text?: string | null;
+  projects_button_url?: string | null;
   reviews_title: string | null;
   reviews_subtitle: string | null;
+  reviews_eyebrow?: string | null;
   blog_title: string | null;
   blog_subtitle: string | null;
+  blog_eyebrow?: string | null;
+  blog_button_text?: string | null;
+  blog_button_url?: string | null;
   cta: {
     title: string;
     subtitle: string;
     description: string;
     button_text: string;
+    button_url?: string;
+    eyebrow?: string;
+    visual_variant?: "primary" | "dark" | "light";
   } | null;
   about: {
     title: string;
     subtitle: string;
     description: string;
-    image: string;
-    meta_data?: { features: string[] };
+    image?: string;
+    eyebrow?: string;
+    highlight_value?: string;
+    highlight_suffix?: string;
+    highlight_label?: string;
+    button_text?: string;
+    button_url?: string;
+    meta_data?: { features: Array<string | { title: string; description?: string; icon?: string }> };
+  } | null;
+  partners?: {
+    eyebrow?: string;
+    title?: string;
+    subtitle?: string;
   } | null;
 }
 
@@ -204,6 +228,9 @@ export interface BlogDetailResponse {
 
 export interface ContactInfoResponse {
   page: PageMeta & {
+    contact_title?: string | null;
+    contact_description?: string | null;
+    contact_logo?: string | null;
     contact_address: string | null;
     contact_email: string | null;
     contact_phone: string | null;
@@ -276,6 +303,66 @@ export interface ApiMessageResponse {
 }
 
 export interface GlobalConfigResponse {
-  site_info: Record<string, string>;
-  footer_content: Record<string, string>;
+  site_info: SiteInfo;
+  footer_content: FooterContent;
+  navigation: GlobalNavigation;
+  theme: ThemeSettings;
+}
+
+export interface SiteInfo {
+  site_name?: string;
+  site_description?: string;
+  site_keywords?: string;
+  seo_keywords?: string;
+  site_logo?: string;
+  logo?: string;
+  favicon?: string;
+  og_image?: string;
+  twitter_handle?: string;
+  json_ld_organization?: string;
+}
+
+export interface NavigationItem {
+  label: string | Record<string, string>;
+  url: string;
+  location?: "header" | "footer-company" | "footer-services";
+  sort_order?: number;
+  is_active?: boolean;
+  open_in_new_tab?: boolean;
+}
+
+export interface GlobalNavigation {
+  header_cta_label?: string;
+  header_cta_url?: string;
+  navigation?: NavigationItem[];
+}
+
+export interface FooterSocialLink {
+  platform?: string;
+  label?: string;
+  url: string;
+}
+
+export interface FooterLink {
+  label: string;
+  url: string;
+  sort_order?: number;
+}
+
+export interface FooterContent {
+  footer_logo?: string;
+  footer_description?: string;
+  copyright_text?: string;
+  newsletter_title?: string;
+  newsletter_description?: string;
+  newsletter_placeholder?: string;
+  social_links?: FooterSocialLink[];
+  footer_legal_links?: FooterLink[];
+}
+
+export interface ThemeSettings {
+  primary_color?: string;
+  accent_color?: string;
+  surface_color?: string;
+  chat_enabled?: string | boolean;
 }

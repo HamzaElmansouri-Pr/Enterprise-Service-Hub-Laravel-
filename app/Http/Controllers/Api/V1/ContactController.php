@@ -56,11 +56,16 @@ class ContactController extends Controller
         return response()->json([
             'page' => [
                 'title' => $page->title ?? __('cms.contact.title'),
+                'breadcrumb_title' => $page->breadcrumb_title ?? ($page->title ?? __('cms.contact.title')),
+                'image' => $page->image ?? null,
+                'contact_title' => $page->contact_title ?? null,
+                'contact_description' => $page->contact_description ?? null,
+                'contact_logo' => $page->contact_logo ?? null,
                 'contact_address' => $page->contact_address ?? null,
                 'contact_email' => $page->contact_email ?? null,
                 'contact_phone' => $page->contact_phone ?? null,
-                'meta_title' => $page->model->meta_title ?? null,
-                'meta_description' => $page->model->meta_description ?? null,
+                'meta_title' => $page->model?->meta_title,
+                'meta_description' => $page->model?->meta_description,
             ],
             'services' => ServiceResource::collection($services),
         ]);

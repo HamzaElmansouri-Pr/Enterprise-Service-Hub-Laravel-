@@ -122,6 +122,9 @@
                         </div>
                         
                     @elseif($contentType === 'about-main' || $contentType === 'home-about')
+                        @if($contentType === 'home-about')
+                        <x-admin.translatable-input name="eyebrow" label="Section Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Your technology partner" />
+                        @endif
                         <x-admin.translatable-input name="about_title" label="About Title" :value="$content['about_title'] ?? null" placeholder="Deliver unforgettable customer experiences" />
                         
                         <x-admin.translatable-input name="about_subtitle" label="About Subtitle" :value="$content['about_subtitle'] ?? null" placeholder="Why ELMA Core crm" />
@@ -170,6 +173,18 @@
                             <x-admin.ai-generator target="[name='about_content']" context_target="[name='about_title[en]']" type="section_writer" label="Generate Detailed Content" />
                         </div>
                         <x-admin.translatable-textarea name="about_content" label="About HTML Content (optional)" rows="6" :richtext="true" :value="$content['about_content'] ?? null" />
+
+                        @if($contentType === 'home-about')
+                        <div class="row">
+                            <div class="col-md-4"><x-admin.translatable-input name="highlight_value" label="Highlight Value" :value="$content['highlight_value'] ?? null" placeholder="10" /></div>
+                            <div class="col-md-4"><x-admin.translatable-input name="highlight_suffix" label="Highlight Suffix" :value="$content['highlight_suffix'] ?? null" placeholder="+" /></div>
+                            <div class="col-md-4"><x-admin.translatable-input name="highlight_label" label="Highlight Label" :value="$content['highlight_label'] ?? null" placeholder="Years of experience" /></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6"><x-admin.translatable-input name="button_text" label="Section CTA Label" :value="$content['button_text'] ?? null" placeholder="Meet our team" /></div>
+                            <div class="col-md-6"><x-admin.translatable-input name="button_url" label="Section CTA URL" :value="$content['button_url'] ?? null" placeholder="/about" /></div>
+                        </div>
+                        @endif
 
                         <div class="mb-4">
                             <label class="form-label">Feature Highlights</label>
@@ -317,7 +332,51 @@
                             @endif
                         </div>
                         
+                    @elseif($contentType === 'global-navigation')
+                        <x-admin.translatable-input name="header_cta_label" label="Header CTA Label" :value="$content['header_cta_label'] ?? null" placeholder="Start a project" />
+                        <x-admin.translatable-input name="header_cta_url" label="Header CTA URL" :value="$content['header_cta_url'] ?? null" placeholder="/contact" />
+                        <div class="mb-4">
+                            <label for="navigation" class="form-label">Navigation JSON</label>
+                            <textarea class="form-control font-monospace" id="navigation" name="navigation" rows="10" placeholder='[{"label":"Home","url":"/","location":"header","sort_order":1,"is_active":true}]'>{{ get_content_value($content['navigation'] ?? null) }}</textarea>
+                            <small class="text-muted">Each item needs a localized label or a plain label, URL, location, sort order, and active state. This data powers header and footer navigation.</small>
+                        </div>
+
+                    @elseif($contentType === 'footer-content')
+                        <x-admin.translatable-textarea name="footer_description" label="Footer Description" rows="3" :value="$content['footer_description'] ?? null" placeholder="Technology solutions designed around your business." />
+                        <x-admin.translatable-input name="copyright_text" label="Copyright Text" :value="$content['copyright_text'] ?? null" placeholder="All rights reserved." />
+                        <x-admin.translatable-input name="newsletter_title" label="Newsletter Title" :value="$content['newsletter_title'] ?? null" placeholder="Stay in the loop" />
+                        <x-admin.translatable-textarea name="newsletter_description" label="Newsletter Description" rows="2" :value="$content['newsletter_description'] ?? null" placeholder="Get practical insights and updates." />
+                        <x-admin.translatable-input name="newsletter_placeholder" label="Newsletter Placeholder" :value="$content['newsletter_placeholder'] ?? null" placeholder="Your email address" />
+                        <div class="mb-4">
+                            <label for="footer_logo_file" class="form-label">Footer Logo</label>
+                            <input type="file" class="form-control" id="footer_logo_file" name="footer_logo_file" accept="image/*">
+                        </div>
+                        <div class="mb-4">
+                            <label for="social_links" class="form-label">Social Links JSON</label>
+                            <textarea class="form-control font-monospace" id="social_links" name="social_links" rows="6" placeholder='[{"platform":"LinkedIn","url":"https://linkedin.com/company/example","label":"LinkedIn"}]'>{{ get_content_value($content['social_links'] ?? null) }}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="footer_legal_links" class="form-label">Footer Legal Links JSON</label>
+                            <textarea class="form-control font-monospace" id="footer_legal_links" name="footer_legal_links" rows="5" placeholder='[{"label":"Privacy Policy","url":"/privacy","sort_order":1}]'>{{ get_content_value($content['footer_legal_links'] ?? null) }}</textarea>
+                        </div>
+
+                    @elseif($contentType === 'theme-settings')
+                        <div class="row">
+                            @foreach(['primary_color' => 'Primary Color', 'accent_color' => 'Accent Color', 'surface_color' => 'Surface Color'] as $key => $label)
+                            <div class="col-md-4 mb-4">
+                                <label for="{{ $key }}" class="form-label">{{ $label }}</label>
+                                <input type="color" class="form-control form-control-color w-100" id="{{ $key }}" name="{{ $key }}" value="{{ get_content_value($content[$key] ?? null) ?: ($key === 'primary_color' ? '#2563eb' : ($key === 'accent_color' ? '#0f172a' : '#f4f8ff')) }}">
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="form-check form-switch mb-4">
+                            <input type="hidden" name="chat_enabled" value="0">
+                            <input class="form-check-input" type="checkbox" id="chat_enabled" name="chat_enabled" value="1" {{ get_content_value($content['chat_enabled'] ?? null) !== '0' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="chat_enabled">Enable the public chat widget</label>
+                        </div>
+
                     @elseif($contentType === 'home-partners')
+                        <x-admin.translatable-input name="eyebrow" label="Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Our Network" />
                         <div class="mb-4">
                             <label for="partners_title" class="form-label">Partners Section Title (Optional)</label>
                             <input type="text" class="form-control" id="partners_title" name="partners_title" 
@@ -602,9 +661,14 @@
                         </div>
 
                     @elseif($contentType === 'services-list')
+                        <x-admin.translatable-input name="eyebrow" label="Section Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Our expertise" />
                         <x-admin.translatable-input name="title" label="Services Section Title" :value="$content['title'] ?? null" placeholder="Our Awesome Services" />
                         
                         <x-admin.translatable-textarea name="subtitle" label="Services Subtitle" rows="2" :value="$content['subtitle'] ?? null" placeholder="What We Do" />
+                        <div class="row">
+                            <div class="col-md-6"><x-admin.translatable-input name="button_text" label="View All Label" :value="$content['button_text'] ?? null" placeholder="Explore all services" /></div>
+                            <div class="col-md-6"><x-admin.translatable-input name="button_url" label="View All URL" :value="$content['button_url'] ?? null" placeholder="/services" /></div>
+                        </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-bold d-block mb-3">
@@ -645,6 +709,7 @@
                         </div>
 
                     @elseif($contentType === 'projects-list')
+                        <x-admin.translatable-input name="eyebrow" label="Section Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Projects" />
                         <div class="mb-4">
                             <label for="title" class="form-label">Section Title</label>
                             <input type="text" class="form-control" id="title" name="title" 
@@ -652,6 +717,10 @@
                         </div>
 
                         <x-admin.translatable-textarea name="subtitle" label="Section Subtitle" rows="2" :value="$content['subtitle'] ?? null" />
+                        <div class="row">
+                            <div class="col-md-6"><x-admin.translatable-input name="button_text" label="View All Label" :value="$content['button_text'] ?? null" placeholder="View all projects" /></div>
+                            <div class="col-md-6"><x-admin.translatable-input name="button_url" label="View All URL" :value="$content['button_url'] ?? null" placeholder="/projects" /></div>
+                        </div>
 
                         <div class="mb-4">
                             <label class="form-label d-block mb-3">Select Projects to Feature</label>
@@ -690,6 +759,7 @@
                         </div>
 
                     @elseif($contentType === 'reviews-list')
+                        <x-admin.translatable-input name="eyebrow" label="Section Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Client perspectives" />
                         <x-admin.translatable-input name="title" label="Reviews Section Title" :value="$content['title'] ?? null" placeholder="What our clients say" />
                         <x-admin.translatable-input name="subtitle" label="Reviews Subtitle" :value="$content['subtitle'] ?? null" placeholder="Testimonials" />
                         <div class="alert alert-info">
@@ -698,14 +768,20 @@
                         </div>
 
                     @elseif($contentType === 'blog-list')
+                        <x-admin.translatable-input name="eyebrow" label="Section Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Insights" />
                         <x-admin.translatable-input name="title" label="Blog Section Title" :value="$content['title'] ?? null" placeholder="Direct from the Blog" />
                         <x-admin.translatable-input name="subtitle" label="Blog Subtitle" :value="$content['subtitle'] ?? null" placeholder="Latest News" />
+                        <div class="row">
+                            <div class="col-md-6"><x-admin.translatable-input name="button_text" label="View All Label" :value="$content['button_text'] ?? null" placeholder="View all insights" /></div>
+                            <div class="col-md-6"><x-admin.translatable-input name="button_url" label="View All URL" :value="$content['button_url'] ?? null" placeholder="/blog" /></div>
+                        </div>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             The blog section automatically displays your latest published posts from the <a href="{{ route('admin.blogs.index') }}" class="fw-bold">Blog Management</a>.
                         </div>
 
                     @elseif($contentType === 'cta-simple')
+                        <x-admin.translatable-input name="eyebrow" label="CTA Eyebrow" :value="$content['eyebrow'] ?? null" placeholder="Your technology partner" />
                         <x-admin.translatable-input name="title" label="CTA Title" :value="$content['title'] ?? null" placeholder="Ready to Transform Your Business?" />
                         <x-admin.translatable-textarea name="description" label="CTA Description" rows="3" :value="$content['description'] ?? null" placeholder="Let's discuss how ELMA Core can help you achieve your technology goals with our expert solutions." />
                         <div class="row">
@@ -719,6 +795,14 @@
                                            value="{{ get_content_value($content['button_url'] ?? null) ?: '' }}" placeholder="/contact">
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="visual_variant" class="form-label">Visual Variant</label>
+                            <select class="form-select" id="visual_variant" name="visual_variant">
+                                @foreach(['primary' => 'Electric Blue', 'dark' => 'Navy', 'light' => 'Light'] as $value => $label)
+                                <option value="{{ $value }}" {{ get_content_value($content['visual_variant'] ?? null) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                     @elseif(str_contains($contentType, 'page-header'))

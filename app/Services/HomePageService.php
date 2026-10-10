@@ -28,7 +28,8 @@ class HomePageService
             $sections = Section::whereIn('type', [
                 'home-hero', 'home-about', 'services-list', 'projects-list',
                 'reviews-list', 'blog-list', 'cta-simple', 'home-partners'
-            ])->get()->keyBy('type');
+            ])->orderBy('order_index')->get();
+            $sectionsByType = $sections->keyBy('type');
 
             // Featured services
             $featuredConfig = $cms->featured_services ?? [];
@@ -77,9 +78,9 @@ class HomePageService
             $sliders = Slider::where('is_active', true)->orderBy('sort_order')->get();
 
             // Partners (only if section is active)
-            $partnersSection = $sections->get('home-partners');
+            $partnersSection = $sectionsByType->get('home-partners');
             $partners = ($partnersSection && $partnersSection->is_active)
-                ? Partner::where('is_active', true)->select('id', 'name', 'logo', 'url')->orderBy('order_index')->take(20)->get()
+                ? Partner::where('is_active', true)->select('id', 'name', 'logo', 'url', 'is_active', 'order_index')->orderBy('order_index')->take(20)->get()
                 : collect();
 
             return [

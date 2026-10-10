@@ -1,81 +1,52 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Partner } from "@/lib/types";
 
-interface PartnersBarProps {
-  partners: Partner[];
-}
+export function PartnersBar({ partners, content }: { partners: Partner[]; content?: { eyebrow?: string; title?: string; subtitle?: string } | null }) {
+  const activePartners = partners.filter((partner) => partner.is_active && (partner.logo_url || partner.logo || partner.name));
+  if (!activePartners.length) return null;
 
-export function PartnersBar({ partners }: PartnersBarProps) {
-  if (partners.length === 0) return null;
-
-  // Duplicate partners for seamless CSS marquee loop
-  const scrollItems = [...partners, ...partners];
+  const title = content?.title?.trim() || "Our partners";
+  const subtitle = content?.subtitle?.trim() || "Working together to deliver better digital solutions.";
+  const headingId = "partners-heading";
 
   return (
-    <section className="py-20 bg-[var(--bg-darker)] relative overflow-hidden border-y border-white/5">
-      {/* Background glow */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-darker)] via-[var(--primary)]/5 to-[var(--bg-darker)] opacity-50" />
-      
-      <div className="max-w-[100vw] mx-auto relative z-10">
-        <motion.p 
-          initial={{ opacity: 0, y: 10 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
-          className="text-center text-[var(--text-muted)] text-sm font-semibold uppercase tracking-[0.2em] mb-12"
-        >
-          Trusted by Innovative Teams Worldwide
-        </motion.p>
-        
-        {/* Infinite Marquee Container — Pure CSS for compositor-thread animation */}
-        <div className="relative flex overflow-hidden">
-          {/* Gradient Masks for smooth edge fading */}
-          <div className="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-[var(--bg-darker)] to-transparent z-10 pointer-events-none" />
-          <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-[var(--bg-darker)] to-transparent z-10 pointer-events-none" />
-          
-          <div 
-            className="flex items-center gap-16 md:gap-24 whitespace-nowrap pl-16 md:pl-24 animate-marquee"
-            style={{ willChange: "transform" }}
-          >
-            {scrollItems.map((partner, i) => (
-              <div key={`${partner.id}-${i}`} className="inline-flex items-center justify-center min-w-[150px]">
+    <section className="border-t border-slate-200 bg-white py-9 md:py-14" aria-labelledby={headingId}>
+      <div className="site-container grid items-center gap-8 lg:grid-cols-[3fr_7fr] lg:gap-12">
+        <div className="max-w-sm text-start">
+          <h2 id={headingId} className="text-[clamp(1.75rem,2.3vw,2rem)] font-semibold leading-tight tracking-[-.04em] text-[var(--ink)]">{title}</h2>
+          <p className="mt-3 text-[.98rem] leading-6 text-[var(--muted)]">{subtitle}</p>
+        </div>
+
+        <ul className="grid grid-cols-2 items-center gap-x-7 gap-y-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-9" role="list">
+          {activePartners.map((partner) => {
+            const logo = partner.logo_url || partner.logo;
+            const visual = logo ? (
+              <Image
+                src={logo}
+                alt={partner.name}
+                width={176}
+                height={64}
+                sizes="(max-width: 640px) 42vw, (max-width: 1024px) 27vw, 15vw"
+                className="h-10 w-auto max-w-[166px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                unoptimized={logo.includes("localhost") || logo.includes("127.0.0.1")}
+              />
+            ) : (
+              <span className="text-center text-sm font-semibold text-[var(--ink-soft)]">{partner.name}</span>
+            );
+
+            return (
+              <li key={partner.id} className="flex min-h-14 items-center justify-center">
                 {partner.url ? (
-                  <a href={partner.url} target="_blank" rel="noopener noreferrer" className="block opacity-40 hover:opacity-100 hover:scale-110 transition-all duration-300 grayscale hover:grayscale-0 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                    {partner.logo_url ? (
-                      <Image 
-                        src={partner.logo_url} 
-                        alt={partner.name} 
-                        width={120} 
-                        height={48} 
-                        className="h-12 w-auto object-contain" 
-                        unoptimized={partner.logo_url.includes('localhost') || partner.logo_url.includes('127.0.0.1')}
-                      />
-                    ) : (
-                      <span className="text-[var(--text-secondary)] font-bold text-xl tracking-tight">{partner.name}</span>
-                    )}
+                  <a href={partner.url} target="_blank" rel="noreferrer" aria-label={`Visit ${partner.name}`} className="group flex min-h-12 min-w-12 items-center justify-center rounded-sm px-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--blue)]">
+                    {visual}
                   </a>
                 ) : (
-                  <div className="opacity-40 hover:opacity-100 hover:scale-110 transition-all duration-300 grayscale hover:grayscale-0 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                    {partner.logo_url ? (
-                      <Image 
-                        src={partner.logo_url} 
-                        alt={partner.name} 
-                        width={120} 
-                        height={48} 
-                        className="h-12 w-auto object-contain" 
-                        unoptimized={partner.logo_url.includes('localhost') || partner.logo_url.includes('127.0.0.1')}
-                      />
-                    ) : (
-                      <span className="text-[var(--text-secondary)] font-bold text-xl tracking-tight">{partner.name}</span>
-                    )}
-                  </div>
+                  <div className="flex min-h-12 min-w-12 items-center justify-center px-2">{visual}</div>
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

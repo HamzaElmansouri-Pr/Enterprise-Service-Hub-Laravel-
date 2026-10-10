@@ -1,60 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { getProject } from "@/lib/api";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
+import { getProject } from "@/lib/api";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { ContentImage } from "@/components/ui/ContentImage";
+import { resolveProjectPresentationImage } from "@/lib/demoMedia";
 
 interface Props { params: Promise<{ slug: string }> }
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const data = await getProject(slug);
-  return {
-    title: data.project.meta_title || data.project.title,
-    description: data.project.meta_description || data.project.description?.replace(/<[^>]*>/g, '').slice(0, 160) || "",
-    openGraph: data.project.og_image ? { images: [{ url: data.project.og_image }] } : undefined,
-  };
-}
-
-export default async function ProjectDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const { project, related_projects } = await getProject(slug);
-
-  return (
-    <>
-      <Breadcrumb title={project.title} items={[{ label: "Projects", href: "/projects" }, { label: project.title }]} />
-
-      <section className="section-padding bg-[var(--bg-dark)]">
-        <div className="max-w-5xl mx-auto">
-          {project.image && <div className="rounded-2xl overflow-hidden mb-10"><Image src={project.image} alt={project.title} width={1200} height={800} className="w-full h-auto" /></div>}
-
-          <div className="flex flex-wrap gap-4 mb-8">
-            {project.category && <span className="px-4 py-1.5 rounded-full bg-[var(--primary)]/10 text-[var(--primary-light)] text-sm">{project.category}</span>}
-            {project.client && <span className="px-4 py-1.5 rounded-full bg-white/5 text-[var(--text-secondary)] text-sm">Client: {project.client}</span>}
-            {project.completion_date && <span className="px-4 py-1.5 rounded-full bg-white/5 text-[var(--text-secondary)] text-sm">{new Date(project.completion_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>}
-          </div>
-
-          <div className="prose prose-invert prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.description || "") }} />
-        </div>
-      </section>
-
-      {/* Related projects */}
-      {related_projects.length > 0 && (
-        <section className="section-padding bg-[var(--bg-darker)]">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-bold text-white mb-8">Related Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {related_projects.map((rp) => (
-                <Link key={rp.id} href={`/projects/${rp.slug}`} className="group block rounded-2xl overflow-hidden bg-[var(--bg-card)] hover:shadow-[var(--shadow-hover)] transition-all">
-                  <div className="h-48 overflow-hidden relative">{rp.image ? <Image src={rp.image} alt={rp.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-500" /> : <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent)]/10" />}</div>
-                  <div className="p-5"><h3 className="font-bold text-white group-hover:text-[var(--primary-light)] transition-colors">{rp.title}</h3></div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </>
-  );
-}
+export async function generateMetadata({ params }: Props): Promise<Metadata> { const { slug } = await params; const { project } = await getProject(slug); return { title: project.meta_title || project.title, description: project.meta_description || project.description?.replace(/<[^>]*>/g, "").slice(0, 160) || "", openGraph: project.og_image ? { images: [{ url: project.og_image }] } : undefined }; }
+export default async function ProjectDetailPage({ params }: Props) { const { slug } = await params; const { project, related_projects: related } = await getProject(slug); return <><Breadcrumb title={project.title} items={[{ label: "Projects", href: "/projects" }, { label: project.title }]} /><section className="page-section bg-white"><article className="site-container max-w-[960px]"><div className="relative mb-9 aspect-[1.8] overflow-hidden bg-slate-200"><ContentImage src={resolveProjectPresentationImage(project.image, project.id)} alt={project.title} sizes="(max-width: 1000px) 100vw, 960px" className="object-cover" fallbackClassName="project-image-placeholder" /></div><div className="mb-8 flex flex-wrap gap-2">{project.category && <span className="border border-[#9ab8e9] px-3 py-1 text-xs font-bold text-[var(--blue)]">{project.category}</span>}{project.client && <span className="border border-slate-200 px-3 py-1 text-xs text-[var(--muted)]">Client: {project.client}</span>}{project.completion_date && <span className="border border-slate-200 px-3 py-1 text-xs text-[var(--muted)]">{new Date(project.completion_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>}</div><div className="rich-content text-[1.05rem]" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.description || "") }} /></article></section>{related.length > 0 && <section className="page-section page-section--mist"><div className="site-container"><span className="eyebrow">More work</span><h2 className="display-title text-[clamp(2.2rem,4vw,4rem)]">Related projects</h2><div className="mt-8 grid gap-6 md:grid-cols-3">{related.map((item, index) => <Link key={item.id} href={`/projects/${item.slug}`} className="group"><div className="relative aspect-[1.5] overflow-hidden bg-slate-200"><ContentImage src={resolveProjectPresentationImage(item.image, index)} alt={item.title} sizes="33vw" className="object-cover transition duration-500 group-hover:scale-105" fallbackClassName="project-image-placeholder" /></div><h3 className="mt-3 text-lg font-extrabold text-[var(--ink)]">{item.title}</h3></Link>)}</div></div></section>}</>; }

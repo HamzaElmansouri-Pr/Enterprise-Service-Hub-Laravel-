@@ -9,13 +9,41 @@ import type {
   ContactInfoResponse,
   AboutResponse,
   ApiMessageResponse,
+  GlobalConfigResponse,
 } from './types';
 
 // ============================================================
 // API Client — Typed fetch wrapper for the Laravel API
 // ============================================================
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+
+/**
+ * Laravel resource URLs are saved as absolute addresses. In local development
+ * the configured APP_URL may use a different port from the running API; keep
+ * storage/assets media attached to the configured API without touching CMS data.
+ */
+export function resolveCmsMediaUrl(source?: string | null) {
+  if (!source) return source || null;
+
+  try {
+    const media = new URL(source);
+    const api = new URL(API_BASE_URL);
+    const isLocalMedia = ["localhost", "127.0.0.1"].includes(media.hostname);
+    const isLocalApi = ["localhost", "127.0.0.1"].includes(api.hostname);
+    const isLaravelAsset = /\/(?:storage|assets)\//.test(media.pathname);
+
+    if (isLocalMedia && isLocalApi && isLaravelAsset && media.origin !== api.origin) {
+      media.protocol = api.protocol;
+      media.host = api.host;
+      return media.toString();
+    }
+  } catch {
+    // Relative URLs and external media are already valid presentation values.
+  }
+
+  return source;
+}
 
 class ApiError extends Error {
   status: number;
@@ -100,8 +128,8 @@ export async function getHomePage(): Promise<HomeResponse> {
 }
 
 /** Get global configuration (site info, footer content) */
-export async function getGlobalConfig(): Promise<any> {
-  return fetchApi<any>('/global');
+export async function getGlobalConfig(): Promise<GlobalConfigResponse> {
+  return fetchApi<GlobalConfigResponse>('/global');
 }
 
 /** Get the about page CMS content */
@@ -186,36 +214,36 @@ export async function submitNewsletter(email: string): Promise<ApiMessageRespons
   });
 }
 
-export async function searchGlobal(query: string): Promise<any> {
-  return fetchApi<any>(`/search?q=${encodeURIComponent(query)}`, {
+export async function searchGlobal(query: string): Promise<unknown> {
+  return fetchApi<unknown>(`/search?q=${encodeURIComponent(query)}`, {
     next: { revalidate: 60 }
   });
 }
 
 /** Chatbot Submit */
-export async function submitChat(message: string): Promise<any> {
-  return fetchApi<any>('/chat', {
+export async function submitChat(message: string): Promise<unknown> {
+  return fetchApi<unknown>('/chat', {
     method: 'POST',
     body: JSON.stringify({ message }),
   });
 }
 
-export async function getComments(modelType: string, modelId: string | number): Promise<any> {
+export async function getComments(modelType: string, modelId: string | number): Promise<unknown> {
   if (modelType === 'blog') {
-    return fetchApi<any>(`/blogs/${modelId}/comments`, { next: { revalidate: 60 } });
+    return fetchApi<unknown>(`/blogs/${modelId}/comments`, { next: { revalidate: 60 } });
   }
-  return fetchApi<any>(`/comments/${modelType}/${modelId}`, { next: { revalidate: 60 } });
+  return fetchApi<unknown>(`/comments/${modelType}/${modelId}`, { next: { revalidate: 60 } });
 }
 
 /** Submit a Comment */
-export async function submitComment(modelType: string, modelId: string | number, data: { name: string; email: string; content: string; parent_id?: number }): Promise<any> {
+export async function submitComment(modelType: string, modelId: string | number, data: { name: string; email: string; content: string; parent_id?: number }): Promise<unknown> {
   if (modelType === 'blog') {
-    return fetchApi<any>(`/blogs/${modelId}/comments`, {
+    return fetchApi<unknown>(`/blogs/${modelId}/comments`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
-  return fetchApi<any>(`/comments/${modelType}/${modelId}`, {
+  return fetchApi<unknown>(`/comments/${modelType}/${modelId}`, {
     method: 'POST',
     body: JSON.stringify(data),
   });
