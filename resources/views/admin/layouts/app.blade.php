@@ -700,6 +700,10 @@
                 <i class="fas fa-project-diagram"></i>
                 <span>{{ __('admin.sidebar.projects') }}</span>
             </a>
+            <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
+                <i class="fas fa-tags"></i>
+                <span>{{ __('admin.sidebar.categories') }}</span>
+            </a>
             <a class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}" href="{{ route('admin.blogs.index') }}">
                 <i class="fas fa-blog"></i>
                 <span>{{ __('admin.sidebar.blog_posts') }}</span>

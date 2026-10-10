@@ -22,6 +22,9 @@ class UpdateProjectRequest extends FormRequest
             'description.en' => 'required|string',
             'client' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
+            'categories_submitted' => 'nullable',
             'completion_date' => 'nullable|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'image_url' => 'nullable|string|max:2048',
@@ -36,8 +39,14 @@ class UpdateProjectRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $this->merge([
+        $merge = [
             'is_active' => $this->boolean('is_active'),
-        ]);
+        ];
+
+        if ($this->has('categories_submitted')) {
+            $merge['category_ids'] = $this->input('category_ids', []);
+        }
+
+        $this->merge($merge);
     }
 }

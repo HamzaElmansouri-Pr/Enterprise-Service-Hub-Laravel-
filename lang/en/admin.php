@@ -12,6 +12,7 @@ return [
         'cms_manager' => 'CMS Manager',
         'services' => 'Services',
         'projects' => 'Projects',
+        'categories' => 'Categories',
         'blog_posts' => 'Blog Posts',
         'comments' => 'Comments',
         'reviews' => 'Reviews',

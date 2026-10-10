@@ -12,6 +12,7 @@ return [
         'cms_manager' => 'إدارة المحتوى',
         'services' => 'الخدمات',
         'projects' => 'المشاريع',
+        'categories' => 'التصنيفات',
         'blog_posts' => 'المقالات',
         'comments' => 'التعليقات',
         'reviews' => 'التقييمات',

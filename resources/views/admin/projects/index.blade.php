@@ -44,7 +44,17 @@
                         </td>
                         <td class="fw-bold">{{ get_content_value($project->title) }}</td>
                         <td>{{ $project->client ?? '-' }}</td>
-                        <td><span class="badge bg-info text-dark">{{ $project->category ?? 'General' }}</span></td>
+                        <td>
+                            @if($project->categories->isNotEmpty())
+                                @foreach($project->categories as $c)
+                                    <span class="badge bg-info text-dark me-1">{{ get_content_value($c->name) }}</span>
+                                @endforeach
+                            @elseif($project->category)
+                                <span class="badge bg-info text-dark">{{ $project->category }}</span>
+                            @else
+                                <span class="text-muted small">-</span>
+                            @endif
+                        </td>
                         <td>
                             @if($project->is_active)
                                 <span class="badge bg-success">Active</span>

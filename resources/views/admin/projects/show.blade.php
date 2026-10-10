@@ -54,7 +54,14 @@
                                 </div>
                                 @endif
                                 
-                                @if($project->category)
+                                @if($project->categories->isNotEmpty())
+                                <div class="mb-3">
+                                    <h6>Categories:</h6>
+                                    @foreach($project->categories as $c)
+                                        <span class="badge bg-info text-dark me-1">{{ get_content_value($c->name) }}</span>
+                                    @endforeach
+                                </div>
+                                @elseif($project->category)
                                 <div class="mb-3">
                                     <h6>Category:</h6>
                                     <span class="badge bg-info">{{ $project->category }}</span>

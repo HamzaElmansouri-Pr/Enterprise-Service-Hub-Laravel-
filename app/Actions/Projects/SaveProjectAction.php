@@ -71,12 +71,33 @@ class SaveProjectAction
 
         unset($data['image_url'], $data['og_image_url']);
 
-        // 5. Create or Update
+        // 5. Handle Categories
+        $categoryIds = null;
+        if (array_key_exists('category_ids', $data)) {
+            $categoryIds = $data['category_ids'] ?? [];
+            unset($data['category_ids']);
+
+            // Update legacy category string for backwards compatibility
+            if (!empty($categoryIds)) {
+                $selectedCats = \App\Models\Category::whereIn('id', $categoryIds)->get();
+                $data['category'] = $selectedCats->map(fn($c) => $c->name)->implode(', ');
+            } else {
+                $data['category'] = null;
+            }
+        }
+        unset($data['categories_submitted']);
+
+        // 6. Create or Update
         if ($project) {
             $project->update($data);
-            return $project;
+        } else {
+            $project = Project::create($data);
         }
 
-        return Project::create($data);
+        if ($categoryIds !== null) {
+            $project->categories()->sync($categoryIds);
+        }
+
+        return $project;
     }
 }

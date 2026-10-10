@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\SliderController;
@@ -39,6 +40,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])->name('projects.toggle-status');
         Route::patch('projects/{project}/toggle-featured', [ProjectController::class, 'toggleFeatured'])->name('projects.toggle-featured');
         Route::resource('projects', ProjectController::class);
+        Route::patch('categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+        Route::resource('categories', CategoryController::class);
         Route::resource('reviews', ReviewController::class);
         Route::patch('blogs/{blog}/inline-update', [BlogController::class, 'inlineUpdate'])->name('blogs.inline-update');
         Route::post('blogs/bulk-action', [BlogController::class, 'bulkAction'])->name('blogs.bulk-action');

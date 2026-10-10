@@ -12,6 +12,7 @@ return [
         'cms_manager' => 'Gestionnaire CMS',
         'services' => 'Services',
         'projects' => 'Projets',
+        'categories' => 'Catégories',
         'blog_posts' => 'Articles de blog',
         'comments' => 'Commentaires',
         'reviews' => 'Avis',

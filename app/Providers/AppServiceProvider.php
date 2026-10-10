@@ -70,6 +70,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\SectionRepositoryInterface::class,
             \App\Repositories\SectionRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\CategoryRepositoryInterface::class,
+            \App\Repositories\CategoryRepository::class
+        );
     }
 
     /**
@@ -81,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading(!app()->isProduction());
 
         // Explicit Policy Mapping
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\Category::class, \App\Policies\CategoryPolicy::class);
         \Illuminate\Support\Facades\Gate::policy(\App\Models\Project::class, \App\Policies\ProjectPolicy::class);
         \Illuminate\Support\Facades\Gate::policy(\App\Models\Service::class, \App\Policies\ServicePolicy::class);
         \Illuminate\Support\Facades\Gate::policy(\App\Models\Blog::class, \App\Policies\BlogPolicy::class);

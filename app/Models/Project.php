@@ -82,4 +82,12 @@ class Project extends Model
 
         return $array;
     }
+
+    /**
+     * Get the categories associated with the project.
+     */
+    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'category_project');
+    }
 }

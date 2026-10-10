@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Category;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Http\Requests\Admin\StoreProjectRequest;
 use App\Http\Requests\Admin\UpdateProjectRequest;
@@ -27,7 +28,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = $this->projectRepository->paginate(10, [], ['order_index' => 'asc']);
+        $projects = $this->projectRepository->paginate(10, ['categories'], ['order_index' => 'asc']);
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -36,7 +37,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create');
+        $categories = Category::where('is_active', true)->orderBy('order_index')->get();
+        return view('admin.projects.create', compact('categories'));
     }
 
     /**
@@ -67,7 +69,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $project->load('categories');
+        $categories = Category::orderBy('order_index')->get();
+        return view('admin.projects.edit', compact('project', 'categories'));
     }
 
     /**

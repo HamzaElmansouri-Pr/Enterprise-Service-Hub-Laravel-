@@ -28,14 +28,23 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
 
     public function getFilteredActive(int $perPage = 12, string $category = '', string $search = '', string $sort = 'order_index', string $direction = 'asc', $isActive = true): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $query = $this->model->newQuery();
+        $query = $this->model->newQuery()->with('categories');
 
         if ($isActive !== 'all') {
             $query->where('is_active', filter_var($isActive, FILTER_VALIDATE_BOOLEAN));
         }
 
         if ($category) {
-            $query->where('category', $category);
+            $query->where(function ($q) use ($category) {
+                $q->where('category', $category)
+                  ->orWhere('category', 'like', "%{$category}%")
+                  ->orWhereHas('categories', function ($cq) use ($category) {
+                      $cq->where('slug', $category)
+                         ->orWhere('name->en', $category)
+                         ->orWhere('name->ar', $category)
+                         ->orWhere('name->fr', $category);
+                  });
+            });
         }
 
         if ($search) {
@@ -54,11 +63,19 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
 
     public function findBySlug(string $slug): Project
     {
-        return $this->model->where('slug', $slug)->where('is_active', true)->firstOrFail();
+        return $this->model->with('categories')->where('slug', $slug)->where('is_active', true)->firstOrFail();
     }
 
     public function getActiveCategories(): \Illuminate\Support\Collection
     {
+        $categories = \App\Models\Category::where('is_active', true)
+            ->orderBy('order_index')
+            ->get();
+
+        if ($categories->isNotEmpty()) {
+            return $categories->map(fn($c) => $c->name);
+        }
+
         return $this->model->where('is_active', true)
             ->whereNotNull('category')
             ->distinct()
