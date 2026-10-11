@@ -44,10 +44,43 @@ class ContactController extends Controller
     public function index(): JsonResponse
     {
         $page = $this->cmsManager->resolvePage('contact', [
-            'contact_address' => __('cms.contact.contact_address'),
-            'contact_email' => __('cms.contact.contact_email'),
-            'contact_phone' => __('cms.contact.contact_phone')
+            'title' => __('cms.contact.title'),
         ], true);
+
+        $headerFields = [
+            'eyebrow',
+            'title',
+            'breadcrumb_title',
+            'description',
+            'button_text',
+            'button_url',
+            'grid_eyebrow',
+            'grid_title',
+            'grid_description',
+            'image',
+        ];
+        $contactHeader = $page->model?->sections->firstWhere('type', 'contact-page-header');
+        $configuredFields = $contactHeader
+            ? $contactHeader->contentBlocks->pluck('key')->intersect($headerFields)->values()->all()
+            : [];
+
+        $sanitizeContactDetail = function (?string $value): ?string {
+            if ($value === null) {
+                return null;
+            }
+            $trimmed = trim($value);
+            if ($trimmed === '' || in_array($trimmed, ['null', 'test@gmail.com', '+1 (555) 123-4567', '123 Business Street, City, State 12345'], true)) {
+                return null;
+            }
+            return $trimmed;
+        };
+
+        $contactInfoSection = $page->model?->sections->firstWhere('type', 'contact-info')
+            ?? \App\Models\Section::where('type', 'contact-info')->first();
+
+        $contactAddress = $sanitizeContactDetail($page->contact_address ?? ($contactInfoSection?->getContent('contact_address') ?: null));
+        $contactEmail = $sanitizeContactDetail($page->contact_email ?? ($contactInfoSection?->getContent('contact_email') ?: null));
+        $contactPhone = $sanitizeContactDetail($page->contact_phone ?? ($contactInfoSection?->getContent('contact_phone') ?: null));
 
         $locale = app()->getLocale();
         $services = \Illuminate\Support\Facades\Cache::remember("api_contact_services_{$locale}", 1800, function() {
@@ -59,14 +92,22 @@ class ContactController extends Controller
                 'title' => $page->title ?? __('cms.contact.title'),
                 'breadcrumb_title' => $page->breadcrumb_title ?? ($page->title ?? __('cms.contact.title')),
                 'image' => $page->image ?? null,
+                'meta_title' => $page->model?->meta_title ?? null,
+                'meta_description' => $page->model?->meta_description ?? null,
+                'eyebrow' => $page->eyebrow ?? null,
+                'description' => $page->description ?? null,
+                'button_text' => $page->button_text ?? null,
+                'button_url' => $page->button_url ?? null,
+                'grid_eyebrow' => $page->grid_eyebrow ?? null,
+                'grid_title' => $page->grid_title ?? null,
+                'grid_description' => $page->grid_description ?? null,
                 'contact_title' => $page->contact_title ?? null,
                 'contact_description' => $page->contact_description ?? null,
                 'contact_logo' => $page->contact_logo ?? null,
-                'contact_address' => $page->contact_address ?? null,
-                'contact_email' => $page->contact_email ?? null,
-                'contact_phone' => $page->contact_phone ?? null,
-                'meta_title' => $page->model?->meta_title,
-                'meta_description' => $page->model?->meta_description,
+                'contact_address' => $contactAddress,
+                'contact_email' => $contactEmail,
+                'contact_phone' => $contactPhone,
+                'configured_fields' => $configuredFields,
             ],
             'services' => ServiceResource::collection($services),
         ]);

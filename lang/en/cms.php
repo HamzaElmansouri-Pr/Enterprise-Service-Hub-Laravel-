@@ -57,9 +57,9 @@ return [
 
     'contact' => [
         'title'           => 'Contact Us',
-        'contact_address' => '123 Business Street, City, State 12345',
-        'contact_email'   => 'test@gmail.com',
-        'contact_phone'   => '+1 (555) 123-4567',
+        'contact_address' => '',
+        'contact_email'   => '',
+        'contact_phone'   => '',
     ],
 
     'about' => [

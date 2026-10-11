@@ -196,7 +196,9 @@ export async function getBlog(slug: string): Promise<BlogDetailResponse> {
 
 /** Get contact page info + services list */
 export async function getContactInfo(): Promise<ContactInfoResponse> {
-  return fetchApi<ContactInfoResponse>('/contact-info');
+  return fetchApi<ContactInfoResponse>('/contact-info', {
+    cache: 'no-store',
+  });
 }
 
 /** Submit a contact form */

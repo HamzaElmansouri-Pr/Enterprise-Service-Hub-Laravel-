@@ -51,9 +51,9 @@ return [
 
     'contact' => [
         'title'           => 'Contactez-Nous',
-        'contact_address' => '123 Rue des Affaires, Ville, État 12345',
-        'contact_email'   => 'test@gmail.com',
-        'contact_phone'   => '+1 (555) 123-4567',
+        'contact_address' => '',
+        'contact_email'   => '',
+        'contact_phone'   => '',
     ],
 
     'about' => [

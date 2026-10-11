@@ -236,14 +236,14 @@
                                 <div class="mb-4">
                                     <label for="contact_phone" class="form-label">Phone Number</label>
                                     <input type="tel" class="form-control" id="contact_phone" name="contact_phone" 
-                                           value="{{ get_content_value($content['contact_phone'] ?? null) ?: '+1 (555) 123-4567' }}">
+                                           value="{{ get_content_value($content['contact_phone'] ?? null) ?: '' }}" placeholder="+1 (555) 000-0000">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-4">
                                     <label for="contact_email" class="form-label">Email Address</label>
                                     <input type="email" class="form-control" id="contact_email" name="contact_email" 
-                                           value="{{ get_content_value($content['contact_email'] ?? null) ?: 'test@gmail.com' }}">
+                                           value="{{ get_content_value($content['contact_email'] ?? null) ?: '' }}" placeholder="contact@example.com">
                                 </div>
                             </div>
                         </div>
@@ -831,7 +831,7 @@
 
                         <div class="mb-4 mt-3 pt-3 border-top">
                             <h6 class="fw-bold mb-3"><i class="fas fa-layer-group me-1 text-primary"></i> Page Section Text (Optional)</h6>
-                            @if(!in_array($contentType, ['projects-page-header', 'blog-page-header']))
+                            @if(!in_array($contentType, ['projects-page-header', 'blog-page-header', 'contact-page-header']))
                                 <x-admin.translatable-input name="grid_eyebrow" label="Section Eyebrow" :value="$content['grid_eyebrow'] ?? null" placeholder="e.g. What we do" />
                             @endif
                             <x-admin.translatable-input name="grid_title" label="Section Title" :value="$content['grid_title'] ?? null" placeholder="e.g. The expertise to move you forward." />

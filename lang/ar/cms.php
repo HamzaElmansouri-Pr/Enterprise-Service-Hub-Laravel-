@@ -51,9 +51,9 @@ return [
 
     'contact' => [
         'title'           => 'اتصل بنا',
-        'contact_address' => '123 شارع الأعمال، المدينة، الولاية 12345',
-        'contact_email'   => 'test@gmail.com',
-        'contact_phone'   => '+1 (555) 123-4567',
+        'contact_address' => '',
+        'contact_email'   => '',
+        'contact_phone'   => '',
     ],
 
     'about' => [
