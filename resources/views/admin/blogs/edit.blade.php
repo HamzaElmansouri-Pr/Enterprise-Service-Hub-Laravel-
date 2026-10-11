@@ -88,9 +88,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" name="category" class="form-control" value="{{ old('category', $blog->category) }}">
-                                @error('category') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                                <x-admin.category-multiselect :categories="$categories" :selected="$blog->categories->pluck('id')->toArray()" />
                             </div>
 
                             <div class="mb-3">

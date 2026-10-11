@@ -10,8 +10,9 @@ use App\Models\Blog;
 
 interface BlogRepositoryInterface extends RepositoryInterface
 {
-    public function getFilteredActive(int $perPage = 10, string $search = '', string $sort = 'published_at', string $direction = 'desc', $isActive = true): LengthAwarePaginator;
+    public function getFilteredActive(int $perPage = 10, string $category = '', string $search = '', string $sort = 'published_at', string $direction = 'desc', $isActive = true): LengthAwarePaginator;
     public function findBySlug(string $slug): Blog;
+    public function getActiveCategories(): \Illuminate\Support\Collection;
     public function getRecent(Blog $currentBlog, int $limit = 3): Collection;
     public function getPublished(int $limit = null, bool $paginate = false);
     public function getFeatured(int $limit = 3);

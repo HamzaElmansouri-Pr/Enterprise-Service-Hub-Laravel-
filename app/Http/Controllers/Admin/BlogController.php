@@ -118,7 +118,8 @@ class BlogController extends Controller
      */
     public function create()
     {
-        return view('admin.blogs.create');
+        $categories = \App\Models\Category::where('is_active', true)->orderBy('order_index')->get();
+        return view('admin.blogs.create', compact('categories'));
     }
 
     /**
@@ -163,8 +164,28 @@ class BlogController extends Controller
         if (isset($data['content'])) {
             $data['content'] = is_array($data['content']) ? array_map('purify_html', $data['content']) : purify_html($data['content']);
         }
+
+        // Handle categories
+        $categoryIds = null;
+        if (array_key_exists('category_ids', $data)) {
+            $categoryIds = $data['category_ids'] ?? [];
+            unset($data['category_ids']);
+
+            if (!empty($categoryIds)) {
+                $selectedCats = \App\Models\Category::whereIn('id', $categoryIds)->get();
+                $data['category'] = get_content_value($selectedCats->first()?->name);
+            } else {
+                $data['category'] = null;
+            }
+        }
+        unset($data['categories_submitted']);
         
         $blog = $this->blogRepository->create($data);
+
+        if ($categoryIds !== null) {
+            $blog->categories()->sync($categoryIds);
+            app(\App\Services\CacheInvalidator::class)->invalidateFor($blog);
+        }
 
         if (empty($data['meta_description'])) {
             \App\Jobs\GenerateSeoMetaJob::dispatch($blog);
@@ -187,7 +208,9 @@ class BlogController extends Controller
      */
     public function edit(Blog $blog)
     {
-        return view('admin.blogs.edit', compact('blog'));
+        $blog->load('categories');
+        $categories = \App\Models\Category::orderBy('order_index')->get();
+        return view('admin.blogs.edit', compact('blog', 'categories'));
     }
 
     /**
@@ -235,7 +258,27 @@ class BlogController extends Controller
             $data['content'] = is_array($data['content']) ? array_map('purify_html', $data['content']) : purify_html($data['content']);
         }
 
+        // Handle categories
+        $categoryIds = null;
+        if (array_key_exists('category_ids', $data)) {
+            $categoryIds = $data['category_ids'] ?? [];
+            unset($data['category_ids']);
+
+            if (!empty($categoryIds)) {
+                $selectedCats = \App\Models\Category::whereIn('id', $categoryIds)->get();
+                $data['category'] = get_content_value($selectedCats->first()?->name);
+            } else {
+                $data['category'] = null;
+            }
+        }
+        unset($data['categories_submitted']);
+
         $this->blogRepository->update($blog->id, $data);
+
+        if ($categoryIds !== null) {
+            $blog->categories()->sync($categoryIds);
+            app(\App\Services\CacheInvalidator::class)->invalidateFor($blog);
+        }
 
         if (empty($data['meta_description'])) {
             \App\Jobs\GenerateSeoMetaJob::dispatch($blog->refresh());

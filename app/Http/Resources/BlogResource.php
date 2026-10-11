@@ -21,7 +21,14 @@ class BlogResource extends JsonResource
             'content' => $this->content,
             'excerpt' => $this->excerpt,
             'image' => resolve_image_url($this->image),
-            'category' => $this->category,
+            'category' => $this->category ?? ($this->relationLoaded('categories') ? $this->categories->map(fn($c) => get_content_value($c->name))->implode(', ') : null),
+            'categories' => $this->relationLoaded('categories')
+                ? $this->categories->map(fn($cat) => [
+                    'id' => $cat->id,
+                    'name' => get_content_value($cat->name),
+                    'slug' => $cat->slug,
+                ])
+                : [],
             'published_at' => $this->published_at?->toISOString(),
             'author' => $this->whenLoaded('author', function () {
                 return [

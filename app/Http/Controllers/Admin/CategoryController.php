@@ -29,7 +29,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::withCount('projects')
+        $categories = Category::withCount(['projects', 'blogs'])
             ->orderBy('order_index', 'asc')
             ->paginate(15);
 

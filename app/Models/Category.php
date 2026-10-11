@@ -40,4 +40,12 @@ class Category extends Model
     {
         return $this->belongsToMany(Project::class, 'category_project');
     }
+
+    /**
+     * Get the blogs associated with the category.
+     */
+    public function blogs(): BelongsToMany
+    {
+        return $this->belongsToMany(Blog::class, 'category_blog');
+    }
 }

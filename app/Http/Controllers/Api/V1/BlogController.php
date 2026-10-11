@@ -33,7 +33,7 @@ class BlogController extends Controller
         $pageNumber = request()->get('page', 1);
         $perPage = request()->get('per_page', 6);
         $search = request()->get('search', '');
-        $category = request()->get('category');
+        $category = request()->get('category', '');
         $sort = request()->get('sort', 'published_at'); // published_at, title
         $direction = request()->get('direction', 'desc');
         // Drafts are only available through the authenticated back office.
@@ -44,18 +44,19 @@ class BlogController extends Controller
         $cacheKey = "api_blogs_index_{$locale}_p{$pageNumber}_pp{$perPage}_s{$search}_c{$category}_sort{$sort}_{$direction}";
 
         return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($perPage, $search, $category, $sort, $direction, $isActive) {
-            // Note: Since BlogRepository's getFilteredActive didn't previously include category, we will fetch without it or rely on search for now, as it's a future column.
             $blogs = $this->blogRepository->getFilteredActive(
                 $perPage,
+                $category,
                 $search,
                 $sort,
                 $direction,
                 $isActive
             );
             
+            $categories = $this->blogRepository->getActiveCategories();
+
             // Recent blogs still strictly active and newest
-            // Can use base repository's pagination or custom query for top 3
-            $recentBlogs = $this->blogRepository->getPublished(3) ?? $this->blogRepository->getActive(3);
+            $recentBlogs = $this->blogRepository->getActive(3);
 
             $page = $this->cmsManager->resolvePage('blog', [
                 'title' => __('cms.blog.title'),
@@ -63,8 +64,26 @@ class BlogController extends Controller
                 'image' => __('cms.blog.image')
             ], true);
 
+            $headerFields = [
+                'eyebrow',
+                'title',
+                'breadcrumb_title',
+                'description',
+                'button_text',
+                'button_url',
+                'grid_eyebrow',
+                'grid_title',
+                'grid_description',
+                'image',
+            ];
+            $blogHeader = $page->model?->sections->firstWhere('type', 'blog-page-header');
+            $configuredFields = $blogHeader
+                ? $blogHeader->contentBlocks->pluck('key')->intersect($headerFields)->values()->all()
+                : [];
+
             return response()->json([
                 'blogs' => BlogResource::collection($blogs),
+                'categories' => $categories,
                 'pagination' => [
                     'current_page' => $blogs->currentPage(),
                     'last_page' => $blogs->lastPage(),
@@ -73,11 +92,19 @@ class BlogController extends Controller
                 ],
                 'recent_blogs' => BlogResource::collection($recentBlogs),
                 'page' => [
-                    'title' => $page->model?->title ?: ($page->title ?? __('cms.blog.title')),
-                    'breadcrumb_title' => $page->model?->title ?: ($page->breadcrumb_title ?? __('cms.blog.breadcrumb_title')),
+                    'title' => $page->title ?? __('cms.blog.title'),
+                    'breadcrumb_title' => $page->breadcrumb_title ?? __('cms.blog.breadcrumb_title'),
                     'image' => $page->image ?? null,
-                    'meta_title' => $page->model->meta_title ?? null,
-                    'meta_description' => $page->model->meta_description ?? null,
+                    'meta_title' => $page->model?->meta_title ?? null,
+                    'meta_description' => $page->model?->meta_description ?? null,
+                    'eyebrow' => $page->eyebrow ?? null,
+                    'description' => $page->description ?? null,
+                    'button_text' => $page->button_text ?? null,
+                    'button_url' => $page->button_url ?? null,
+                    'grid_eyebrow' => $page->grid_eyebrow ?? null,
+                    'grid_title' => $page->grid_title ?? null,
+                    'grid_description' => $page->grid_description ?? null,
+                    'configured_fields' => $configuredFields,
                 ],
                 'jsonLd' => [
                     $this->jsonLd->blogList($blogs),

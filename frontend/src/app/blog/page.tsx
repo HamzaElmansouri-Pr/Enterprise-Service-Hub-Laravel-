@@ -1,8 +1,132 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { BlogsGrid } from "@/components/blog/BlogsGrid";
 import { getBlogs } from "@/lib/api";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { getDictionary } from "@/lib/dictionary";
 
-export async function generateMetadata(): Promise<Metadata> { const data = await getBlogs(); return { title: data.page.meta_title || "Insights", description: data.page.meta_description || "Latest news, insights, and updates" }; }
-export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) { const params = await searchParams; const current = Number(params.page) || 1; const data = await getBlogs(current); return <><Breadcrumb title={data.page.title} image={data.page.image} items={[{ label: "Insights" }]} /><section className="page-section bg-white"><div className="site-container">{data.blogs.length ? <><div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">{data.blogs.map((blog) => <Link key={blog.id} href={`/blog/${blog.slug}`} className="group"><article><div className="relative aspect-[1.75] overflow-hidden bg-slate-200">{blog.image ? <Image src={blog.image} alt={blog.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" unoptimized={blog.image.includes("localhost") || blog.image.includes("127.0.0.1")} /> : <div className="absolute inset-0 bg-[linear-gradient(135deg,#ccdcef,#819abc)]" />}</div><p className="mt-4 text-[.61rem] font-extrabold uppercase tracking-[.13em] text-[var(--blue)]">{blog.category || "Insight"}</p><h2 className="mt-1 text-xl font-extrabold tracking-[-.04em] text-[var(--ink)]">{blog.title}</h2>{blog.excerpt && <p className="mt-2 line-clamp-2 text-sm leading-6 text-[var(--muted)]">{blog.excerpt}</p>}<span className="arrow-link mt-4 text-xs">Read article</span></article></Link>)}</div>{data.pagination.last_page > 1 && <nav className="mt-12 flex justify-center gap-2" aria-label="Blog pages">{Array.from({ length: data.pagination.last_page }, (_, index) => index + 1).map((page) => <Link key={page} href={`/blog?page=${page}`} aria-current={page === current ? "page" : undefined} className={`flex h-9 w-9 items-center justify-center border text-sm font-bold ${page === current ? "border-[var(--blue)] bg-[var(--blue)] text-white" : "border-slate-300 text-[var(--ink)]"}`}>{page}</Link>)}</nav>}</> : <div className="content-card p-12 text-center"><h2 className="text-2xl font-extrabold text-[var(--ink)]">No posts found</h2><p className="mt-2 text-[var(--muted)]">There are currently no published insights.</p></div>}</div></section></>; }
+export const dynamic = "force-dynamic";
+
+type BlogSearchParams = Promise<{
+  category?: string;
+  search?: string;
+  page?: string;
+}>;
+
+function configuredValue(value: string | null | undefined, configured: boolean, fallback: string) {
+  const normalized = value?.trim() || "";
+  return configured ? normalized : fallback;
+}
+
+function pageNumber(value?: string) {
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await getBlogs();
+
+  return {
+    title: data.page.meta_title || data.page.title || "Our Insights",
+    description: data.page.meta_description || data.page.description || "Explore our latest articles, insights and updates",
+  };
+}
+
+export default async function BlogPage({ searchParams }: { searchParams: BlogSearchParams }) {
+  const [sp, cookieStore] = await Promise.all([searchParams, cookies()]);
+  const data = await getBlogs({
+    category: sp.category,
+    search: sp.search,
+    page: pageNumber(sp.page),
+  });
+  const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
+  const dictionary = getDictionary(locale);
+  const t = dictionary.blogPage;
+  const configuredFields = new Set(data.page.configured_fields || []);
+  const isConfigured = (field: string) => configuredFields.has(field);
+
+  const title = configuredValue(data.page.title, isConfigured("title"), t.heroTitle) || t.heroTitle;
+  const breadcrumb = configuredValue(data.page.breadcrumb_title, isConfigured("breadcrumb_title"), dictionary.nav.blog) || dictionary.nav.blog;
+  const eyebrow = configuredValue(data.page.eyebrow, isConfigured("eyebrow"), t.eyebrow);
+  const description = configuredValue(data.page.description, isConfigured("description"), t.heroDescription);
+  const gridTitle = configuredValue(data.page.grid_title, isConfigured("grid_title"), t.gridTitle) || t.gridTitle;
+  const gridDescription = configuredValue(data.page.grid_description, isConfigured("grid_description"), t.gridDescription);
+  const ctaLabel = configuredValue(data.page.button_text, isConfigured("button_text"), t.primaryAction);
+  const ctaUrl = configuredValue(data.page.button_url, isConfigured("button_url"), "/contact") || "/contact";
+  const heroImage = data.page.image || "/assets/img/breadcrumb-bg.jpg";
+
+  return (
+    <>
+      <section className="relative isolate min-h-[500px] overflow-hidden bg-[#06162d] pb-16 pt-28 text-white sm:min-h-[540px] sm:pb-20 sm:pt-32">
+        {heroImage && (
+          <Image
+            src={heroImage}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="-z-30 object-cover object-[68%_center]"
+            unoptimized={heroImage.includes("localhost") || heroImage.includes("127.0.0.1")}
+          />
+        )}
+        <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,#06162d_0%,rgba(6,22,45,.97)_38%,rgba(6,22,45,.7)_62%,rgba(6,22,45,.3)_100%)]" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_76%_28%,rgba(21,88,255,.3),transparent_31%)]" />
+
+        <div className="site-container">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-300">
+            <Link href="/" className="transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">{dictionary.nav.home}</Link>
+            <span aria-hidden="true" className="text-slate-500">/</span>
+            <span className="text-[#9bc0ff]">{breadcrumb}</span>
+          </nav>
+
+          <div className="mt-10 max-w-[720px]">
+            {eyebrow && <span className="eyebrow eyebrow--light">{eyebrow}</span>}
+            <h1 className="max-w-[690px] text-[clamp(2.8rem,5.2vw,4rem)] font-extrabold leading-[.98] tracking-[-.065em] text-white">{title}</h1>
+            {description && <p className="mt-6 max-w-xl text-[1.05rem] leading-7 text-slate-300 sm:text-[1.12rem]">{description}</p>}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f4f8fd] py-14 sm:py-16 lg:py-20">
+        <div className="site-container">
+          <div className="border-b border-slate-200 pb-8 sm:pb-9">
+            <h2 className="max-w-3xl text-[clamp(2.15rem,3.6vw,3.55rem)] font-extrabold leading-[1.02] tracking-[-.055em] text-[var(--ink)]">{gridTitle}</h2>
+            {gridDescription && <p className="mt-3 max-w-2xl text-[.98rem] leading-7 text-[var(--muted)]">{gridDescription}</p>}
+          </div>
+
+          <div className="mt-7 sm:mt-8">
+            <BlogsGrid
+              blogs={data.blogs}
+              categories={data.categories}
+              activeCategory={sp.category}
+              search={sp.search}
+              pagination={data.pagination}
+              labels={{
+                all: t.all,
+                readArticle: t.readArticle,
+                empty: t.empty,
+                previous: t.previous,
+                next: t.next,
+                page: t.page,
+                categoriesNavigation: t.categoriesNavigation,
+                paginationNavigation: t.paginationNavigation,
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[var(--blue)] py-12 text-white sm:py-14">
+        <div aria-hidden="true" className="absolute -right-8 -top-32 h-80 w-80 rounded-full border-[52px] border-white/10" />
+        <div className="site-container relative flex flex-col gap-7 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-[clamp(2rem,3.2vw,3rem)] font-extrabold leading-none tracking-[-.055em]">{t.ctaTitle}</h2>
+            <p className="mt-3 text-[1.04rem] text-white/90">{t.ctaDescription}</p>
+          </div>
+          {ctaLabel && <Link href={ctaUrl} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded bg-white px-6 text-sm font-extrabold text-[var(--ink)] transition hover:-translate-y-0.5 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transform-none">{ctaLabel} <span aria-hidden="true">→</span></Link>}
+        </div>
+      </section>
+    </>
+  );
+}

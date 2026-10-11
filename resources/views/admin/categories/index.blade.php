@@ -6,8 +6,8 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1">Project Categories</h4>
-        <p class="text-muted small mb-0">Organize projects into categories for better discovery and navigation.</p>
+        <h4 class="mb-1">Categories</h4>
+        <p class="text-muted small mb-0">Organize projects and blog posts into categories for better discovery and navigation.</p>
     </div>
     <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
         <i class="fas fa-plus me-2"></i>Add New Category
@@ -24,7 +24,7 @@
                         <th width="60">Order</th>
                         <th>Name</th>
                         <th>Slug</th>
-                        <th>Projects</th>
+                        <th>Items</th>
                         <th>Status</th>
                         <th width="120">Actions</th>
                     </tr>
@@ -51,9 +51,14 @@
                             <code>{{ $category->slug }}</code>
                         </td>
                         <td>
-                            <span class="badge bg-primary-subtle text-primary px-2 py-1">
-                                <i class="fas fa-project-diagram me-1"></i>{{ $category->projects_count }} {{ Str::plural('project', $category->projects_count) }}
-                            </span>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-primary-subtle text-primary px-2 py-1" title="Projects count">
+                                    <i class="fas fa-project-diagram me-1"></i>{{ $category->projects_count }} {{ Str::plural('project', $category->projects_count) }}
+                                </span>
+                                <span class="badge bg-info-subtle text-info px-2 py-1" title="Blogs count">
+                                    <i class="fas fa-newspaper me-1"></i>{{ $category->blogs_count }} {{ Str::plural('blog', $category->blogs_count) }}
+                                </span>
+                            </div>
                         </td>
                         <td>
                             <form action="{{ route('admin.categories.toggle-status', $category) }}" method="POST" class="d-inline">

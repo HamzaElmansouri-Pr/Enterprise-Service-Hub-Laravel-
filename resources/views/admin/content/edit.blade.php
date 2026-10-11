@@ -831,7 +831,7 @@
 
                         <div class="mb-4 mt-3 pt-3 border-top">
                             <h6 class="fw-bold mb-3"><i class="fas fa-layer-group me-1 text-primary"></i> Page Section Text (Optional)</h6>
-                            @if($contentType !== 'projects-page-header')
+                            @if(!in_array($contentType, ['projects-page-header', 'blog-page-header']))
                                 <x-admin.translatable-input name="grid_eyebrow" label="Section Eyebrow" :value="$content['grid_eyebrow'] ?? null" placeholder="e.g. What we do" />
                             @endif
                             <x-admin.translatable-input name="grid_title" label="Section Title" :value="$content['grid_title'] ?? null" placeholder="e.g. The expertise to move you forward." />

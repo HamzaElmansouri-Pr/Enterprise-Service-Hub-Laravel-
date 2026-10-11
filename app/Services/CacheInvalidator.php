@@ -68,7 +68,7 @@ class CacheInvalidator
     protected function getTagsForModel(Model $model): array
     {
         return match (get_class($model)) {
-            \App\Models\Category::class => ['categories', 'projects'],
+            \App\Models\Category::class => ['categories', 'projects', 'blogs'],
             Service::class => ['services'],
             Project::class => ['projects'],
             Blog::class => ['blogs'],

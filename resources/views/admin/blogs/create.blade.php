@@ -64,9 +64,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" name="category" class="form-control" value="{{ old('category') }}" placeholder="e.g. Technology">
-                                @error('category') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                                <x-admin.category-multiselect :categories="$categories" :selected="old('category_ids', [])" />
                             </div>
 
                             <div class="mb-3">

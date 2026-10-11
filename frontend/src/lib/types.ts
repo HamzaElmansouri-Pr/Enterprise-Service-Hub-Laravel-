@@ -52,6 +52,7 @@ export interface Blog {
   excerpt: string | null;
   image: string | null;
   category: string | null;
+  categories?: { id: number; name: string; slug: string }[];
   published_at: string | null;
   author?: BlogAuthor;
   meta_title: string | null;
@@ -227,6 +228,7 @@ export interface ProjectDetailResponse {
 
 export interface BlogsResponse {
   blogs: Blog[];
+  categories: string[];
   pagination: Pagination;
   recent_blogs: Blog[];
   page: PageMeta;

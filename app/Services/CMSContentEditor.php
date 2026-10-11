@@ -232,6 +232,15 @@ class CMSContentEditor
         if (str_starts_with($type, 'services-')) {
             return ['services', str_replace('services-', '', $type)];
         }
+        if ($type === 'blog-list') {
+            return ['home', 'blog-list'];
+        }
+        if (str_starts_with($type, 'blog-')) {
+            return ['blog', str_replace('blog-', '', $type)];
+        }
+        if (str_starts_with($type, 'blogs-')) {
+            return ['blog', str_replace('blogs-', '', $type)];
+        }
         if (str_starts_with($type, 'home-')) {
             return ['home', str_replace('home-', '', $type)];
         }

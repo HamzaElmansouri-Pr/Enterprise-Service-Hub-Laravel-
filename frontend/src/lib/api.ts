@@ -170,9 +170,23 @@ export async function getProject(slug: string): Promise<ProjectDetailResponse> {
   return fetchApi<ProjectDetailResponse>(`/projects/${slug}`);
 }
 
-/** Get paginated blog posts */
-export async function getBlogs(page: number = 1): Promise<BlogsResponse> {
-  return fetchApi<BlogsResponse>(`/blogs?page=${page}`);
+/** Get paginated blog posts with optional filters */
+export async function getBlogs(params?: number | {
+  category?: string;
+  search?: string;
+  page?: number;
+  perPage?: number;
+}): Promise<BlogsResponse> {
+  const p = typeof params === 'number' ? { page: params } : params;
+  const searchParams = new URLSearchParams();
+  if (p?.category) searchParams.set('category', p.category);
+  if (p?.search) searchParams.set('search', p.search);
+  if (p?.page && p.page > 1) searchParams.set('page', String(p.page));
+  if (p?.perPage) searchParams.set('per_page', String(p.perPage));
+  const qs = searchParams.toString();
+  return fetchApi<BlogsResponse>(`/blogs${qs ? `?${qs}` : ''}`, {
+    cache: 'no-store',
+  });
 }
 
 /** Get a single blog post by slug */
