@@ -73,13 +73,15 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
             ->get();
 
         if ($categories->isNotEmpty()) {
-            return $categories->map(fn($c) => $c->name);
+            return $categories->map(fn($c) => get_content_value($c->name))->unique()->values();
         }
 
         return $this->model->where('is_active', true)
             ->whereNotNull('category')
             ->distinct()
-            ->pluck('category');
+            ->pluck('category')
+            ->filter()
+            ->values();
     }
 
     public function getRelatedProjects(Project $project, int $limit = 3): Collection

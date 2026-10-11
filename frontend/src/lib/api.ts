@@ -160,7 +160,9 @@ export async function getProjects(params?: {
   if (params?.page && params.page > 1) searchParams.set('page', String(params.page));
   if (params?.perPage) searchParams.set('per_page', String(params.perPage));
   const qs = searchParams.toString();
-  return fetchApi<ProjectsResponse>(`/projects${qs ? `?${qs}` : ''}`);
+  return fetchApi<ProjectsResponse>(`/projects${qs ? `?${qs}` : ''}`, {
+    cache: 'no-store',
+  });
 }
 
 /** Get a single project by slug */

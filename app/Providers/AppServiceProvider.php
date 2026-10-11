@@ -96,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::policy(\App\Models\Contact::class, \App\Policies\ContactPolicy::class);
 
         $contentModels = [
+            \App\Models\Category::class,
             \App\Models\Project::class,
             \App\Models\Service::class,
             \App\Models\Blog::class,

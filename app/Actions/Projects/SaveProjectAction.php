@@ -80,7 +80,7 @@ class SaveProjectAction
             // Update legacy category string for backwards compatibility
             if (!empty($categoryIds)) {
                 $selectedCats = \App\Models\Category::whereIn('id', $categoryIds)->get();
-                $data['category'] = $selectedCats->map(fn($c) => $c->name)->implode(', ');
+                $data['category'] = $selectedCats->first()?->name;
             } else {
                 $data['category'] = null;
             }

@@ -7,6 +7,8 @@ import { getProjects } from "@/lib/api";
 import { getDictionary } from "@/lib/dictionary";
 import { resolveProjectsHeroImage } from "@/lib/demoMedia";
 
+export const dynamic = "force-dynamic";
+
 type ProjectSearchParams = Promise<{
   category?: string;
   search?: string;

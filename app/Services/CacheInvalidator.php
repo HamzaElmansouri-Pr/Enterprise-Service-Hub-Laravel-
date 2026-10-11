@@ -43,12 +43,19 @@ class CacheInvalidator
             $modelTags = $this->getTagsForModel($model);
             if (!empty($modelTags)) {
                 $tags = array_merge($tags, $modelTags);
-                Cache::tags($tags)->flush();
+                try {
+                    Cache::tags($tags)->flush();
+                } catch (\Throwable $e) {
+                    // Ignore tag flush failure
+                }
             }
-        } else {
-            // For file or database drivers, we can't use tags to selectively clear dynamic keys.
-            // Flush the entire cache to ensure changes are immediately reflected on the frontend.
+        }
+
+        // Flush the cache so dynamic keys without tags (like api_projects_index_*) are immediately cleared
+        try {
             Cache::flush();
+        } catch (\Throwable $e) {
+            // Ignore flush failure
         }
     }
 
@@ -61,6 +68,7 @@ class CacheInvalidator
     protected function getTagsForModel(Model $model): array
     {
         return match (get_class($model)) {
+            \App\Models\Category::class => ['categories', 'projects'],
             Service::class => ['services'],
             Project::class => ['projects'],
             Blog::class => ['blogs'],
